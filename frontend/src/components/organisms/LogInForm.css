@@ -1,0 +1,36 @@
+.login-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 448px;
+  gap: 24px;
+  font-family: 'Inter', sans-serif;
+}
+
+.login-title {
+  margin-bottom: 26px;
+}
+
+.login-form h2 {
+  line-height: 64px;
+  font-size: 56px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-align: center;
+}
+
+.login-form p {
+  line-height: 24px;
+  font-size: 18px;
+  color: #666666;
+  text-align: center;
+}
+
+.login-form a {
+  text-decoration: none;
+  line-height: 18px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #000000;
+  text-align: center;
+}
