@@ -1,0 +1,14 @@
+.custom-button {
+  height: 46px;
+  width: 100%;
+	background-color: #CC1D1D;
+	border: none;
+	border-radius: 30px;
+	color: #fff;
+	font-size: 14px;
+  line-height: 14px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
