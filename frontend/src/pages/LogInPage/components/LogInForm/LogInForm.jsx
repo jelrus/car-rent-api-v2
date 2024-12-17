@@ -1,10 +1,10 @@
-import FormField from '../molecules/FormField';
-import Button from '../atoms/Button';
+import FormField from '@/components/FormField/FormField';
+import Button from '@components/atoms/Button/Button';
 import './LogInForm.css';
 
 const LogInForm = () => {
-	return (
-		<div className='login-form'>
+  return (
+    <div className='login-form'>
       <div className='login-title'>
         <h2>Log in</h2>
         <p>Glad to see you again</p>
@@ -24,15 +24,15 @@ const LogInForm = () => {
           fieldType='password'
           id='password'
           placeholder='Write your password'
-			  />
+        />
       </div>
 
-			<Button text='Login' />
-			<p className='create-account-page'>
-				New here? <a href='#'>Create an account</a>
-			</p>
-		</div>
-	);
+      <Button text='Login' />
+      <p className='create-account-page'>
+        New here? <a href='#'>Create an account</a>
+      </p>
+    </div>
+  );
 };
 
 export default LogInForm;

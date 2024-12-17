@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import './InputField.css';
+import '@components/atoms/InputField/InputField.css';
 
-import eyeClosedIcon from '../../assets/Eye closed.svg';
-import eyeOpenIcon from '../../assets/Eye.svg';
+import eyeClosedIcon from '@assets/Eye closed.svg';
+import eyeOpenIcon from '@assets/Eye.svg';
 
 const PasswordField = ({ id, placeholder, label }) => {
 	const [showPassword, setShowPassword] = useState(false);

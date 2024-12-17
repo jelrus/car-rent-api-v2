@@ -1,8 +1,8 @@
 import FormField from './FormField';
 
 export default {
-    title: 'Molecules/FormField',
-    component: FormField,
+  title: 'Molecules/FormField',
+  component: FormField,
 };
 
 const Template = (args) => <FormField {...args} />;

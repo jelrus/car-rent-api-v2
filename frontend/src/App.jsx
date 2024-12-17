@@ -1,12 +1,11 @@
-import LogInPage from "./components/pages/LogInPage";
-import './App.css'
 
-function App() {
+import './App.css'
+import App from "@/containers/AppComponent/AppComponent";
+
+const RootComponent=()=>{
   return (
-    <div className="App">
-      <LogInPage/>
-    </div>
-  );
+    <App/>
+  )
 }
 
-export default App;
+export default RootComponent;
