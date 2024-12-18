@@ -3,6 +3,8 @@ package com.backend.service.impl;
 import com.backend.dto.UserSignUpRequest;
 import com.backend.dto.UserSignUpResponse;
 import com.backend.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
@@ -16,11 +18,12 @@ public class UserServiceImpl implements UserService {
     private static final String CLIENT_ROLE = "Client";
     private final DynamoDbClient dynamoDbClient = DynamoDbClient.create();
     private final String tableUsers = System.getenv("USERS_TABLE");
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
     public UserSignUpResponse createUser(UserSignUpRequest userRequest) {
 
-        System.out.println("createUser");
+        logger.info("createUser");
 
         PutItemRequest putItemRequest = PutItemRequest.builder()
                 .tableName(tableUsers)
@@ -28,9 +31,9 @@ public class UserServiceImpl implements UserService {
                 .build();
         try {
             dynamoDbClient.putItem(putItemRequest);
-            System.out.println("table item saved to the db");
+            logger.info("table item saved to the db");
         } catch (Exception exception) {
-            System.out.println(exception.getMessage());
+            logger.error(exception.getMessage());
         }
 
         UserSignUpResponse response = new UserSignUpResponse();
@@ -53,14 +56,21 @@ public class UserServiceImpl implements UserService {
         item.put("email", AttributeValue.builder().s(userRequest.getEmail()).build());
         item.put("password", AttributeValue.builder().s(userRequest.getPassword()).build());
         // todo
-        // userImageUrl
+        // where should I get userImageUrl ?
         item.put("userImageUrl", AttributeValue.builder().s("").build());
 
         return item;
     }
 
     private String generateUsername(UserSignUpRequest userSignUpRequest) {
+
+        String baseUsername = userSignUpRequest.getFirstName() + " " + userSignUpRequest.getLastName();
+
         // todo
-        return userSignUpRequest.getFirstName() + " " + userSignUpRequest.getLastName();
+        // get list of users from bd with userSignUpRequest.getFirstName() and userSignUpRequest.getLastName()
+        // if this list is not empty than username = baseUsername + (listOfUsers.size() + 1);
+
+        return baseUsername;
     }
+
 }

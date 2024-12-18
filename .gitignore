@@ -1,0 +1,6 @@
+backend/.syndicate
+logs/
+.syndicate-config-*/
+target/
+.idea/
+backend.iml
