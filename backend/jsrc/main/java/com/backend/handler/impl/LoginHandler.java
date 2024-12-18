@@ -4,21 +4,11 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.backend.handler.EndpointHandler;
-import com.google.gson.Gson;
 
-import java.util.Map;
-
-public class ErrorHandler implements EndpointHandler {
-
-    private final Gson gson = new Gson();
-
-    public ErrorHandler(){
-    }
-
+public class LoginHandler implements EndpointHandler  {
     @Override
     public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent requestEvent, Context context) {
+        System.out.println("205");
         return new APIGatewayProxyResponseEvent()
-                .withStatusCode(400)
-                .withBody(gson.toJson(Map.of("message", "Bad request")));
-    }
+                .withStatusCode(205).withBody("");    }
 }

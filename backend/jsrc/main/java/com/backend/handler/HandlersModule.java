@@ -1,10 +1,14 @@
 package com.backend.handler;
 
-import com.backend.handler.impl.GeneralHandler;
 import com.backend.handler.impl.ErrorHandler;
+import com.backend.handler.impl.GeneralHandler;
+import com.backend.handler.impl.LoginHandler;
+import com.backend.handler.impl.UsersHandler;
 import com.google.gson.Gson;
 import dagger.Module;
 import dagger.Provides;
+import dagger.multibindings.IntoMap;
+import dagger.multibindings.StringKey;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -13,6 +17,7 @@ import java.util.Map;
 
 @Module
 public class HandlersModule {
+    private final Map<String, EndpointHandler> map = new HashMap<>();
 
     @Singleton
     @Provides
@@ -27,13 +32,61 @@ public class HandlersModule {
     @Provides
     @Named("error")
     public EndpointHandler provideErrorHandler(Gson gson) {
-        return new ErrorHandler(gson);
+        return new ErrorHandler();
     }
 
     @Singleton
     @Provides
     @Named("endpointMap")
     public Map<String, EndpointHandler> provideEndpointMap() {
-        return new HashMap<>();
+        return getStringEndpointHandlerMap();
     }
+
+    private Map<String, EndpointHandler> getStringEndpointHandlerMap() {
+        if (map.isEmpty()) {
+            return Map.of(
+                    "POST:/v1/users", new UsersHandler(),
+                    "POST:/v1/users/login", new LoginHandler()
+//                    ,
+//                    "GET:/v1/home/about-us",new AboutHandler(),
+//                    "GET:/v1/home/faq",new FaqHandler(),
+//                    "GET:/v1/home/feedbacks",new FeedbacksHandler(),
+//                    "GET:/v1/home/locations",new LocationsHandler(),
+//                    "GET:/v1/home/popular-cars",new PopularCars(),
+//                    "GET:/v1/cars",new CarsHandler(),
+//                    "GET:/v1/cars/{carId}",new CarsByCarIdHandler(),
+//                    "GET:/v1/cars/{carId}/booked-days",new CarsBookedDaysHandler(),
+//                    "GET:/v1/cars/{carId}/client-review",new CarsReviewHandler(),
+//                    "POST:/v1/bookings",new BookingsHandler(),
+//                    "GET:/v1/bookings/{clientId}",new  BookingsByClientIdHandler()
+
+            );
+
+        } else {
+            return map;
+        }
+
+    }
+
+    @Singleton
+    @Provides
+    @IntoMap
+    @StringKey("POST:/v1/users")
+    public EndpointHandler provideUsersHandler() {
+        return new UsersHandler();
+    }
+
+    @Singleton
+    @Provides
+    @IntoMap
+    @StringKey("POST:/v1/users/login")
+    public EndpointHandler provideLoginHandler() {
+        return new LoginHandler();
+    }
+
+
 }
+
+
+
+

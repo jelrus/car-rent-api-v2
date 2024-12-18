@@ -6,19 +6,14 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.backend.handler.EndpointHandler;
 import com.google.gson.Gson;
 
-import java.util.Map;
 
-public class ErrorHandler implements EndpointHandler {
+public class UsersHandler implements EndpointHandler {
 
     private final Gson gson = new Gson();
-
-    public ErrorHandler(){
-    }
 
     @Override
     public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent requestEvent, Context context) {
         return new APIGatewayProxyResponseEvent()
-                .withStatusCode(400)
-                .withBody(gson.toJson(Map.of("message", "Bad request")));
+                .withStatusCode(200).withBody("");
     }
 }
