@@ -8,18 +8,19 @@ import com.google.gson.Gson;
 
 import java.util.Map;
 
-public class ErrorHandler implements EndpointHandler {
+public class PathNotFoundHandler implements EndpointHandler {
 
     private final Gson gson;
 
-    public ErrorHandler(Gson gson) {
+    public PathNotFoundHandler(Gson gson) {
         this.gson = gson;
     }
 
     @Override
-    public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent requestEvent, Context context) {
+    public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent event, Context context) {
         return new APIGatewayProxyResponseEvent()
-                .withStatusCode(400)
-                .withBody(gson.toJson(Map.of("message", "Bad request")));
+                .withStatusCode(404)
+                .withBody(gson.toJson(Map.of("message", "Requested path " + event.getPath() +
+                        " with " + event.getHttpMethod() + " was not found")));
     }
 }
