@@ -18,8 +18,8 @@ public class GeneralHandler implements EndpointHandler {
     }
 
     @Override
-    public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent requestEvent, Context context) {
-        String routeKey = requestEvent.getHttpMethod() + ":" + requestEvent.getPath();
-        return handlerMap.getOrDefault(routeKey, errorHandler).handle(requestEvent, context);
+    public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent event, Context context) {
+        String routeKey = event.getHttpMethod() + ":" + event.getPath();
+        return handlerMap.getOrDefault(routeKey, errorHandler).handle(event, context);
     }
 }
