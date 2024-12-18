@@ -8,7 +8,6 @@ import com.backend.handler.EndpointHandler;
 public class LoginHandler implements EndpointHandler  {
     @Override
     public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent requestEvent, Context context) {
-        System.out.println("205");
         return new APIGatewayProxyResponseEvent()
                 .withStatusCode(205).withBody("");    }
 }
