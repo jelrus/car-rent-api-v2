@@ -50,6 +50,14 @@ public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
 
 	@Override
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent event, Context context) {
+		context.getLogger().log("handleRequest started");
+		context.getLogger().log("requestEvent --> " + event);
+		String method = event.getHttpMethod();
+		String path = event.getPath();
+		String body = event.getBody();
+		context.getLogger().log("Method --> " + method);
+		context.getLogger().log("Path --> " + path);
+		context.getLogger().log("body --> " + body);
 		return generalHandler.handle(event, context).withHeaders(corsHeaders);
 	}
 }
