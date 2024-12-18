@@ -8,17 +8,18 @@ import com.google.gson.Gson;
 
 import java.util.Map;
 
-public class ErrorHandler implements EndpointHandler {
+public class SignupHandler implements EndpointHandler {
 
-    private final Gson gson = new Gson();
+    private final Gson gson;
 
-    public ErrorHandler(){
+    public SignupHandler(Gson gson) {
+        this.gson = gson;
     }
 
     @Override
-    public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent requestEvent, Context context) {
+    public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent event, Context context) {
         return new APIGatewayProxyResponseEvent()
-                .withStatusCode(400)
-                .withBody(gson.toJson(Map.of("message", "Bad request")));
+                .withStatusCode(200)
+                .withBody(gson.toJson(Map.of("message", "Signup")));
     }
 }

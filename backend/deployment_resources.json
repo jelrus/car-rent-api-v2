@@ -38,7 +38,7 @@
     },
     "resource_type": "iam_policy"
   },
-  "api-handler-role": {
+  "api_handler-role": {
     "predefined_policies": [],
     "principal_service": "lambda",
     "custom_policies": [
@@ -208,4 +208,5 @@
 
     }
   }
+
 }
