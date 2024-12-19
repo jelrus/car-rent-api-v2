@@ -1,5 +1,6 @@
 package com.backend.service.impl;
 
+import com.backend.dto.UserSignInResponse;
 import com.backend.dto.UserSignUpRequest;
 import com.backend.dto.UserSignUpResponse;
 import com.backend.service.UserService;
@@ -59,7 +60,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserSignUpResponse signInUser(String email, String password) throws Exception {
+    public UserSignInResponse signInUser(String email, String password) throws Exception {
         QueryResponse queryResponse = getEmailQueryResponse(email);
         List<Map<String, AttributeValue>> items1 = queryResponse.items();
 
@@ -77,7 +78,7 @@ public class UserServiceImpl implements UserService {
             throw new Exception(messageBase);
         }
 
-        UserSignUpResponse response = new UserSignUpResponse();
+        UserSignInResponse response = new UserSignInResponse();
         response.setRole(user.get("role").s());
         response.setUserId(user.get("userId").s());
         response.setUserImageUrl(user.get("userImageUrl").s());

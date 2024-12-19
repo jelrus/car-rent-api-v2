@@ -4,7 +4,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.backend.dto.UserSignInRequest;
-import com.backend.dto.UserSignUpResponse;
+import com.backend.dto.UserSignInResponse;
 import com.backend.handler.EndpointHandler;
 import com.backend.service.CognitoService;
 import com.backend.service.UserService;
@@ -39,7 +39,7 @@ public class PostUsersLoginHandler implements EndpointHandler {
             String email = userSignInRequest.getEmail();
             String password = userSignInRequest.getPassword();
 
-            UserSignUpResponse response = userService.signInUser(email, password);
+            UserSignInResponse response = userService.signInUser(email, password);
             String accessToken = cognitoService.getAccessToken(userSignInRequest.getEmail(), userSignInRequest.getPassword());
 
             response.setAccessToken(accessToken);
