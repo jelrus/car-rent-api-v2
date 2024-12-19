@@ -15,6 +15,8 @@ import com.syndicate.deployment.model.Architecture;
 import com.syndicate.deployment.model.DeploymentRuntime;
 import com.syndicate.deployment.model.ResourceType;
 import com.syndicate.deployment.model.RetentionSetting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -22,6 +24,7 @@ import static com.syndicate.deployment.model.environment.ValueTransformer.USER_P
 import static com.syndicate.deployment.model.environment.ValueTransformer.USER_POOL_NAME_TO_USER_POOL_ID;
 
 @DependsOn(name = "${user_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${cognito_user_pool}", resourceType = ResourceType.COGNITO_USER_POOL)
 @LambdaHandler(
 		lambdaName = "api_handler",
 		runtime = DeploymentRuntime.JAVA17,
@@ -47,9 +50,11 @@ public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
 	private final CarRentApplication carRentApplication = DaggerCarRentApplication.create();
 	private final EndpointHandler generalHandler = carRentApplication.getGeneralApiHandler();
 	private final Map<String, String> corsHeaders = carRentApplication.getCorsHeaders();
+	private static final Logger logger = LoggerFactory.getLogger(ApiHandler.class);
 
 	@Override
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent event, Context context) {
+		logger.info("handleRequest started");
 		return generalHandler.handle(event, context).withHeaders(corsHeaders);
 	}
 }

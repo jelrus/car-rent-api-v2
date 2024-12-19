@@ -16,6 +16,8 @@
             "cognito-idp:ListUserPools",
             "cognito-idp:ListUserPoolClients",
             "cognito-idp:AdminRespondToAuthChallenge",
+            "cognito-idp:AdminConfirmSignUp",
+            "cognito-idp:AdminSetUserPassword",
             "dynamodb:GetItem",
             "dynamodb:DescribeStream",
             "dynamodb:GetShardIterator",
@@ -62,7 +64,8 @@
         "ALLOW_ADMIN_USER_PASSWORD_AUTH",
         "ALLOW_CUSTOM_AUTH",
         "ALLOW_USER_SRP_AUTH",
-        "ALLOW_REFRESH_TOKEN_AUTH"
+        "ALLOW_REFRESH_TOKEN_AUTH",
+        "ALLOW_USER_PASSWORD_AUTH"
       ]
     }
   },
@@ -70,6 +73,13 @@
     "resource_type": "dynamodb_table",
     "hash_key_name": "userId",
     "hash_key_type": "S",
+    "global_indexes": [
+      {
+        "name": "email_index",
+        "index_key_name": "email",
+        "index_key_type": "S"
+      }
+    ],
     "read_capacity": 25,
     "write_capacity": 10
   },
