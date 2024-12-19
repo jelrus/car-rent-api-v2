@@ -7,4 +7,6 @@ public interface UserService {
 
     // creates user in db
     UserSignUpResponse createUser(UserSignUpRequest userSignUpRequest) throws Exception;
+
+    UserSignUpResponse signInUser(String email, String password) throws Exception;
 }

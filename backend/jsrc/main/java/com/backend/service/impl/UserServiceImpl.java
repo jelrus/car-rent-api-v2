@@ -12,11 +12,12 @@ import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 /**
- *  A service to work with user table
+ * A service to work with user table
  */
 public class UserServiceImpl implements UserService {
 
@@ -26,7 +27,7 @@ public class UserServiceImpl implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
-    public UserSignUpResponse createUser(UserSignUpRequest userRequest) throws Exception{
+    public UserSignUpResponse createUser(UserSignUpRequest userRequest) throws Exception {
 
         logger.info("createUser");
 
@@ -57,14 +58,50 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
-    /**
-     *  Checks if user with provided email is absent in database
+    @Override
+    public UserSignUpResponse signInUser(String email, String password) throws Exception {
+        QueryResponse queryResponse = getEmailQueryResponse(email);
+        List<Map<String, AttributeValue>> items1 = queryResponse.items();
 
+        if (items1.isEmpty()) {
+            logger.error("User is not found in DB with provided email: {}", email);
+            throw new Exception("User is not found in DB with provided email: " + email);
+        }
+
+        Map<String, AttributeValue> user = items1.get(0);
+        String passwordFromDB = user.get("password").s();
+
+        if (!password.equals(passwordFromDB)) {
+            String messageBase = "Provided password is incorrect";
+            logger.error(messageBase);
+            throw new Exception(messageBase);
+        }
+
+        UserSignUpResponse response = new UserSignUpResponse();
+        response.setRole(user.get("role").s());
+        response.setUserId(user.get("userId").s());
+        response.setUserImageUrl(user.get("userImageUrl").s());
+        response.setUsername(user.get("username").s());
+
+        return response;
+    }
+
+    /**
+     * Checks if user with provided email is absent in database
+     *
      * @param email provided email
      * @throws Exception in case if user with provided email is present in database
      */
     private void checkIfUserAbsent(String email) throws Exception {
 
+        QueryResponse queryResponse = getEmailQueryResponse(email);
+
+        if (queryResponse.count() != 0) {
+            throw new Exception("User with email: " + email + " is present");
+        }
+    }
+
+    private QueryResponse getEmailQueryResponse(String email) {
         QueryRequest queryRequest = QueryRequest.builder()
                 .tableName(tableUsers)
                 .indexName("email_index")
@@ -73,11 +110,7 @@ public class UserServiceImpl implements UserService {
                         ":emailValue", AttributeValue.builder().s(email).build()))
                 .build();
 
-        QueryResponse queryResponse = dynamoDbClient.query(queryRequest);
-
-        if (queryResponse.count() != 0) {
-            throw new Exception("User with email: " + email + " is present");
-        }
+        return dynamoDbClient.query(queryRequest);
     }
 
     /**
