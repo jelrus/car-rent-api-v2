@@ -1,9 +1,13 @@
 package com.backend.service;
 
-import com.backend.models.dto.request.UserSignUpRequest;
-import com.backend.models.dto.response.UserSignUpResponse;
+import com.backend.dto.UserSignInResponse;
+import com.backend.dto.UserSignUpRequest;
+import com.backend.dto.UserSignUpResponse;
 
 public interface UserService {
 
-    UserSignUpResponse create(UserSignUpRequest userSignUpRequest) throws Exception;
+    // creates user in db
+    UserSignUpResponse createUser(UserSignUpRequest userSignUpRequest) throws Exception;
+
+    UserSignInResponse signInUser(String email, String password) throws Exception;
 }
