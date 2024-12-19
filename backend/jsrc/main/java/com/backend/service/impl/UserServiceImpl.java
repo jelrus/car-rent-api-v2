@@ -1,8 +1,9 @@
 package com.backend.service.impl;
 
-import com.backend.dto.UserSignUpRequest;
-import com.backend.dto.UserSignUpResponse;
+import com.backend.models.dto.request.UserSignUpRequest;
+import com.backend.models.dto.response.UserSignUpResponse;
 import com.backend.service.UserService;
+import com.backend.utils.components.Envs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
@@ -20,13 +21,12 @@ import java.util.UUID;
  */
 public class UserServiceImpl implements UserService {
 
-    private final String tableUsers = System.getenv("USERS_TABLE");
     private final DynamoDbClient dynamoDbClient = DynamoDbClient.create();
     private static final String CLIENT_ROLE = "Client";
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
-    public UserSignUpResponse createUser(UserSignUpRequest userRequest) throws Exception{
+    public UserSignUpResponse create(UserSignUpRequest userRequest) throws Exception{
 
         logger.info("createUser");
 
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
         // creating request for putting data into dynamoDB table
         PutItemRequest putItemRequest = PutItemRequest.builder()
-                .tableName(tableUsers)
+                .tableName(Envs.USERS_TABLE)
                 .item(getItem(userRequest))
                 .build();
         // putting data into dynamoDB table
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
     private void checkIfUserAbsent(String email) throws Exception {
 
         QueryRequest queryRequest = QueryRequest.builder()
-                .tableName(tableUsers)
+                .tableName(Envs.USERS_TABLE)
                 .indexName("email_index")
                 .keyConditionExpression("email = :emailValue")
                 .expressionAttributeValues(Map.of(
