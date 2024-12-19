@@ -13,8 +13,8 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LoginHandler implements EndpointHandler {
-    private static final Logger logger = LoggerFactory.getLogger(LoginHandler.class);
+public class PostUsersLoginHandler implements EndpointHandler {
+    private static final Logger logger = LoggerFactory.getLogger(PostUsersLoginHandler.class);
 
     private final Gson gson;
 
@@ -22,7 +22,7 @@ public class LoginHandler implements EndpointHandler {
 
     private final UserService userService;
 
-    public LoginHandler(Gson gson, CognitoService cognitoService, UserService userService) {
+    public PostUsersLoginHandler(Gson gson, CognitoService cognitoService, UserService userService) {
         this.gson = gson;
         this.cognitoService = cognitoService;
         this.userService = userService;

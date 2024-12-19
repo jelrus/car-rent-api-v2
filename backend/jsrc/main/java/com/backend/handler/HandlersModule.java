@@ -2,7 +2,7 @@ package com.backend.handler;
 
 import com.backend.handler.impl.ErrorHandler;
 import com.backend.handler.impl.GeneralHandler;
-import com.backend.handler.impl.LoginHandler;
+import com.backend.handler.impl.PostUsersLoginHandler;
 import com.backend.handler.impl.PostUsersHandler;
 import com.backend.handler.impl.UsersHandler;
 import com.backend.service.CognitoService;
@@ -50,7 +50,7 @@ public class HandlersModule {
         if (map.isEmpty()) {
             return Map.of(
                     "POST:/v1/users", new UsersHandler()
-//                    "POST:/v1/users/login", new LoginHandler()
+//                    "POST:/v1/users/login", new PostUsersLoginHandler()
 //                    ,
 //                    "GET:/v1/home/about-us",new AboutHandler(),
 //                    "GET:/v1/home/faq",new FaqHandler(),
@@ -77,7 +77,7 @@ public class HandlersModule {
     @IntoMap
     @StringKey("POST:/v1/users/login")
     public EndpointHandler provideLoginHandler(UserService userService, CognitoService cognitoService, Gson gson) {
-        return new LoginHandler(gson, cognitoService, userService);
+        return new PostUsersLoginHandler(gson, cognitoService, userService);
     }
 
 
