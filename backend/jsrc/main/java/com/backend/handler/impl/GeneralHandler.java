@@ -22,8 +22,6 @@ public class GeneralHandler implements EndpointHandler {
 
     @Override
     public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent requestEvent, Context context) {
-        // todo
-        // delete version from path
         String routeKey = requestEvent.getHttpMethod() + ":" + requestEvent.getPath();
         logger.info("GeneralHandler. routeKey --> {}" , routeKey);
         return handlerMap.getOrDefault(routeKey, errorHandler).handle(requestEvent, context);

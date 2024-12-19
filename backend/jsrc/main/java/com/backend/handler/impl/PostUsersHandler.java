@@ -55,8 +55,6 @@ public class PostUsersHandler implements EndpointHandler {
 
         } catch (Exception exception){
             logger.error(exception.getMessage());
-            // todo
-            // rollback
             return new APIGatewayProxyResponseEvent()
                     .withStatusCode(400)
                     .withBody(exception.getMessage());

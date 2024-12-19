@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
         item.put("lastName", AttributeValue.builder().s(userRequest.getLastName()).build());
         item.put("email", AttributeValue.builder().s(userRequest.getEmail()).build());
         item.put("password", AttributeValue.builder().s(userRequest.getPassword()).build());
-        // todo
+
         // where should I get userImageUrl ?
         item.put("userImageUrl", AttributeValue.builder().s("").build());
 
@@ -108,10 +108,6 @@ public class UserServiceImpl implements UserService {
      * @return username
      */
     private String generateUsername(UserSignUpRequest userSignUpRequest) {
-
-        // todo
-        // should I generate unique username ?
-
         return userSignUpRequest.getFirstName() + " " + userSignUpRequest.getLastName();
     }
 
