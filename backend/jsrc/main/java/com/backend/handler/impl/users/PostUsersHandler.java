@@ -18,15 +18,15 @@ import java.util.Map;
 /**
  *  A handler of 'POST' method and 'v1/users' path
  */
-public class PostHandler implements EndpointHandler {
+public class PostUsersHandler implements EndpointHandler {
 
     private final Gson gson;
     private final UserService userService;
     private final CognitoService cognitoService;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private static final Logger logger = LoggerFactory.getLogger(PostHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(PostUsersHandler.class);
 
-    public PostHandler(UserService userService, CognitoService cognitoService, Gson gson) {
+    public PostUsersHandler(UserService userService, CognitoService cognitoService, Gson gson) {
         this.userService = userService;
         this.cognitoService = cognitoService;
         this.gson = gson;

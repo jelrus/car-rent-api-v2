@@ -28,6 +28,8 @@ import static com.syndicate.deployment.model.environment.ValueTransformer.USER_P
  * Contains annotation configuration for Lambda function.
  */
 @DependsOn(name = "${user_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${home_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${faq_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${cognito_user_pool}", resourceType = ResourceType.COGNITO_USER_POOL)
 @LambdaHandler(
 		lambdaName = "api_handler",
@@ -44,6 +46,8 @@ import static com.syndicate.deployment.model.environment.ValueTransformer.USER_P
 @EnvironmentVariables({
 		@EnvironmentVariable(key = "REGION", value = "${region}"),
 		@EnvironmentVariable(key = "USERS_TABLE", value = "${user_table}"),
+		@EnvironmentVariable(key = "HOME_TABLE", value = "${home_table}"),
+		@EnvironmentVariable(key = "FAQ_TABLE", value = "${faq_table}"),
 		@EnvironmentVariable(key = "COGNITO_ID", value = "${cognito_user_pool}",
 				valueTransformer = USER_POOL_NAME_TO_USER_POOL_ID),
 		@EnvironmentVariable(key = "CLIENT_ID", value = "${cognito_user_pool}",

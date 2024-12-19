@@ -1,8 +1,8 @@
 package com.backend.handler;
 
 import com.backend.handler.impl.*;
-import com.backend.handler.impl.users.PostHandler;
-import com.backend.handler.impl.users.PostLoginHandler;
+import com.backend.handler.impl.users.PostUsersHandler;
+import com.backend.handler.impl.users.PostUsersLoginHandler;
 import com.backend.service.CognitoService;
 import com.backend.service.UserService;
 import com.google.gson.Gson;
@@ -41,7 +41,7 @@ public class HandlersModule {
     @IntoMap
     @StringKey("POST:/v1/users")
     public EndpointHandler provideSignupHandler(UserService userService, CognitoService cognitoService, Gson gson) {
-        return new PostHandler(userService, cognitoService, gson);
+        return new PostUsersHandler(userService, cognitoService, gson);
     }
 
     @Singleton
@@ -49,7 +49,7 @@ public class HandlersModule {
     @IntoMap
     @StringKey("POST:/v1/users/login")
     public EndpointHandler provideLoginHandler() {
-        return new PostLoginHandler();
+        return new PostUsersLoginHandler();
     }
 }
 

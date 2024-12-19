@@ -16,6 +16,16 @@ public class Envs {
     public static final String USERS_TABLE = System.getenv("USERS_TABLE");
 
     /**
+     * Represents DynamoDB table designed for Home objects
+     */
+    public static final String HOME_TABLE = System.getenv("HOME_TABLE");
+
+    /**
+     * Represents DynamoDB table designed for FAQ objects
+     */
+    public static final String FAQ_TABLE = System.getenv("FAQ_TABLE");
+
+    /**
      * Represents Cognito ID of Cognito Identity Provider
      */
     public static final String COGNITO_ID = System.getenv("COGNITO_ID");
