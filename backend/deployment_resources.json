@@ -161,7 +161,7 @@
           "enable_proxy": true
         }
       },
-      "/v1/home/cars": {
+      "/v1/cars": {
         "enable_cors": true,
         "GET": {
           "authorization_type": "NONE",
@@ -214,9 +214,6 @@
           "enable_proxy": true
         }
       }
-
-
     }
   }
-
 }
