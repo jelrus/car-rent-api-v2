@@ -15,9 +15,9 @@ import java.util.UUID;
 
 public class UserServiceImpl implements UserService {
 
-    private static final String CLIENT_ROLE = "Client";
-    private final DynamoDbClient dynamoDbClient = DynamoDbClient.create();
     private final String tableUsers = System.getenv("USERS_TABLE");
+    private final DynamoDbClient dynamoDbClient = DynamoDbClient.create();
+    private static final String CLIENT_ROLE = "Client";
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override

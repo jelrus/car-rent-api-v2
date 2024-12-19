@@ -9,6 +9,7 @@ import dagger.Provides;
 
 @Module
 public class ServiceModule {
+
     @Singleton
     @Provides
     UserService provideUserService() {

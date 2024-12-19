@@ -4,5 +4,7 @@ import com.backend.dto.UserSignUpRequest;
 
 public interface CognitoService {
 
-    String getAccessToken(UserSignUpRequest request);
+    String getAccessToken(String email, String password);
+
+    void addUserToCognito(String email, String password);
 }

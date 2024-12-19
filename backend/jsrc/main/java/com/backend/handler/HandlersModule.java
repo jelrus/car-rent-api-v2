@@ -34,7 +34,6 @@ public class HandlersModule {
         return new ErrorHandler(gson);
     }
 
-
     @Singleton
     @Provides
     @IntoMap

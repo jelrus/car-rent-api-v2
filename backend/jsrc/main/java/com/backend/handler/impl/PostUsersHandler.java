@@ -32,9 +32,31 @@ public class PostUsersHandler implements EndpointHandler {
     @Override
     public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent requestEvent, Context context) {
         logger.info("PostUsersHandler ");
-
         try {
-            Map<String, Object> requestBody = objectMapper.readValue(requestEvent.getBody(), Map.class);
+            UserSignUpRequest requestedUser = extractRequestedUser(requestEvent.getBody());
+
+            UserSignUpResponse response =
+                    userService.createUser(requestedUser);
+
+            cognitoService.addUserToCognito(requestedUser.getEmail(), requestedUser.getPassword());
+
+            response.setAccessToken(cognitoService.getAccessToken(requestedUser.getEmail(), requestedUser.getPassword()));
+
+            return new APIGatewayProxyResponseEvent()
+                    .withStatusCode(201)
+                    .withBody(gson.toJson(response));
+
+        } catch (Exception exception){
+            logger.error(exception.getMessage());
+            return new APIGatewayProxyResponseEvent()
+                    .withStatusCode(400)
+                    .withBody(exception.getMessage());
+        }
+    }
+
+    private UserSignUpRequest extractRequestedUser(String body) throws Exception {
+        try {
+            Map<String, Object> requestBody = objectMapper.readValue(body, Map.class);
 
             UserSignUpRequest requestedUser = new UserSignUpRequest();
             requestedUser.setFirstName((String) requestBody.get("firstName"));
@@ -44,17 +66,11 @@ public class PostUsersHandler implements EndpointHandler {
 
             logger.info("requestedUser: {}", requestedUser);
 
-            UserSignUpResponse response = userService.createUser(requestedUser);
-            response.setAccessToken(cognitoService.getAccessToken(requestedUser));
-
-            return new APIGatewayProxyResponseEvent()
-                    .withStatusCode(201)
-                    .withBody(gson.toJson(response));
+            return requestedUser;
 
         } catch (Exception exception) {
             logger.error(exception.getMessage());
-            return new APIGatewayProxyResponseEvent()
-                    .withStatusCode(500);
+            throw new Exception("Invalid user parameters");
         }
     }
 }
