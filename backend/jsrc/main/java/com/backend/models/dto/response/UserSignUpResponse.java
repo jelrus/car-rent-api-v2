@@ -1,4 +1,4 @@
-package com.backend.dto;
+package com.backend.models.dto.response;
 
 public class UserSignUpResponse {
     private String accessToken;

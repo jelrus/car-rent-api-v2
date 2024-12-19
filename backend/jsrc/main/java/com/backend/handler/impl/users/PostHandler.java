@@ -1,10 +1,10 @@
-package com.backend.handler.impl;
+package com.backend.handler.impl.users;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
-import com.backend.dto.UserSignUpRequest;
-import com.backend.dto.UserSignUpResponse;
+import com.backend.models.dto.request.UserSignUpRequest;
+import com.backend.models.dto.response.UserSignUpResponse;
 import com.backend.handler.EndpointHandler;
 import com.backend.service.CognitoService;
 import com.backend.service.UserService;
@@ -18,15 +18,15 @@ import java.util.Map;
 /**
  *  A handler of 'POST' method and 'v1/users' path
  */
-public class PostUsersHandler implements EndpointHandler {
+public class PostHandler implements EndpointHandler {
 
     private final Gson gson;
     private final UserService userService;
     private final CognitoService cognitoService;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private static final Logger logger = LoggerFactory.getLogger(PostUsersHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(PostHandler.class);
 
-    public PostUsersHandler(UserService userService, CognitoService cognitoService, Gson gson) {
+    public PostHandler(UserService userService, CognitoService cognitoService, Gson gson) {
         this.userService = userService;
         this.cognitoService = cognitoService;
         this.gson = gson;
@@ -41,7 +41,7 @@ public class PostUsersHandler implements EndpointHandler {
 
             // adding new user to the database
             UserSignUpResponse response =
-                    userService.createUser(requestedUser);
+                    userService.create(requestedUser);
 
             // adding new user to the cognito pool
             cognitoService.addUserToCognito(requestedUser.getEmail(), requestedUser.getPassword());

@@ -1,9 +1,8 @@
 package com.backend.service.impl;
 
 import com.backend.service.CognitoService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import software.amazon.awssdk.regions.Region;
+import com.backend.utils.components.Envs;
+import com.backend.utils.services.LoggerService;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 
@@ -14,22 +13,20 @@ import java.util.Map;
  */
 public class CognitoServiceImpl implements CognitoService {
 
-    private static final String REGION = System.getenv("REGION");
-    private final String cognitoId = System.getenv("COGNITO_ID");
-    private final String clientId = System.getenv("CLIENT_ID");
-    private static final Logger logger = LoggerFactory.getLogger(CognitoServiceImpl.class);
-    private final CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
-            .region(Region.of(REGION))
-            .build();
+    private final CognitoIdentityProviderClient cognitoClient;
+
+    public CognitoServiceImpl(CognitoIdentityProviderClient cognitoClient) {
+        this.cognitoClient = cognitoClient;
+    }
 
     @Override
     public void addUserToCognito(String email, String password) {
 
-        logger.info("addUserToCognito");
+        LoggerService.info("addUserToCognito");
 
         // creating new user in cognito pool
         AdminCreateUserRequest createUserRequest = AdminCreateUserRequest.builder()
-                .userPoolId(cognitoId)
+                .userPoolId(Envs.COGNITO_ID)
                 .username(email)
                 .temporaryPassword(password)
                 .build();
@@ -38,7 +35,7 @@ public class CognitoServiceImpl implements CognitoService {
 
         // setting permanent password
         AdminSetUserPasswordRequest setPasswordRequest = AdminSetUserPasswordRequest.builder()
-                .userPoolId(cognitoId)
+                .userPoolId(Envs.COGNITO_ID)
                 .username(email)
                 .password(password)
                 .permanent(true)
@@ -46,17 +43,17 @@ public class CognitoServiceImpl implements CognitoService {
 
         cognitoClient.adminSetUserPassword(setPasswordRequest);
 
-        logger.info("User created successfully: {}", createUserResponse.user().username());
+        LoggerService.info("User created successfully: {}", createUserResponse.user().username());
     }
 
     @Override
     public String getAccessToken(String email, String password) {
 
-        logger.info("getAccessToken");
+        LoggerService.info("getAccessToken");
         // authenticating of user
         InitiateAuthRequest authRequest = InitiateAuthRequest.builder()
                 .authFlow(AuthFlowType.USER_PASSWORD_AUTH)
-                .clientId(clientId)
+                .clientId(Envs.CLIENT_ID)
                 .authParameters(Map.of(
                         "USERNAME", email,
                         "PASSWORD", password
