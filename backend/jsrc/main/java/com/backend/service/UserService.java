@@ -6,5 +6,5 @@ import com.backend.dto.UserSignUpResponse;
 public interface UserService {
 
     // creates user in db
-    UserSignUpResponse createUser(UserSignUpRequest userSignUpRequest);
+    UserSignUpResponse createUser(UserSignUpRequest userSignUpRequest) throws Exception;
 }

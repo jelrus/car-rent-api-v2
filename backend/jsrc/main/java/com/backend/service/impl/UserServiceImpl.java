@@ -8,11 +8,16 @@ import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
+import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
+import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ *  A service to work with user table
+ */
 public class UserServiceImpl implements UserService {
 
     private final String tableUsers = System.getenv("USERS_TABLE");
@@ -21,14 +26,19 @@ public class UserServiceImpl implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
-    public UserSignUpResponse createUser(UserSignUpRequest userRequest) {
+    public UserSignUpResponse createUser(UserSignUpRequest userRequest) throws Exception{
 
         logger.info("createUser");
 
+        // checking if user with provided email is absent in database
+        checkIfUserAbsent(userRequest.getEmail());
+
+        // creating request for putting data into dynamoDB table
         PutItemRequest putItemRequest = PutItemRequest.builder()
                 .tableName(tableUsers)
                 .item(getItem(userRequest))
                 .build();
+        // putting data into dynamoDB table
         try {
             dynamoDbClient.putItem(putItemRequest);
             logger.info("table item saved to the db");
@@ -36,6 +46,7 @@ public class UserServiceImpl implements UserService {
             logger.error(exception.getMessage());
         }
 
+        // creating response
         UserSignUpResponse response = new UserSignUpResponse();
         response.setRole(CLIENT_ROLE);
         response.setUserId(putItemRequest.item().get("userId").s());
@@ -45,6 +56,34 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
+    /**
+     *  Checks if user with provided email is absent in database
+
+     * @param email provided email
+     * @throws Exception in case if user with provided email is present in database
+     */
+    private void checkIfUserAbsent(String email) throws Exception {
+
+        QueryRequest queryRequest = QueryRequest.builder()
+                .tableName(tableUsers)
+                .indexName("email_index")
+                .keyConditionExpression("email = :emailValue")
+                .expressionAttributeValues(Map.of(
+                        ":emailValue", AttributeValue.builder().s(email).build()))
+                .build();
+
+        QueryResponse queryResponse = dynamoDbClient.query(queryRequest);
+
+        if (queryResponse.count() != 0) {
+            throw new Exception("User with email: " + email + " is present");
+        }
+    }
+
+    /**
+     * Creates dynamoDB item
+     * @param userRequest user data
+     * @return map with attributes of dynamoDB item
+     */
     private Map<String, AttributeValue> getItem(UserSignUpRequest userRequest) {
 
         Map<String, AttributeValue> item = new HashMap<>();
@@ -62,15 +101,17 @@ public class UserServiceImpl implements UserService {
         return item;
     }
 
+    /**
+     * Generates username
+     * @param userSignUpRequest user data
+     * @return username
+     */
     private String generateUsername(UserSignUpRequest userSignUpRequest) {
 
-        String baseUsername = userSignUpRequest.getFirstName() + " " + userSignUpRequest.getLastName();
-
         // todo
-        // get list of users from bd with userSignUpRequest.getFirstName() and userSignUpRequest.getLastName()
-        // if this list is not empty than username = baseUsername + (listOfUsers.size() + 1);
+        // should i generate unique username ?
 
-        return baseUsername;
+        return userSignUpRequest.getFirstName() + " " + userSignUpRequest.getLastName();
     }
 
 }

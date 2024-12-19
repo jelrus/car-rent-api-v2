@@ -1,10 +1,10 @@
 package com.backend.service;
 
-import com.backend.dto.UserSignUpRequest;
-
 public interface CognitoService {
 
-    String getAccessToken(String email, String password);
-
+    // adds new user to cognito pool
     void addUserToCognito(String email, String password);
+
+    // authenticates user and returns access token (id token)
+    String getAccessToken(String email, String password);
 }

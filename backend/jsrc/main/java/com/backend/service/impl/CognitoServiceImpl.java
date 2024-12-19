@@ -9,6 +9,9 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 
 import java.util.Map;
 
+/**
+ *  A service to work with cognito pool
+ */
 public class CognitoServiceImpl implements CognitoService {
 
     private static final String REGION = System.getenv("REGION");
@@ -24,6 +27,7 @@ public class CognitoServiceImpl implements CognitoService {
 
         logger.info("addUserToCognito");
 
+        // creating new user in cognito pool
         AdminCreateUserRequest createUserRequest = AdminCreateUserRequest.builder()
                 .userPoolId(cognitoId)
                 .username(email)
@@ -49,7 +53,7 @@ public class CognitoServiceImpl implements CognitoService {
     public String getAccessToken(String email, String password) {
 
         logger.info("getAccessToken");
-
+        // authenticating of user
         InitiateAuthRequest authRequest = InitiateAuthRequest.builder()
                 .authFlow(AuthFlowType.USER_PASSWORD_AUTH)
                 .clientId(clientId)

@@ -38,7 +38,7 @@ public class HandlersModule {
     @Provides
     @IntoMap
     @StringKey("POST:/v1/users")
-    public EndpointHandler providePutUsersHandler(UserService userService, CognitoService cognitoService, Gson gson) {
+    public EndpointHandler providePostUsersHandler(UserService userService, CognitoService cognitoService, Gson gson) {
         return new PostUsersHandler(userService, cognitoService, gson);
     }
 }

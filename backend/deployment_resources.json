@@ -73,6 +73,13 @@
     "resource_type": "dynamodb_table",
     "hash_key_name": "userId",
     "hash_key_type": "S",
+    "global_indexes": [
+      {
+        "name": "email_index",
+        "index_key_name": "email",
+        "index_key_type": "S"
+      }
+    ],
     "read_capacity": 25,
     "write_capacity": 10
   },

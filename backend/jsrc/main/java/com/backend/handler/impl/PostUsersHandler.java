@@ -15,6 +15,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+/**
+ *  A handler of 'POST' method and 'v1/users' path
+ */
 public class PostUsersHandler implements EndpointHandler {
 
     private final Gson gson;
@@ -54,6 +57,12 @@ public class PostUsersHandler implements EndpointHandler {
         }
     }
 
+    /**
+     * Extracts user data from request body
+     * @param body request body
+     * @return UserSignUpRequest with user data
+     * @throws Exception in case of invalid user parameters in the body
+     */
     private UserSignUpRequest extractRequestedUser(String body) throws Exception {
         try {
             Map<String, Object> requestBody = objectMapper.readValue(body, Map.class);
