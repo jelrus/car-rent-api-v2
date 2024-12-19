@@ -29,7 +29,7 @@ import static com.syndicate.deployment.model.environment.ValueTransformer.USER_P
 		lambdaName = "api_handler",
 		runtime = DeploymentRuntime.JAVA17,
 		architecture = Architecture.ARM64,
-		roleName = "api-handler-role",
+		roleName = "api_handler-role",
 		isPublishVersion = true,
 		aliasName = "${lambdas_alias_name}",
 		logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
@@ -58,4 +58,3 @@ public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
 		return generalHandler.handle(event, context).withHeaders(corsHeaders);
 	}
 }
-
