@@ -34,15 +34,19 @@ public class PostUsersHandler implements EndpointHandler {
 
     @Override
     public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent requestEvent, Context context) {
-        logger.info("PostUsersHandler ");
+        logger.info("PostUsersHandler");
         try {
+            // extracting user data from request body
             UserSignUpRequest requestedUser = extractRequestedUser(requestEvent.getBody());
 
+            // adding new user to the database
             UserSignUpResponse response =
                     userService.createUser(requestedUser);
 
+            // adding new user to the cognito pool
             cognitoService.addUserToCognito(requestedUser.getEmail(), requestedUser.getPassword());
 
+            // authenticating new user
             response.setAccessToken(cognitoService.getAccessToken(requestedUser.getEmail(), requestedUser.getPassword()));
 
             return new APIGatewayProxyResponseEvent()
@@ -51,6 +55,8 @@ public class PostUsersHandler implements EndpointHandler {
 
         } catch (Exception exception){
             logger.error(exception.getMessage());
+            // todo
+            // rollback
             return new APIGatewayProxyResponseEvent()
                     .withStatusCode(400)
                     .withBody(exception.getMessage());
@@ -64,6 +70,9 @@ public class PostUsersHandler implements EndpointHandler {
      * @throws Exception in case of invalid user parameters in the body
      */
     private UserSignUpRequest extractRequestedUser(String body) throws Exception {
+
+        logger.info("extractRequestedUser");
+
         try {
             Map<String, Object> requestBody = objectMapper.readValue(body, Map.class);
 
@@ -73,12 +82,15 @@ public class PostUsersHandler implements EndpointHandler {
             requestedUser.setEmail((String) requestBody.get("email"));
             requestedUser.setPassword((String) requestBody.get("password"));
 
-            logger.info("requestedUser: {}", requestedUser);
+            // todo
+            // validation
+
+            logger.info("User data extracted");
 
             return requestedUser;
 
         } catch (Exception exception) {
-            logger.error(exception.getMessage());
+            logger.error("Invalid user parameters");
             throw new Exception("Invalid user parameters");
         }
     }

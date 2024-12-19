@@ -44,6 +44,7 @@ public class UserServiceImpl implements UserService {
             logger.info("table item saved to the db");
         } catch (Exception exception) {
             logger.error(exception.getMessage());
+            throw new Exception(exception.getMessage());
         }
 
         // creating response
@@ -109,7 +110,7 @@ public class UserServiceImpl implements UserService {
     private String generateUsername(UserSignUpRequest userSignUpRequest) {
 
         // todo
-        // should i generate unique username ?
+        // should I generate unique username ?
 
         return userSignUpRequest.getFirstName() + " " + userSignUpRequest.getLastName();
     }
