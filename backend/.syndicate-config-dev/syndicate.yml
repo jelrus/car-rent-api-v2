@@ -1,0 +1,18 @@
+access_role: ACCESS_ROLE
+account_id: ACCOUNT_ID
+aws_access_key_id: AWS_ACCESS_KEY_ID
+aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+aws_session_token: AWS_SESSION_TOKEN
+deploy_target_bucket: DEPLOY_TARGET_BUCKET
+expiration: EXPIRATION
+extended_prefix_mode: EXTENDED_PREFIX_MODE
+iam_permissions_boundary: IAM_PERMISSIONS_BOUNDARY
+project_path: PROJECT_PATH
+region: REGION
+resources_prefix: RESOURCES_PREFIX
+resources_suffix: RESOURCES_SUFFIX
+tags:
+  dev_id: DEV_ID
+  run_id: RUN_ID
+  type: TYPE
+use_temp_creds: USE_TEMP_CREDS
