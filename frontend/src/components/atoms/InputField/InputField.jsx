@@ -11,12 +11,12 @@ const InputField = ({ id, type, placeholder, label, onChange,value}) => {
 };
 
 InputField.propTypes = {
-	id: PropTypes.string.isRequired,
-	type: PropTypes.string.isRequired,
-	placeholder: PropTypes.string.isRequired,
-	label: PropTypes.string.isRequired,
-	value: PropTypes.string,
-	onChange: PropTypes.func
+		id: PropTypes.string.isRequired,
+		type: PropTypes.string.isRequired,
+		placeholder: PropTypes.string.isRequired,
+		label: PropTypes.string.isRequired,
+		value: PropTypes.string,
+		onChange: PropTypes.func
 };
 
 export default InputField;
