@@ -2,7 +2,9 @@ package com.backend.handler;
 
 import com.backend.handler.impl.ErrorHandler;
 import com.backend.handler.impl.GeneralHandler;
+import com.backend.handler.impl.PostUsersLoginHandler;
 import com.backend.handler.impl.PostUsersHandler;
+import com.backend.handler.impl.UsersHandler;
 import com.backend.service.CognitoService;
 import com.backend.service.UserService;
 import com.google.gson.Gson;
@@ -13,6 +15,7 @@ import dagger.multibindings.StringKey;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.HashMap;
 import java.util.Map;
 
 @Module
@@ -46,8 +49,8 @@ public class HandlersModule {
     private Map<String, EndpointHandler> getStringEndpointHandlerMap() {
         if (map.isEmpty()) {
             return Map.of(
-                    "POST:/v1/users", new UsersHandler(),
-                    "POST:/v1/users/login", new LoginHandler()
+                    "POST:/v1/users", new UsersHandler()
+//                    "POST:/v1/users/login", new PostUsersLoginHandler()
 //                    ,
 //                    "GET:/v1/home/about-us",new AboutHandler(),
 //                    "GET:/v1/home/faq",new FaqHandler(),
@@ -72,17 +75,9 @@ public class HandlersModule {
     @Singleton
     @Provides
     @IntoMap
-    @StringKey("POST:/v1/users")
-    public EndpointHandler provideUsersHandler() {
-        return new UsersHandler();
-    }
-
-    @Singleton
-    @Provides
-    @IntoMap
     @StringKey("POST:/v1/users/login")
-    public EndpointHandler provideLoginHandler() {
-        return new LoginHandler();
+    public EndpointHandler provideLoginHandler(UserService userService, CognitoService cognitoService, Gson gson) {
+        return new PostUsersLoginHandler(gson, cognitoService, userService);
     }
 
 

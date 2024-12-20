@@ -1,10 +1,10 @@
-package com.backend.handler.impl;
+package com.backend.handler.impl.users;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
-import com.backend.dto.UserSignUpRequest;
-import com.backend.dto.UserSignUpResponse;
+import com.backend.models.dto.request.UserSignUpRequest;
+import com.backend.models.dto.response.UserSignUpResponse;
 import com.backend.handler.EndpointHandler;
 import com.backend.service.CognitoService;
 import com.backend.service.UserService;
@@ -41,7 +41,7 @@ public class PostUsersHandler implements EndpointHandler {
 
             // adding new user to the database
             UserSignUpResponse response =
-                    userService.createUser(requestedUser);
+                    userService.create(requestedUser);
 
             // adding new user to the cognito pool
             cognitoService.addUserToCognito(requestedUser.getEmail(), requestedUser.getPassword());

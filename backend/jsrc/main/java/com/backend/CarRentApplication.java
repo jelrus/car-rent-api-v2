@@ -1,5 +1,6 @@
 package com.backend;
 
+import com.backend.dao.DaoModule;
 import com.backend.handler.EndpointHandler;
 import com.backend.handler.HandlersModule;
 import com.backend.service.ServiceModule;
@@ -11,7 +12,7 @@ import javax.inject.Named;
 import java.util.Map;
 
 @Singleton
-@Component(modules = {UtilsModule.class, HandlersModule.class, ServiceModule.class})
+@Component(modules = {UtilsModule.class, HandlersModule.class, ServiceModule.class, DaoModule.class})
 public interface CarRentApplication {
 
     @Named("general")
