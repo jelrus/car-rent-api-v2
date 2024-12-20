@@ -43,4 +43,16 @@ public class Faq {
 
     public Faq() {
     }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
 }
