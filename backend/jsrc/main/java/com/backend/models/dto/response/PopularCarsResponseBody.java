@@ -1,6 +1,6 @@
-package com.backend.dto.response;
+package com.backend.models.dto.response;
 
-import com.backend.dto.CarBriefInfo;
+import com.backend.models.dto.request.CarBriefInfo;
 
 import java.util.List;
 

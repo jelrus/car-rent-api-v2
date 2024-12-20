@@ -1,6 +1,6 @@
-package com.backend.dto.response;
+package com.backend.models.dto.response;
 
-import com.backend.dto.LocationInfo;
+import com.backend.models.dto.request.LocationInfo;
 
 public class LocationsResponseBody {
     private LocationInfo content;

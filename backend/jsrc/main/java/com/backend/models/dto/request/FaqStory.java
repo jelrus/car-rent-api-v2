@@ -1,6 +1,6 @@
-package com.backend.dto;
+package com.backend.models.dto.request;
 
-public class FAQStory {
+public class FaqStory {
     private String question;
     private String answer;
 
@@ -20,11 +20,11 @@ public class FAQStory {
         this.question = question;
     }
 
-    public FAQStory(String answer, String question) {
+    public FaqStory(String answer, String question) {
         this.answer = answer;
         this.question = question;
     }
 
-    public FAQStory() {
+    public FaqStory() {
     }
 }

@@ -83,6 +83,13 @@
     "read_capacity": 25,
     "write_capacity": 10
   },
+  "${faq_table:}": {
+    "resource_type": "dynamodb_table",
+    "hash_key_name": "id",
+    "hash_key_type": "S",
+    "read_capacity": 25,
+    "write_capacity": 10
+  },
   "car_rent_api_gateway": {
     "resource_type": "api_gateway",
     "deploy_stage": "api",
@@ -205,7 +212,8 @@
           "lambda_name": "api_handler",
           "enable_proxy": true
         }
-      }, "/v1/bookings/{clientId}": {
+      },
+      "/v1/bookings/{clientId}": {
         "enable_cors": true,
         "GET": {
           "authorization_type": "NONE",

@@ -1,9 +1,9 @@
-package com.backend.handler.impl;
+package com.backend.handler.impl.home;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
-import com.backend.dto.response.PopularCarsResponseBody;
+import com.backend.models.dto.response.PopularCarsResponseBody;
 import com.backend.handler.EndpointHandler;
 
 import java.util.logging.Logger;

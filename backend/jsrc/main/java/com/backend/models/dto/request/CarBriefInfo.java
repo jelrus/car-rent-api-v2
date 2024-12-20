@@ -1,4 +1,4 @@
-package com.backend.dto;
+package com.backend.models.dto.request;
 
 public class CarBriefInfo {
     private String carId;

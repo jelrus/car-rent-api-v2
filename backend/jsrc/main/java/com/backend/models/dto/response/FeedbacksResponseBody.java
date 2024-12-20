@@ -1,6 +1,6 @@
-package com.backend.dto.response;
+package com.backend.models.dto.response;
 
-import com.backend.dto.FeedbackInfo;
+import com.backend.models.dto.request.FeedbackInfo;
 
 import java.util.List;
 
