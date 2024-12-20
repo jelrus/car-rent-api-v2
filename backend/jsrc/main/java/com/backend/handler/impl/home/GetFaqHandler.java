@@ -4,20 +4,17 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.backend.handler.EndpointHandler;
-import com.backend.handler.impl.users.PostHandler;
 import com.backend.service.FaqService;
 import com.backend.utils.services.LoggerService;
 import com.google.gson.Gson;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class GetFaqHandler implements EndpointHandler {
 
-    private final Gson gson = new Gson();
+    private final Gson gson;
     private final FaqService faqService;
 
-    public GetFaqHandler(FaqService faqService) {
-
+    public GetFaqHandler(FaqService faqService, Gson gson) {
+        this.gson = gson;
         this.faqService = faqService;
     }
 

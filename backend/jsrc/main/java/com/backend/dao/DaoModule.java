@@ -22,6 +22,6 @@ public class DaoModule {
     @Provides
     @Named("faqDao")
     FaqDao provideDFaqDao() {
-        return new FaqDaoImpl(provideDynamoDbEnhancedClient(),new Gson());
+        return new FaqDaoImpl(provideDynamoDbEnhancedClient());
     }
 }

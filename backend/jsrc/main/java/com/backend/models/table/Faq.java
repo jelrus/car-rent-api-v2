@@ -4,6 +4,8 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttri
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
+import java.util.UUID;
+
 @DynamoDbBean
 public class Faq {
 
@@ -12,7 +14,7 @@ public class Faq {
     private String answer;
 
     @DynamoDbPartitionKey
-    @DynamoDbAttribute("Id")
+    @DynamoDbAttribute("id")
     public String getId() {
         return id;
     }
@@ -27,14 +29,15 @@ public class Faq {
         return answer;
     }
 
-    public Faq(String answer, String question) {
-        this.answer = answer;
-        this.question = question;
-    }
-
     public Faq(String answer, String id, String question) {
         this.answer = answer;
         this.id = id;
+        this.question = question;
+    }
+
+    public Faq(String answer, String question) {
+       this.id = UUID.randomUUID().toString();
+        this.answer = answer;
         this.question = question;
     }
 
