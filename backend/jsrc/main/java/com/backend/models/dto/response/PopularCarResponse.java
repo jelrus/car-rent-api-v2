@@ -4,14 +4,14 @@ import com.backend.models.dto.request.CarBriefInfo;
 
 import java.util.List;
 
-public class PopularCarsResponse {
+public class PopularCarResponse {
     private List<CarBriefInfo> content;
 
-    public PopularCarsResponse(List<CarBriefInfo> content) {
+    public PopularCarResponse(List<CarBriefInfo> content) {
         this.content = content;
     }
 
-    public PopularCarsResponse() {
+    public PopularCarResponse() {
     }
 
 

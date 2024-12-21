@@ -4,9 +4,9 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.backend.handler.EndpointHandler;
-import com.backend.models.dto.response.PopularCarsResponse;
+import com.backend.models.dto.response.PopularCarResponse;
 import com.backend.models.table.types.CarCategory;
-import com.backend.service.PopularCarsService;
+import com.backend.service.PopularCarService;
 import com.backend.utils.services.LoggerService;
 import com.google.gson.Gson;
 
@@ -17,10 +17,10 @@ import java.util.Objects;
 public class GetPopularCarsHandler implements EndpointHandler {
 
     private final Gson gson;
-    private final PopularCarsService popularCarsService;
+    private final PopularCarService popularCarsService;
     private static final String DEFAULT_CATEGORY = CarCategory.BUSINESS.getCategory();
 
-    public GetPopularCarsHandler(PopularCarsService popularCarsService, Gson gson) {
+    public GetPopularCarsHandler(PopularCarService popularCarsService, Gson gson) {
         this.gson = gson;
         this.popularCarsService = popularCarsService;
     }
@@ -34,7 +34,7 @@ public class GetPopularCarsHandler implements EndpointHandler {
                 : new HashMap<>();
 
         try {
-            PopularCarsResponse allByCategory = popularCarsService.findAllByCategory(
+            PopularCarResponse allByCategory = popularCarsService.findAllByCategory(
                     CarCategory.valueOf(
                             queryStringParameters.getOrDefault("category", DEFAULT_CATEGORY).toUpperCase()));
 

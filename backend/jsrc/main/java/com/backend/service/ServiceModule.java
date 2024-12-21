@@ -1,9 +1,11 @@
 package com.backend.service;
 
 import com.backend.dao.FaqDao;
-import com.backend.dao.PopularCarsDao;
+import com.backend.dao.LocationDao;
+import com.backend.dao.PopularCarDao;
 import com.backend.service.impl.FaqServiceImpl;
-import com.backend.service.impl.PopularCarsServiceImpl;
+import com.backend.service.impl.LocationServiceImpl;
+import com.backend.service.impl.PopularCarServiceImpl;
 import com.backend.service.impl.UserServiceImpl;
 import dagger.Module;
 import dagger.Provides;
@@ -36,9 +38,15 @@ public class ServiceModule {
 
     @Singleton
     @Provides
-    @Named("popularCarsService")
-    PopularCarsService providePopularCarsService(@Named("popularCarsDao") PopularCarsDao popularCarsDao) {
-        return new PopularCarsServiceImpl(popularCarsDao);
+    @Named("popularCarService")
+    PopularCarService providePopularCarService(@Named("popularCarDao") PopularCarDao popularCarDao) {
+        return new PopularCarServiceImpl(popularCarDao);
+    }
+    @Singleton
+    @Provides
+    @Named("locationService")
+    LocationService locationService(@Named("locationDao") LocationDao locationDao) {
+        return new LocationServiceImpl(locationDao);
     }
 
 //    @Singleton

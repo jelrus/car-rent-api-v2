@@ -1,7 +1,8 @@
 package com.backend.dao;
 
 import com.backend.dao.impl.FaqDaoImpl;
-import com.backend.dao.impl.PopularCarsDaoImpl;
+import com.backend.dao.impl.LocationDaoImpl;
+import com.backend.dao.impl.PopularCarDaoImpl;
 import dagger.Module;
 import dagger.Provides;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
@@ -28,8 +29,15 @@ public class DaoModule {
 
     @Singleton
     @Provides
-    @Named("popularCarsDao")
-    PopularCarsDao providePopularCarsDao() {
-        return new PopularCarsDaoImpl(provideDynamoDbEnhancedClient());
+    @Named("popularCarDao")
+    PopularCarDao providePopularCarDao() {
+        return new PopularCarDaoImpl(provideDynamoDbEnhancedClient());
+    }
+
+    @Singleton
+    @Provides
+    @Named("locationDao")
+    LocationDao provideLocationDao() {
+        return new LocationDaoImpl(provideDynamoDbEnhancedClient());
     }
 }

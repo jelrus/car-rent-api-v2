@@ -1,6 +1,6 @@
 package com.backend.dao.impl;
 
-import com.backend.dao.PopularCarsDao;
+import com.backend.dao.PopularCarDao;
 import com.backend.models.table.CarEntity;
 import com.backend.models.table.types.CarCategory;
 import com.backend.models.table.types.CarStatus;
@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class PopularCarsDaoImpl implements PopularCarsDao {
+public class PopularCarDaoImpl implements PopularCarDao {
 
     private final DynamoDbTable<CarEntity> carTable;
 
-    public PopularCarsDaoImpl(DynamoDbEnhancedClient dbEnhancedClient) {
+    public PopularCarDaoImpl(DynamoDbEnhancedClient dbEnhancedClient) {
         this.carTable = dbEnhancedClient.table(Envs.CARS_TABLE, TableSchema.fromClass(CarEntity.class));
         for (int i = 0; i < 10; i++) {
             create(generateRandomCarEntity());

@@ -34,4 +34,9 @@ public class Envs {
      * Represents DynamoDB table designed for Car objects
      */
     public static final String CARS_TABLE = System.getenv("CARS_TABLE");
+
+    /**
+     * Represents DynamoDB table designed for Location objects
+     */
+    public static final String LOCATIONS_TABLE = System.getenv("LOCATIONS_TABLE");
 }
