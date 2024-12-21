@@ -22,14 +22,12 @@ import java.util.Map;
 import static com.syndicate.deployment.model.environment.ValueTransformer.USER_POOL_NAME_TO_CLIENT_ID;
 import static com.syndicate.deployment.model.environment.ValueTransformer.USER_POOL_NAME_TO_USER_POOL_ID;
 
-/**
- * ApiHandler is the main class, which serves as entry point to Lambda function.
- * <p>
- * Contains annotation configuration for Lambda function.
- */
 @DependsOn(name = "${user_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${support_agents_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${home_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${faq_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${cars_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${booking_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${cognito_user_pool}", resourceType = ResourceType.COGNITO_USER_POOL)
 @LambdaHandler(
 		lambdaName = "api_handler",
@@ -46,8 +44,11 @@ import static com.syndicate.deployment.model.environment.ValueTransformer.USER_P
 @EnvironmentVariables({
 		@EnvironmentVariable(key = "REGION", value = "${region}"),
 		@EnvironmentVariable(key = "USERS_TABLE", value = "${user_table}"),
+		@EnvironmentVariable(key = "SUPPORT_AGENTS_TABLE", value = "${support_agents_table}"),
 		@EnvironmentVariable(key = "HOME_TABLE", value = "${home_table}"),
 		@EnvironmentVariable(key = "FAQ_TABLE", value = "${faq_table}"),
+		@EnvironmentVariable(key = "CARS_TABLE", value = "${cars_table}"),
+		@EnvironmentVariable(key = "BOOKING_TABLE", value = "${booking_table}"),
 		@EnvironmentVariable(key = "COGNITO_ID", value = "${cognito_user_pool}",
 				valueTransformer = USER_POOL_NAME_TO_USER_POOL_ID),
 		@EnvironmentVariable(key = "CLIENT_ID", value = "${cognito_user_pool}",
@@ -55,28 +56,10 @@ import static com.syndicate.deployment.model.environment.ValueTransformer.USER_P
 })
 public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
-	/**
-	 * Represents built and initialized application
-	 */
 	private final CarRentApplication carRentApplication = DaggerCarRentApplication.create();
-
-	/**
-	 * Represents main handler for request events handling
-	 */
 	private final EndpointHandler generalHandler = carRentApplication.getGeneralApiHandler();
-
-	/**
-	 * Represents cors headers map
-	 */
 	private final Map<String, String> corsHeaders = carRentApplication.getCorsHeaders();
 
-	/**
-	 * Entry point, which handles request event from API Gateway.
-	 *
-	 * @param event {@code APIGatewayProxyRequestEvent} requested event for handling
-	 * @param context {@code Context} context of the request
-	 * @return {@code APIGatewayProxyResponseEvent} response to handled request event
-	 */
 	@Override
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent event, Context context) {
 		LoggerService.info("handleRequest started");

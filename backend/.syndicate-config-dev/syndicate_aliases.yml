@@ -6,3 +6,6 @@ user_table: Users
 home_table: Home
 faq_table: Faq
 cognito_user_pool: car_rent_user_pool
+support_agents_table: SupportAgents
+cars_table: Cars
+booking_table: Booking
