@@ -8,10 +8,12 @@
             "logs:CreateLogStream",
             "logs:PutLogEvents",
             "cognito-idp:DescribeUserPool",
+            "cognito-idp:UpdateUserPool",
             "cognito-idp:GetUser",
             "cognito-idp:ListUsers",
             "cognito-idp:AdminCreateUser",
             "cognito-idp:AdminInitiateAuth",
+            "cognito-idp:AdminGetUser",
             "cognito-idp:GetIdentityProviderByIdentifier",
             "cognito-idp:ListUserPools",
             "cognito-idp:ListUserPoolClients",
@@ -58,7 +60,7 @@
       "require_numbers": false
     },
     "client": {
-      "client_name": "client-app",
+      "client_name": "car-rent-app",
       "generate_secret": false,
       "explicit_auth_flows": [
         "ALLOW_ADMIN_USER_PASSWORD_AUTH",
@@ -73,29 +75,41 @@
     "resource_type": "dynamodb_table",
     "hash_key_name": "userId",
     "hash_key_type": "S",
-    "global_indexes": [
-      {
-        "name": "email_index",
-        "index_key_name": "email",
-        "index_key_type": "S"
-      }
-    ],
+    "read_capacity": 25,
+    "write_capacity": 10
+  },
+  "${support_agents_table}": {
+    "resource_type": "dynamodb_table",
+    "hash_key_name": "email",
+    "hash_key_type": "S",
     "read_capacity": 25,
     "write_capacity": 10
   },
   "${home_table}": {
     "resource_type": "dynamodb_table",
-    "hash_key_name": "",
+    "hash_key_name": "id",
     "hash_key_type": "S",
-    "global_indexes": [],
     "read_capacity": 25,
     "write_capacity": 10
   },
   "${faq_table}": {
     "resource_type": "dynamodb_table",
-    "hash_key_name": "",
+    "hash_key_name": "id",
     "hash_key_type": "S",
-    "global_indexes": [],
+    "read_capacity": 25,
+    "write_capacity": 10
+  },
+  "${cars_table}": {
+    "resource_type": "dynamodb_table",
+    "hash_key_name": "carId",
+    "hash_key_type": "S",
+    "read_capacity": 25,
+    "write_capacity": 10
+  },
+  "${booking_table}": {
+    "resource_type": "dynamodb_table",
+    "hash_key_name": "bookingId",
+    "hash_key_type": "S",
     "read_capacity": 25,
     "write_capacity": 10
   },

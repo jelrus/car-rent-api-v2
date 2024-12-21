@@ -23,7 +23,11 @@ public class UtilsModule {
     @Singleton
     @Provides
     Gson provideGson() {
-        return new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        return new GsonBuilder()
+                .setPrettyPrinting()
+                .excludeFieldsWithoutExposeAnnotation()
+                .disableHtmlEscaping()
+                .create();
     }
 
     /**

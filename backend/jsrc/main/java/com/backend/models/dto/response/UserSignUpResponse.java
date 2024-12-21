@@ -1,10 +1,22 @@
 package com.backend.models.dto.response;
 
+import com.google.gson.annotations.Expose;
+
 public class UserSignUpResponse {
+
+    @Expose
     private String accessToken;
+
+    @Expose
     private String role;
+
+    @Expose
     private String userId;
+
+    @Expose
     private String userImageUrl;
+
+    @Expose
     private String username;
 
     public String getAccessToken() {

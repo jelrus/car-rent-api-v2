@@ -1,9 +1,14 @@
-package com.backend.dto;
+package com.backend.models.dto.request;
 
+import com.google.gson.annotations.Expose;
 import org.json.JSONObject;
 
 public class UserSignInRequest {
+
+    @Expose
     private String email;
+
+    @Expose
     private String password;
 
     public UserSignInRequest() {
