@@ -2,7 +2,7 @@ package com.backend.models.dto.response;
 
 import com.google.gson.annotations.Expose;
 
-public class UserSignUpResponse {
+public class UserSignInResponse {
 
     @Expose
     private String accessToken;

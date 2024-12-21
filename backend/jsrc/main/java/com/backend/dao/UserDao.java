@@ -4,8 +4,11 @@ import com.backend.models.table.User;
 
 public interface UserDao {
 
-    void create(User user);
-    User findByUsername(String username);
-    Boolean existsByUsername(String username);
-    Boolean existsByRoleAndUsername(String role, String username);
+    User create(User user);
+
+    User findByUserId(String userId);
+
+    Boolean existsByUserId(String userId);
+
+    Boolean inSupportAgentsList(String email);
 }

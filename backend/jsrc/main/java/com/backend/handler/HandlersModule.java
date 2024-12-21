@@ -1,14 +1,10 @@
 package com.backend.handler;
 
-import com.backend.dao.FaqDao;
-import com.backend.handler.impl.ErrorHandler;
-import com.backend.handler.impl.GeneralHandler;
-import com.backend.handler.impl.home.GetAboutHandler;
-import com.backend.handler.impl.home.GetFaqHandler;
-import com.backend.handler.impl.home.GetFeedbacksHandler;
-import com.backend.handler.impl.home.GetLocationsHandler;
-import com.backend.handler.impl.home.GetPopularCarsHandler;
-import com.backend.service.FaqService;
+import com.backend.handler.impl.*;
+import com.backend.handler.impl.users.PostHandler;
+import com.backend.handler.impl.users.PostLoginHandler;
+import com.backend.service.CognitoService;
+import com.backend.service.UserService;
 import com.google.gson.Gson;
 import dagger.Module;
 import dagger.Provides;
@@ -108,6 +104,9 @@ public class HandlersModule {
     @Singleton
     @Provides
     @IntoMap
+    @StringKey("POST:/v1/users")
+    public EndpointHandler providePostUsersHandler(AuthService authService, Gson gson) {
+        return new PostUsersHandler(authService, gson);
     @StringKey("GET:/v1/home/about-us")
     public EndpointHandler provideAboutHandler() {
         return new GetAboutHandler();
@@ -117,6 +116,9 @@ public class HandlersModule {
     @Singleton
     @Provides
     @IntoMap
+    @StringKey("POST:/v1/users/login")
+    public EndpointHandler provideLoginHandler(AuthService authService, Gson gson) {
+        return new PostUsersLoginHandler(gson, authService);
     @StringKey("GET:/v1/home/faq")
     public EndpointHandler provideFaqHandler(@Named("faqService") FaqService faqService,Gson gson) {
         return new GetFaqHandler(faqService,gson);

@@ -31,6 +31,11 @@ import static com.syndicate.deployment.model.environment.ValueTransformer.USER_P
 @DependsOn(name = "${faq_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${car_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${location_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${support_agents_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${home_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${faq_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${cars_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${booking_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${cognito_user_pool}", resourceType = ResourceType.COGNITO_USER_POOL)
 @LambdaHandler(
 		lambdaName = "api_handler",
@@ -50,6 +55,11 @@ import static com.syndicate.deployment.model.environment.ValueTransformer.USER_P
 @EnvironmentVariables({
 		@EnvironmentVariable(key = "REGION", value = "${region}"),
 		@EnvironmentVariable(key = "USERS_TABLE", value = "${user_table}"),
+		@EnvironmentVariable(key = "SUPPORT_AGENTS_TABLE", value = "${support_agents_table}"),
+		@EnvironmentVariable(key = "HOME_TABLE", value = "${home_table}"),
+		@EnvironmentVariable(key = "FAQ_TABLE", value = "${faq_table}"),
+		@EnvironmentVariable(key = "CARS_TABLE", value = "${cars_table}"),
+		@EnvironmentVariable(key = "BOOKING_TABLE", value = "${booking_table}"),
 		@EnvironmentVariable(key = "FAQ_TABLE", value = "${faq_table}"),
 		@EnvironmentVariable(key = "CARS_TABLE", value = "${car_table}"),
 		@EnvironmentVariable(key = "LOCATIONS_TABLE", value = "${location_table}"),

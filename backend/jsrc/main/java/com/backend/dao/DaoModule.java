@@ -1,8 +1,5 @@
 package com.backend.dao;
 
-import com.backend.dao.impl.FaqDaoImpl;
-import com.backend.dao.impl.LocationDaoImpl;
-import com.backend.dao.impl.PopularCarDaoImpl;
 import dagger.Module;
 import dagger.Provides;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
@@ -18,6 +15,24 @@ public class DaoModule {
     @Provides
     DynamoDbEnhancedClient provideDynamoDbEnhancedClient() {
         return DynamoDbEnhancedClient.builder().dynamoDbClient(DynamoDbClient.create()).build();
+    }
+
+    @Singleton
+    @Provides
+    CognitoIdentityProviderClient provideCognitoIdentityProviderClient() {
+        return CognitoIdentityProviderClient.builder().region(Region.of(Envs.REGION)).build();
+    }
+
+    @Singleton
+    @Provides
+    AuthDao provideAuthDao(CognitoIdentityProviderClient cognitoClient, Gson gson) {
+        return new AuthDaoImpl(cognitoClient, gson);
+    }
+
+    @Singleton
+    @Provides
+    UserDao provideUserDao(DynamoDbEnhancedClient dbClient, Gson gson) {
+        return new UserDaoImpl(dbClient, gson);
     }
 
     @Singleton

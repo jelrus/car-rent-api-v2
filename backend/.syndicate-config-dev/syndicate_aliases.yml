@@ -8,3 +8,6 @@ faq_table: Faq
 car_table: Cars
 location_table: Locations
 cognito_user_pool: car_rent_user_pool
+support_agents_table: SupportAgents
+cars_table: Cars
+booking_table: Booking
