@@ -1,11 +1,11 @@
 package com.backend.dao;
 
-import com.backend.models.table.Faq;
+import com.backend.models.table.FaqEntity;
 
 import java.util.List;
 
 public interface FaqDao {
-    Faq create(Faq faq);
+    FaqEntity create(FaqEntity faq);
 
-    List<Faq> findAll();
+    List<FaqEntity> findAll();
 }

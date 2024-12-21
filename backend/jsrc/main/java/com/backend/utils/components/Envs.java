@@ -24,9 +24,14 @@ public class Envs {
      * Represents Client ID of Cognito Identity Provider
      */
     public static final String CLIENT_ID = System.getenv("CLIENT_ID");
+
     /**
      * Represents DynamoDB table designed for Faq objects
      */
     public static final String FAQ_TABLE = System.getenv("FAQ_TABLE");
 
+    /**
+     * Represents DynamoDB table designed for Car objects
+     */
+    public static final String CARS_TABLE = System.getenv("CARS_TABLE");
 }

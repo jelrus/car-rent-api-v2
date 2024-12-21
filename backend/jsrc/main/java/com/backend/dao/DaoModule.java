@@ -1,7 +1,7 @@
 package com.backend.dao;
 
 import com.backend.dao.impl.FaqDaoImpl;
-import com.google.gson.Gson;
+import com.backend.dao.impl.PopularCarsDaoImpl;
 import dagger.Module;
 import dagger.Provides;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
@@ -18,10 +18,18 @@ public class DaoModule {
     DynamoDbEnhancedClient provideDynamoDbEnhancedClient() {
         return DynamoDbEnhancedClient.builder().dynamoDbClient(DynamoDbClient.create()).build();
     }
+
     @Singleton
     @Provides
     @Named("faqDao")
-    FaqDao provideDFaqDao() {
+    FaqDao provideFaqDao() {
         return new FaqDaoImpl(provideDynamoDbEnhancedClient());
+    }
+
+    @Singleton
+    @Provides
+    @Named("popularCarsDao")
+    PopularCarsDao providePopularCarsDao() {
+        return new PopularCarsDaoImpl(provideDynamoDbEnhancedClient());
     }
 }

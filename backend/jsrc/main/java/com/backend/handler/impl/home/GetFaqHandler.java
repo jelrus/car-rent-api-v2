@@ -20,7 +20,7 @@ public class GetFaqHandler implements EndpointHandler {
 
     @Override
     public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent requestEvent, Context context) {
-        LoggerService.info("PostUsersHandler");
+        LoggerService.info("GetFaqHandler");
         try {
             return new APIGatewayProxyResponseEvent()
                     .withStatusCode(200).withBody(gson.toJson(faqService.findAll()));

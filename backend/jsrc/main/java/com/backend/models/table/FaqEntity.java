@@ -7,7 +7,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbParti
 import java.util.UUID;
 
 @DynamoDbBean
-public class Faq {
+public class FaqEntity {
 
     private String id;
     private String question;
@@ -29,19 +29,19 @@ public class Faq {
         return answer;
     }
 
-    public Faq(String answer, String id, String question) {
+    public FaqEntity(String answer, String id, String question) {
         this.answer = answer;
         this.id = id;
         this.question = question;
     }
 
-    public Faq(String answer, String question) {
+    public FaqEntity(String answer, String question) {
        this.id = UUID.randomUUID().toString();
         this.answer = answer;
         this.question = question;
     }
 
-    public Faq() {
+    public FaqEntity() {
     }
 
     public void setAnswer(String answer) {
@@ -54,5 +54,13 @@ public class Faq {
 
     public void setQuestion(String question) {
         this.question = question;
+    }
+
+    @Override
+    public String toString() {
+        return "FaqEntity{" +
+                "question:'" + question + '\'' +
+                ", answer:'" + answer + '\'' +
+                '}';
     }
 }

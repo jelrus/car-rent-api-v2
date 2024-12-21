@@ -1,5 +1,7 @@
 package com.backend.models.dto.request;
 
+import java.util.stream.DoubleStream;
+
 public class CarBriefInfo {
     private String carId;
     private String carRating;
@@ -32,7 +34,7 @@ public class CarBriefInfo {
         this.carId = carId;
     }
 
-    public String getCarRating() {
+    public String getCarRating(DoubleStream doubles) {
         return carRating;
     }
 

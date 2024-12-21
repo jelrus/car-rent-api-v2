@@ -4,15 +4,16 @@ import com.backend.models.dto.request.CarBriefInfo;
 
 import java.util.List;
 
-public class PopularCarsResponseBody {
+public class PopularCarsResponse {
     private List<CarBriefInfo> content;
 
-    public PopularCarsResponseBody(List<CarBriefInfo> content) {
+    public PopularCarsResponse(List<CarBriefInfo> content) {
         this.content = content;
     }
 
-    public PopularCarsResponseBody() {
+    public PopularCarsResponse() {
     }
+
 
     public List<CarBriefInfo> getContent() {
         return content;
