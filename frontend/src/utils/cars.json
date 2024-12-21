@@ -1,0 +1,38 @@
+[
+  {
+    "carId": "1",
+    "model": "Nissan Z 2024",
+    "pricePerDay": 550,
+    "carRating": 4.8,
+    "location": "Kyiv, Ukraine",
+    "status": "AVAILABLE",
+    "imageUrl": "/assets/imgCars/nissan-z-2024.jpg"
+  },
+  {
+    "carId": "2",
+    "model": "Audi A6 Quattro 2023",
+    "pricePerDay": 180,
+    "carRating": 4.5,
+    "location": "Kyiv, Ukraine",
+    "status": "AVAILABLE",
+    "imageUrl": "/assets/imgCars/audi-a6-quattro-2023.jpg"
+  },
+  {
+    "carId": "3",
+    "model": "Ford Focus 2019",
+    "pricePerDay": 110,
+    "carRating": 4.2,
+    "location": "Kyiv, Ukraine",
+    "status": "AVAILABLE",
+    "imageUrl": "/assets/imgCars/ford-focus-2019.jpg"
+  },
+  {
+    "carId": "4",
+    "model": "Jeep 2020",
+    "pricePerDay": 220,
+    "carRating": 4.6,
+    "location": "Kyiv, Ukraine",
+    "status": "AVAILABLE",
+    "imageUrl": "/assets/imgCars/jeep-2020.jpg"
+  }
+]
