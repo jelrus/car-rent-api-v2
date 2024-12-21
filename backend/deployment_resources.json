@@ -97,6 +97,13 @@
     "read_capacity": 25,
     "write_capacity": 10
   },
+  "${location_table}": {
+    "resource_type": "dynamodb_table",
+    "hash_key_name": "locationId",
+    "hash_key_type": "S",
+    "read_capacity": 25,
+    "write_capacity": 10
+  },
   "car_rent_api_gateway": {
     "resource_type": "api_gateway",
     "deploy_stage": "api",
