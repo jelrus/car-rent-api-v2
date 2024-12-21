@@ -9,9 +9,10 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbParti
 public class User {
 
     private String userId;
-    private String username;
-    private UserRole userRole;
+    private String firstName;
+    private String lastName;
     private String imageUrl;
+    private UserRole role;
 
     @DynamoDbPartitionKey
     @DynamoDbAttribute("userId")
@@ -19,18 +20,43 @@ public class User {
         return userId;
     }
 
-    @DynamoDbAttribute("username")
-    public String getUsername() {
-        return username;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    @DynamoDbAttribute("userRole")
-    public String getUserRole() {
-        return userRole.getRole();
+    @DynamoDbAttribute("firstName")
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    @DynamoDbAttribute("lastName")
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     @DynamoDbAttribute("imageUrl")
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    @DynamoDbAttribute("role")
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 }

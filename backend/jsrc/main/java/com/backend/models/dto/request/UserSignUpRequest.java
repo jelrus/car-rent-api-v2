@@ -1,9 +1,19 @@
 package com.backend.models.dto.request;
 
+import com.google.gson.annotations.Expose;
+
 public class UserSignUpRequest {
+
+    @Expose
     private String firstName;
+
+    @Expose
     private String lastName;
+
+    @Expose
     private String email;
+
+    @Expose
     private String password;
 
     public String getFirstName() {
