@@ -27,7 +27,7 @@ const LogInForm = () => {
         />
       </div>
 
-      <Button text='Login' />
+      <Button text='Login' type='primary' />
       <p className='create-account-page'>
         New here? <a href='#'>Create an account</a>
       </p>
