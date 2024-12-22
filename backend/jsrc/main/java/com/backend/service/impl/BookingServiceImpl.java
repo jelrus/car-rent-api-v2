@@ -18,6 +18,10 @@ import java.util.stream.Stream;
 import static com.backend.utils.services.CustomDateTimeFormatter.convertDateTimeToDate;
 import static com.backend.utils.services.CustomDateTimeFormatter.formatter;
 
+/**
+ * Service layer implementation for handling booking-related operations.
+ * This includes creating, retrieving, and managing bookings.
+ */
 public class BookingServiceImpl implements BookingService {
 
     private final BookingDao bookingDao;
@@ -30,6 +34,12 @@ public class BookingServiceImpl implements BookingService {
         this.gson = gson;
     }
 
+    /**
+     * Creates a booking and returns a confirmation message.
+     *
+     * @param booking The booking details to be created.
+     * @return A confirmation message detailing the booking.
+     */
     @Override
     public String create(Booking booking) {
 
@@ -51,20 +61,29 @@ public class BookingServiceImpl implements BookingService {
                 " (" +
                 convertDateTimeToDate(response.getBookingDateTime()) +
                 ")";
-        LoggerService.info("[BookingServiceImpl | create] Message {}", message);
+        LoggerService.info("[BookingServiceImpl | create] Booking created successfully. Message {}", message);
 
         return message;
     }
 
     @Override
     public String update(BookCarRequest request) {
-        return "";
+        throw new UnsupportedOperationException("Update operation is not supported yet.");
     }
 
     @Override
     public void delete(String bookingId) {
+        throw new UnsupportedOperationException("Delete operation is not supported yet.");
     }
 
+    /**
+     * Retrieves a list of booking information for a given client ID.
+     * This method first checks if the user associated with the provided client ID exists.
+     * If the user exists, it fetches all bookings made by this user.
+     *
+     * @param clientId The unique identifier of the client whose bookings are to be retrieved.
+     * @return A list of BookingInfo objects containing details of each booking.
+     */
     @Override
     public List<BookingInfo> getBookingsByClientId(String clientId) {
         LoggerService.info("[BookingServiceImpl | getBookingsByClientId] Getting booking by clientId = {}", clientId);
@@ -81,15 +100,23 @@ public class BookingServiceImpl implements BookingService {
         return response;
     }
 
+    /**
+     * Retrieves a list of all dates on which a specific car is booked.
+     * This method fetches all bookings for the given car ID and calculates the range of dates
+     * for each booking period.
+     *
+     * @param carId The unique identifier of the car for which booked dates are to be retrieved.
+     * @return A sorted list of dates (as strings in ISO format) on which the car is booked.
+     */
     @Override
     public List<String> getCarBookedDates(String carId) {
         List<String> response = new ArrayList<>();
         LoggerService.info("[BookingServiceImpl | getBookingsByCarId] Getting bookings by carId = {}", carId);
 
-        // getting bookings by given carId
+        // get bookings by given carId
         List<Booking> bookingList = bookingDao.getCarBookedDates(carId);
 
-        // creating list of booked dates
+        // create list of booked dates
         bookingList.forEach(b -> {
             LocalDate startDate = LocalDateTime.parse(b.getPickupDateTime(), formatter).toLocalDate();
             LocalDate endDate = LocalDateTime.parse(b.getDropOffDateTime(), formatter).toLocalDate();
@@ -98,18 +125,21 @@ public class BookingServiceImpl implements BookingService {
                     .iterate(startDate, date -> !date.isAfter(endDate), date -> date.plusDays(1))
                     .map(LocalDate::toString)
                     .toList();
-
-            LoggerService.info("[BookingServiceImpl | getBookingsByCarId] List of dates between {} and {} = {}",
-                    startDate, endDate, gson.toJson(dateList));
-
             response.addAll(dateList);
         });
+
         LoggerService.info("[BookingServiceImpl | getBookingsByCarId] Created list of booked dates of car carId = {} is {}",
                 carId, gson.toJson(response));
 
         return response.stream().sorted().toList();
     }
 
+    /**
+     * Converts a Booking object into a BookingInfo object.
+     *
+     * @param booking The Booking object to be converted.
+     * @return A BookingInfo object containing simplified and formatted booking details.
+     */
     private BookingInfo convertToBookingInfo(Booking booking) {
         LoggerService.info("[BookingServiceImpl | convertToBookingInfo] Converting Booking to BookingInfo {}",
                 gson.toJson(booking));
@@ -121,7 +151,8 @@ public class BookingServiceImpl implements BookingService {
         bookingInfo.setCarModel(booking.getCarModel());
         bookingInfo.setOrderDetails("#" + booking.getBookingId() + " (" + convertDateTimeToDate(booking.getBookingDateTime()) + ")");
 
-        LoggerService.info("[BookingServiceImpl | convertToBooking] Converted booking {}", gson.toJson(bookingInfo));
+        LoggerService.info("[BookingServiceImpl | convertToBooking] Successfully converted booking to BookingInfo: {}",
+                gson.toJson(bookingInfo));
         return bookingInfo;
     }
 }

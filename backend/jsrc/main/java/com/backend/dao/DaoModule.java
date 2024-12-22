@@ -1,8 +1,6 @@
 package com.backend.dao;
 
-import com.backend.dao.impl.AuthDaoImpl;
-import com.backend.dao.impl.BookingDaoImpl;
-import com.backend.dao.impl.UserDaoImpl;
+import com.backend.dao.impl.*;
 import com.backend.utils.properties.Envs;
 import com.google.gson.Gson;
 import dagger.Module;
@@ -45,5 +43,17 @@ public class DaoModule {
     @Provides
     BookingDao provideBookingDao(DynamoDbEnhancedClient dbClient, Gson gson) {
         return new BookingDaoImpl(dbClient, gson);
+    }
+
+    @Singleton
+    @Provides
+    CarDao provideCarDao(DynamoDbEnhancedClient dbClient, Gson gson) {
+        return new CarDaoImpl(dbClient, gson);
+    }
+
+    @Singleton
+    @Provides
+    PopularCarDao providePopularCarDao() {
+        return new PopularCarDaoImpl(provideDynamoDbEnhancedClient());
     }
 }
