@@ -41,9 +41,9 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findByUserId(String id) {
-        LoggerService.info("[UserDao | Find By Id] Finding table id...");
+        LoggerService.info("[UserDao | Find By Id] Finding user id...");
         User user = usersTable.getItem(i -> i.key(Key.builder().partitionValue(id).build()));
-        LoggerService.info("[UserDao | Find By Id] Exiting table find by id method with result {}",
+        LoggerService.info("[UserDao | Find By Id] Exiting user find by id method with result {}",
                 gson.toJson(user));
 
         return user;

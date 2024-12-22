@@ -21,16 +21,24 @@ public class GetBookingsByIdHandler implements EndpointHandler {
 
     @Override
     public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent requestEvent, Context context) {
-        String clientId = requestEvent.getPathParameters().get("clientId");
-        LoggerService.info("[GetBookingsByIdHandler | handle] Handling GET request with path '/v1/bookings/{}",
-                clientId);
+        try {
+            String clientId = requestEvent.getPathParameters().get("clientId");
+            LoggerService.info("[GetBookingsByIdHandler | handle] Handling GET request with path '/v1/bookings/{}",
+                    clientId);
 
-        BookingsResponse response = new BookingsResponse();
-        response.setContent(bookingService.getBookingsByClientId(clientId));
 
-        LoggerService.info("[GetBookingsByIdHandler | handle] Response = {}", gson.toJson(response));
+            BookingsResponse response = new BookingsResponse();
+            response.setContent(bookingService.getBookingsByClientId(clientId));
 
-        return new APIGatewayProxyResponseEvent().withStatusCode(200).withBody(gson.toJson(response));
+            LoggerService.info("[GetBookingsByIdHandler | handle] Response = {}", gson.toJson(response));
+
+            return new APIGatewayProxyResponseEvent().withStatusCode(200).withBody(gson.toJson(response));
+
+        } catch  (Exception exception){
+            LoggerService.error(exception.getMessage());
+            return new APIGatewayProxyResponseEvent()
+                    .withStatusCode(400)
+                    .withBody(exception.getMessage());
+        }
     }
-
 }

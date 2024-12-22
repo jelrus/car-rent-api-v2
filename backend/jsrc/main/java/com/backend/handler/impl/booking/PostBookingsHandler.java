@@ -3,10 +3,12 @@ package com.backend.handler.impl.booking;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import com.backend.exception.CarNotAvailableException;
 import com.backend.handler.EndpointHandler;
 import com.backend.models.dto.request.BookCarRequest;
 import com.backend.models.dto.response.BookCarResponse;
 import com.backend.models.table.Booking;
+import com.backend.models.table.CarEntity;
 import com.backend.models.table.User;
 import com.backend.models.table.types.BookingStatus;
 import com.backend.models.table.types.UserRole;
@@ -14,12 +16,14 @@ import com.backend.service.BookingService;
 import com.backend.service.CarService;
 import com.backend.service.UserService;
 import com.backend.utils.services.LoggerService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
+import static com.backend.utils.services.CustomDateTimeFormatter.convertDateTimeToDate;
 import static com.backend.utils.services.CustomDateTimeFormatter.formatter;
 
 public class PostBookingsHandler implements EndpointHandler {
@@ -28,7 +32,6 @@ public class PostBookingsHandler implements EndpointHandler {
     private final UserService userService;
     private final CarService carService;
     private final Gson gson;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public PostBookingsHandler(BookingService bookingService, UserService userService, CarService carService, Gson gson) {
         this.bookingService = bookingService;
@@ -41,64 +44,33 @@ public class PostBookingsHandler implements EndpointHandler {
     public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent requestEvent, Context context) {
         LoggerService.info("[PostBookingsHandler | handle] Handling POST request with path '/v1/bookings' {}",
                 gson.toJson(requestEvent));
-        try {
+        BookCarResponse response = new BookCarResponse();
 
+        try {
+            // converting request body to BookCarRequest
             BookCarRequest request = gson.fromJson(requestEvent.getBody(), BookCarRequest.class);
             LoggerService.info("[PostBookingsHandler | handle] Booking request converted from requestEvent body {}",
                     gson.toJson(request));
 
-            BookCarResponse response = new BookCarResponse();
+            // getting user by userId and setting booking status
             String status = BookingStatus.RESERVED.getStatus();
-            try {
-                User user = userService.findByUserId(request.getClientId());
-                LoggerService.info("[PostBookingsHandler | handle] Found user {}", gson.toJson(user));
 
-                if (user.getRole().equals(UserRole.SUPPORT_AGENT)){
-                    status = BookingStatus.RESERVED_BY_SUPPORT_AGENT.getStatus();
-                }
-                LoggerService.info("[PostBookingsHandler | handle] Status of booking {}", status);
+            User user = userService.findByUserId(request.getClientId());
+            LoggerService.info("[PostBookingsHandler | handle] Found user {}", gson.toJson(user));
 
-            } catch (Exception e) {
-                return new APIGatewayProxyResponseEvent().withStatusCode(400).withBody("User must sign in first");
+            if (user.getRole().equals(UserRole.SUPPORT_AGENT)){
+                status = BookingStatus.RESERVED_BY_SUPPORT_AGENT.getStatus();
             }
+            LoggerService.info("[PostBookingsHandler | handle] Status of booking {}", status);
 
-            // 2. check car available
-            // if not response 400 with "Car is not available"
+            // fetching car
+            CarEntity car = carService.findByCarId(request.getCarId());
+            LoggerService.info("[PostBookingsHandler | handle] Car found {}", gson.toJson(car));
 
-            // 3. make reservation in table Booking
+            // checking if car available
+            checkCarAvailable(request);
 
-            // message:
-            //  "New booking was successfully created.
-            //  Audi A6 Quattro 2023 is booked for Nov 11 - Nov 16
-            //  You can change booking details until 10:30PM 10 Nov.
-            //  Your order: #2437 (08.06.24)"
-
-            // template:
-            //  "New booking was successfully created.
-            //  <carModel> is booked for <pickupDate> - <dropOffDate>
-            //  You can change booking details until <pickupDateTime - 12H>.
-            //  Your order: <bookingId> (<bookingDate>)"
-
-            // fields in table Booking:
-            // - bookingId
-            // - bookingDateTime
-            // - carId
-            // - carModel
-            // - carImageUrl
-            // - clientId
-            // - status
-            // - dropOffDateTime;
-            // - dropOffLocationId;
-            // - pickupDateTime;
-            // - pickupLocationId
-
-            // fields in table Cars:
-            // - carId
-            // - carModel
-            // - carImageUrl
-
-
-            String message = bookingService.create(convertToBooking(request, status));
+            String message = bookingService.create(convertToBooking(request, car, status));
 
             response.setMessage(message);
             LoggerService.info("[PostBookingsHandler | handle] Response message {}", message);
@@ -113,8 +85,8 @@ public class PostBookingsHandler implements EndpointHandler {
         }
     }
 
-    private Booking convertToBooking(BookCarRequest request, String status) {
-        LoggerService.info("[BookingServiceImpl | convertToBooking] Converting booking from request {}", gson.toJson(request));
+    private Booking convertToBooking(BookCarRequest request, CarEntity car, String status) {
+        LoggerService.info("[PostBookingsHandler | convertToBooking] Converting booking from request {}", gson.toJson(request));
         Booking booking = new Booking();
         booking.setBookingId(UUID.randomUUID().toString());
         booking.setCarId(request.getCarId());
@@ -123,13 +95,26 @@ public class PostBookingsHandler implements EndpointHandler {
         booking.setDropOffLocationId(request.getDropOffLocationId());
         booking.setPickupDateTime(request.getPickupDateTime());
         booking.setPickupLocationId(request.getPickupLocationId());
-        booking.setCarModel("Audi");
+        booking.setCarModel(car.getModel());
         booking.setBookingDateTime(LocalDateTime.now().format(formatter));
         booking.setStatus(status);
-        booking.setCarImageUrl("asdfasdf");
+        booking.setCarImageUrl(car.getImageUrl());
 
-        LoggerService.info("[BookingServiceImpl | convertToBooking] Converted booking {}", gson.toJson(booking));
+        LoggerService.info("[PostBookingsHandler | convertToBooking] Converted booking {}", gson.toJson(booking));
         return booking;
+    }
+
+    private void checkCarAvailable(BookCarRequest request){
+        List<String> bookedDates = bookingService.getCarBookedDates(request.getCarId());
+        LocalDate endDate = LocalDate.parse(convertDateTimeToDate(request.getDropOffDateTime()));
+        LocalDate startDate = LocalDate.parse(convertDateTimeToDate(request.getPickupDateTime()));
+        boolean isAvailable = bookedDates.stream()
+                .allMatch(d -> LocalDate.parse(d).isBefore(startDate) || LocalDate.parse(d).isAfter(endDate));
+        LoggerService.info("[PostBookingsHandler | checkCarAvailable] Car available: {}", isAvailable);
+
+        if (!isAvailable) {
+            throw new CarNotAvailableException("The car is not available.");
+        }
     }
 
 }

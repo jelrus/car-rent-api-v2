@@ -2,6 +2,7 @@ package com.backend.service;
 
 import com.backend.dao.AuthDao;
 import com.backend.dao.BookingDao;
+import com.backend.dao.CarDao;
 import com.backend.dao.UserDao;
 import com.backend.service.impl.AuthServiceImpl;
 import com.backend.service.impl.BookingServiceImpl;
@@ -31,13 +32,15 @@ public class ServiceModule {
 
     @Singleton
     @Provides
-    BookingService provideBookingService(BookingDao bookingDao, Gson gson) {
-        return new BookingServiceImpl(bookingDao, gson);
+    BookingService provideBookingService(BookingDao bookingDao, UserService userService, Gson gson) {
+        return new BookingServiceImpl(bookingDao, userService, gson);
     }
 
     @Singleton
     @Provides
-    CarService provideCarService() {
-        return new CarServiceImpl();
+    CarService provideCarService(CarDao carDao, Gson gson) {
+        return new CarServiceImpl(carDao, gson);
     }
+
+
 }
