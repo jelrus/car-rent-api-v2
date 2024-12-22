@@ -28,7 +28,7 @@ public class GetBookingsByIdHandler implements EndpointHandler {
         BookingsResponse response = new BookingsResponse();
         response.setContent(bookingService.getBookingsByClientId(clientId));
 
-        LoggerService.info("response = {}", response);
+        LoggerService.info("[GetBookingsByIdHandler | handle] Response = {}", gson.toJson(response));
 
         return new APIGatewayProxyResponseEvent().withStatusCode(200).withBody(gson.toJson(response));
     }

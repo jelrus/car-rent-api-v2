@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static com.backend.utils.services.CustomDateTimeFormatter.convertDateTimeToDate;
 import static com.backend.utils.services.CustomDateTimeFormatter.formatter;
 
 public class BookingServiceImpl implements BookingService {
@@ -59,18 +60,19 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingInfo> getBookingsByClientId(String clientId) {
-        LoggerService.info("getBookingsByClientId");
-        List<BookingInfo> bookingInfoList = new ArrayList<>();
-        BookingInfo info = new BookingInfo();
-        info.setBookingId("clientId = " + clientId);
-        info.setOrderDetails("OrderDetails");
-        bookingInfoList.add(info);
-        return bookingInfoList;
+        LoggerService.info("[BookingServiceImpl | getBookingsByClientId] Getting booking by clientId = {}", clientId);
+
+        List<BookingInfo> response = bookingDao.getBookingsByClientId(clientId).stream()
+                .map(this::convertToBookingInfo)
+                .toList();
+
+        LoggerService.info("[BookingServiceImpl | getBookingsByClientId] Getting booking by clientId = {}", clientId);
+        return response;
     }
 
     @Override
     public List<String> getCarBookedDates(String carId) {
-        LoggerService.info("[BookingServiceImpl | getBookingsByCarId] Getting bookings by car id = {}", carId);
+        LoggerService.info("[BookingServiceImpl | getBookingsByCarId] Getting bookings by carId = {}", carId);
         List<Booking> bookingList = bookingDao.getCarBookedDates(carId);
         List<String> response = new ArrayList<>();
 
@@ -111,5 +113,20 @@ public class BookingServiceImpl implements BookingService {
 
         LoggerService.info("[BookingServiceImpl | convertToBooking] Converted booking {}", gson.toJson(booking));
         return booking;
+    }
+
+    private BookingInfo convertToBookingInfo(Booking booking) {
+        LoggerService.info("[BookingServiceImpl | convertToBookingInfo] Converting Booking to BookingInfo {}",
+                gson.toJson(booking));
+
+        BookingInfo bookingInfo = new BookingInfo();
+        bookingInfo.setBookingId(booking.getBookingId());
+        bookingInfo.setBookingStatus(booking.getStatus());
+        bookingInfo.setCarImageUrl(booking.getCarImageUrl());
+        bookingInfo.setCarModel(booking.getCarModel());
+        bookingInfo.setOrderDetails("#" + booking.getBookingId() + " (" + convertDateTimeToDate(booking.getBookingDateTime()) + ")");
+
+        LoggerService.info("[BookingServiceImpl | convertToBooking] Converted booking {}", gson.toJson(bookingInfo));
+        return bookingInfo;
     }
 }

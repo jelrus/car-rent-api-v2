@@ -1,5 +1,6 @@
 package com.backend.utils.services;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -8,4 +9,8 @@ import java.time.format.DateTimeFormatter;
 public class CustomDateTimeFormatter {
 
     public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+    public static String convertDateTimeToDate(String dateTimeString) {
+        return LocalDateTime.parse(dateTimeString, formatter).toLocalDate().toString();
+    }
 }

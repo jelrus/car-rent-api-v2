@@ -10,4 +10,6 @@ public interface BookingDao {
 
     List<Booking> getCarBookedDates(String carId);
 
+    List<Booking> getBookingsByClientId(String clientId);
+
 }

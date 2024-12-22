@@ -62,4 +62,27 @@ public class BookingDaoImpl implements BookingDao {
 
         return bookingList;
     }
+
+    @Override
+    public List<Booking> getBookingsByClientId(String clientId) {
+        LoggerService.info("[BookingDao | getBookingsByClientId] Getting bookings by clientId = {}", clientId);
+
+        Map<String, AttributeValue> expressionValues =
+                Map.of(":clientIdValue", AttributeValue.builder().s(clientId).build());
+
+        ScanEnhancedRequest request = ScanEnhancedRequest.builder()
+                .consistentRead(true)
+                .filterExpression(Expression.builder()
+                        .expression("clientId = :clientIdValue")
+                        .expressionValues(expressionValues)
+                        .build())
+                .build();
+        LoggerService.info("[BookingDao | getBookingsByClientId] Scan request created {}", gson.toJson(expressionValues));
+
+        List<Booking> bookingList = new ArrayList<>();
+        bookingTable.scan(request).items().forEach(bookingList::add);
+        LoggerService.info("[BookingDao | getBookingsByClientId] List of bookings: {}", gson.toJson(bookingList));
+
+        return bookingList;
+    }
 }
