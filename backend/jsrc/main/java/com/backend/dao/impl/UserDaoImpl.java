@@ -3,6 +3,7 @@ package com.backend.dao.impl;
 import com.backend.dao.UserDao;
 import com.backend.models.table.SupportAgent;
 import com.backend.models.table.User;
+import com.backend.models.table.types.UserRole;
 import com.backend.utils.properties.Envs;
 import com.backend.utils.services.LoggerService;
 import com.google.gson.Gson;
@@ -14,18 +15,46 @@ import software.amazon.awssdk.enhanced.dynamodb.model.PutItemEnhancedRequest;
 
 import java.util.Optional;
 
+/**
+ * UserDaoImpl is the implementation of UserDao interface, interacts directly with DynamoDB tables related to User
+ * entity, serves as mediator between DynamoDB Client and service layers.
+ */
 public class UserDaoImpl implements UserDao {
 
+    /**
+     * Provides DynamoDbTable Users table.
+     */
     private final DynamoDbTable<User> usersTable;
+
+    /**
+     * Provides DynamoDbTable SupportAgents table.
+     */
     private final DynamoDbTable<SupportAgent> supportAgentsTable;
+
+    /**
+     * Provides Gson for mapping objects into JSON format.
+     */
     private final Gson gson;
 
+    /**
+     * Constructs UserDaoImpl object with injected Cognito IDP Client and Gson, initiated Users and SupportAgents
+     * table schema loading from entity classes correspondingly.
+     *
+     * @param dbClient {@code DynamoDbEnhancedClient} injected DynamoDb Client
+     * @param gson {@code Gson} injected Gson
+     */
     public UserDaoImpl(DynamoDbEnhancedClient dbClient, Gson gson) {
         this.usersTable = dbClient.table(Envs.USERS_TABLE, TableSchema.fromClass(User.class));
         this.supportAgentsTable = dbClient.table(Envs.SUPPORT_AGENTS_TABLE, TableSchema.fromClass(SupportAgent.class));
         this.gson = gson;
     }
 
+    /**
+     * Creates User entity in DynamoDB Users table.
+     *
+     * @param user {@code User} requested for creation User entity in DynamoDB Users table
+     * @return {@code User} created User entity in DynamoDB Users table
+     */
     @Override
     public User create(User user) {
         LoggerService.info("[UserDao | Create] Creating user request from {}", gson.toJson(user));
@@ -39,6 +68,12 @@ public class UserDaoImpl implements UserDao {
         return user;
     }
 
+    /**
+     * Finds User by id in DynamoDB Users table.
+     *
+     * @param id {@code String} requested id in UUID v4 format
+     * @return {@code User} found User entity in DynamoDB Users table
+     */
     @Override
     public User findByUserId(String id) {
         LoggerService.info("[UserDao | Find By Id] Finding table id...");
@@ -49,6 +84,12 @@ public class UserDaoImpl implements UserDao {
         return user;
     }
 
+    /**
+     * Checks if User is present by id in DynamoDB Users table.
+     *
+     * @param userId {@code String} requested id in UUID v4 format
+     * @return {@code Boolean} result of existence check from DynamoDB Users table
+     */
     @Override
     public Boolean existsByUserId(String userId) {
         Key userKey = Key.builder().partitionValue(userId).build();
@@ -61,6 +102,12 @@ public class UserDaoImpl implements UserDao {
         return userExists;
     }
 
+    /**
+     * Checks if User role is present in DynamoDB SupportAgents table.
+     *
+     * @param email {@code String} requested email
+     * @return {@code Boolean} result of existence check from DynamoDB SupportAgents table
+     */
     @Override
     public Boolean inSupportAgentsList(String email) {
         Key saKey = Key.builder().partitionValue(email).build();
@@ -71,5 +118,17 @@ public class UserDaoImpl implements UserDao {
                         "{} is {}", email, saExists);
 
         return saExists;
+    }
+
+    /**
+     * Resolves User role based on presence in DynamoDB SupportAgents table.
+     *
+     * @param email {@code String} requested email
+     * @return {@code UserRole} resolved User role
+     */
+    @Override
+    public UserRole getRole(String email) {
+        LoggerService.info("[UserDao | Get Role] Attempting to get role for email = {}", email);
+        return inSupportAgentsList(email) ? (UserRole.SUPPORT_AGENT) : UserRole.CLIENT;
     }
 }

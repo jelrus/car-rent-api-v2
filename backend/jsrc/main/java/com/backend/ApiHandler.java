@@ -77,26 +77,27 @@ import static com.syndicate.deployment.model.environment.ValueTransformer.USER_P
 public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
 	/**
-	 * Represents built and initialized application
+	 * Initialised Car Rent Application.
 	 */
 	private final CarRentApplication carRentApplication = DaggerCarRentApplication.create();
 
 	/**
-	 * Represents main handler for request events handling
+	 * Initialised General endpoint handler.
 	 */
 	private final EndpointHandler generalHandler = carRentApplication.getGeneralApiHandler();
 
 	/**
-	 * Represents cors headers map
+	 * Initialised CORS headers.
 	 */
 	private final Map<String, String> corsHeaders = carRentApplication.getCorsHeaders();
 
 	/**
-	 * Entry point, which handles request event from API Gateway.
+	 * Main execution method, entry point for Lambda function execution, catches request from API Gateway and
+	 * forwards it to General handler for resolution.
 	 *
-	 * @param event {@code APIGatewayProxyRequestEvent} requested event for handling
-	 * @param context {@code Context} context of the request
-	 * @return {@code APIGatewayProxyResponseEvent} response to handled request event
+	 * @param event {@code APIGatewayProxyRequestEvent} caught APIGatewayProxyRequestEvent
+	 * @param context {@code Context} Lambda executable context
+	 * @return {@code APIGatewayProxyResponseEvent} response as the result of handling request
 	 */
 	@Override
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent event, Context context) {

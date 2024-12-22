@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Login response payload",
+  "properties": {
+    "accessToken": {
+      "type": "string",
+      "description": "User access token (jwt)",
+      "pattern": "^(?!\\s*$).+",
+      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDdhYzEwYi01OGNjLTQzNzItYTU2Ny0wZTAyYjJjM2Q0NzkiLCJuYW1lIjoiSm9obiBTbWl0aCIsImlhdCI6MTUxNjIzOTAyMn0.uDZewMhPPSmImx1e6g4Vf0zsJXyOJlAT8AKcerZitiw"
+    },
+    "role": {
+      "type": "string",
+      "description": "User role",
+      "enum": [
+        "Client",
+        "Support Agent",
+        "Admin"
+      ],
+      "pattern": "^(?!\\s*$).+",
+      "example": "Client"
+    },
+    "userId": {
+      "type": "string",
+      "description": "User id",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    },
+    "userImageUrl": {
+      "type": "string",
+      "description": "User image url",
+      "example": "https://application.s3.eu-central-1.amazonaws.com/img/users/f47ac10b-58cc-4372-a567-0e02b2c3d479.png"
+    },
+    "username": {
+      "type": "string",
+      "description": "User name",
+      "pattern": "^(?!\\s)(?!.*\\s{2,})(?!.*-{2,})[A-Za-z]+([ -][A-Za-z]+)*$",
+      "minLength": 3,
+      "example": "John Smith"
+    }
+  }
+}
