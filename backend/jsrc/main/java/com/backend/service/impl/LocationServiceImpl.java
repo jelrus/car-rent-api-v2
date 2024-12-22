@@ -12,11 +12,12 @@ import java.util.List;
 public class LocationServiceImpl implements LocationService {
 
     private final LocationDao locationDao;
+    private final LocationMapper locationMapper;
 
-    public LocationServiceImpl(LocationDao locationDao) {
+    public LocationServiceImpl(LocationDao locationDao, LocationMapper locationMapper) {
         this.locationDao = locationDao;
+        this.locationMapper = locationMapper;
     }
-
 
     @Override
     public LocationResponse findAll() {
@@ -24,8 +25,7 @@ public class LocationServiceImpl implements LocationService {
 
         locationDao.findAll()
                 .forEach(locationEntity ->
-                        rsl.add(LocationMapper.locationEntityToLocationInfo(locationEntity)));
-
+                        rsl.add(locationMapper.locationEntityToLocationInfo(locationEntity)));
         return new LocationResponse(rsl);
     }
 }

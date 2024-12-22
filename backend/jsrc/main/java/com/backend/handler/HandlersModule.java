@@ -1,10 +1,17 @@
 package com.backend.handler;
 
-import com.backend.handler.impl.*;
-import com.backend.handler.impl.users.PostHandler;
-import com.backend.handler.impl.users.PostLoginHandler;
-import com.backend.service.CognitoService;
-import com.backend.service.UserService;
+import com.backend.handler.impl.ErrorHandler;
+import com.backend.handler.impl.GeneralHandler;
+import com.backend.handler.impl.home.GetAboutHandler;
+import com.backend.handler.impl.home.GetFaqHandler;
+import com.backend.handler.impl.home.GetFeedbacksHandler;
+import com.backend.handler.impl.home.GetLocationsHandler;
+import com.backend.handler.impl.home.GetPopularCarsHandler;
+import com.backend.service.AboutService;
+import com.backend.service.FaqService;
+import com.backend.service.FeedbackService;
+import com.backend.service.LocationService;
+import com.backend.service.PopularCarService;
 import com.google.gson.Gson;
 import dagger.Module;
 import dagger.Provides;
@@ -25,7 +32,7 @@ public class HandlersModule {
     @Named("general")
     public EndpointHandler provideGeneralHandler(
             @Named("error") EndpointHandler notFoundHandler,
-         Map<String, EndpointHandler> handlerMap) {
+            Map<String, EndpointHandler> handlerMap) {
         return new GeneralHandler(notFoundHandler, handlerMap);
     }
 
@@ -104,24 +111,18 @@ public class HandlersModule {
     @Singleton
     @Provides
     @IntoMap
-    @StringKey("POST:/v1/users")
-    public EndpointHandler providePostUsersHandler(AuthService authService, Gson gson) {
-        return new PostUsersHandler(authService, gson);
     @StringKey("GET:/v1/home/about-us")
-    public EndpointHandler provideAboutHandler() {
-        return new GetAboutHandler();
+    public EndpointHandler provideAboutHandler(@Named("aboutService") AboutService aboutService) {
+        return new GetAboutHandler(aboutService);
     }
 
 
     @Singleton
     @Provides
     @IntoMap
-    @StringKey("POST:/v1/users/login")
-    public EndpointHandler provideLoginHandler(AuthService authService, Gson gson) {
-        return new PostUsersLoginHandler(gson, authService);
     @StringKey("GET:/v1/home/faq")
-    public EndpointHandler provideFaqHandler(@Named("faqService") FaqService faqService,Gson gson) {
-        return new GetFaqHandler(faqService,gson);
+    public EndpointHandler provideFaqHandler(@Named("faqService") FaqService faqService) {
+        return new GetFaqHandler(faqService);
     }
 
 
@@ -129,8 +130,8 @@ public class HandlersModule {
     @Provides
     @IntoMap
     @StringKey("GET:/v1/home/feedbacks")
-    public EndpointHandler provideFeedbacksHandler() {
-        return new GetFeedbacksHandler();
+    public EndpointHandler provideFeedbacksHandler(@Named("feedbackService") FeedbackService feedbackService) {
+        return new GetFeedbacksHandler(feedbackService);
     }
 
 
@@ -138,18 +139,17 @@ public class HandlersModule {
     @Provides
     @IntoMap
     @StringKey("GET:/v1/home/locations")
-    public EndpointHandler provideLocationsHandler() {
-        return new GetLocationsHandler();
+    public EndpointHandler provideLocationsHandler(@Named("locationService") LocationService locationService) {
+        return new GetLocationsHandler(locationService);
     }
 
     @Singleton
     @Provides
     @IntoMap
     @StringKey("GET:/v1/home/popular-cars")
-    public EndpointHandler providePopularCarsHandler() {
-        return new GetPopularCarsHandler();
+    public EndpointHandler providePopularCarsHandler(@Named("popularCarService") PopularCarService popularCarService ) {
+        return new GetPopularCarsHandler(popularCarService);
     }
-
 
 }
 

@@ -89,4 +89,18 @@ public class CarBriefInfo {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "CarBriefInfo{" +
+                "carId='" + carId + '\'' +
+                ", carRating='" + carRating + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", location='" + location + '\'' +
+                ", model='" + model + '\'' +
+                ", pricePerDay='" + pricePerDay + '\'' +
+                ", serviceRating='" + serviceRating + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

@@ -16,12 +16,11 @@ import java.util.Objects;
 
 public class GetPopularCarsHandler implements EndpointHandler {
 
-    private final Gson gson;
+    private final Gson gson = new Gson();
     private final PopularCarService popularCarsService;
     private static final String DEFAULT_CATEGORY = CarCategory.BUSINESS.getCategory();
 
-    public GetPopularCarsHandler(PopularCarService popularCarsService, Gson gson) {
-        this.gson = gson;
+    public GetPopularCarsHandler(PopularCarService popularCarsService) {
         this.popularCarsService = popularCarsService;
     }
 
@@ -37,7 +36,6 @@ public class GetPopularCarsHandler implements EndpointHandler {
             PopularCarResponse allByCategory = popularCarsService.findAllByCategory(
                     CarCategory.valueOf(
                             queryStringParameters.getOrDefault("category", DEFAULT_CATEGORY).toUpperCase()));
-
             return new APIGatewayProxyResponseEvent()
                     .withStatusCode(200)
                     .withBody(gson.toJson(allByCategory));

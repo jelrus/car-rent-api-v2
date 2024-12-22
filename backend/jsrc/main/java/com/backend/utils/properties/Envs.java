@@ -49,4 +49,8 @@ public class Envs {
      * Represents Cognito IDP Client ID.
      */
     public static final String CLIENT_ID = System.getenv("CLIENT_ID");
+    public static final String ABOUT_TABLE = System.getenv("ABOUT_TABLE");
+    public static final String FEEDBACK_TABLE = System.getenv("FEEDBACK_TABLE");
+
+
 }

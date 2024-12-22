@@ -110,7 +110,7 @@
     "read_capacity": 25,
     "write_capacity": 10
   },
-  "${faq_table}": {
+  "${about_table}": {
     "resource_type": "dynamodb_table",
     "hash_key_name": "id",
     "hash_key_type": "S",
@@ -127,6 +127,13 @@
   "${location_table}": {
     "resource_type": "dynamodb_table",
     "hash_key_name": "locationId",
+    "hash_key_type": "S",
+    "read_capacity": 25,
+    "write_capacity": 10
+  },
+  "${feedback_table}": {
+    "resource_type": "dynamodb_table",
+    "hash_key_name": "feedbackId",
     "hash_key_type": "S",
     "read_capacity": 25,
     "write_capacity": 10

@@ -9,17 +9,17 @@ import com.backend.utils.services.LoggerService;
 import com.google.gson.Gson;
 
 public class GetLocationsHandler implements EndpointHandler {
-    private final Gson gson;
+    private final Gson gson = new Gson();
     private final LocationService locationsService;
 
-    public GetLocationsHandler(LocationService locationsService, Gson gson) {
-        this.gson = gson;
+    public GetLocationsHandler(LocationService locationsService) {
         this.locationsService = locationsService;
     }
 
 
     @Override
     public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent requestEvent, Context context) {
+        LoggerService.info("GetLocationsHandler");
         try {
 
             return new APIGatewayProxyResponseEvent()
