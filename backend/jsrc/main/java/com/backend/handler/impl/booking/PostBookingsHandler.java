@@ -6,24 +6,33 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.backend.handler.EndpointHandler;
 import com.backend.models.dto.request.BookCarRequest;
 import com.backend.models.dto.response.BookCarResponse;
-import com.backend.service.AuthService;
+import com.backend.models.table.Booking;
+import com.backend.models.table.User;
+import com.backend.models.table.types.BookingStatus;
+import com.backend.models.table.types.UserRole;
 import com.backend.service.BookingService;
 import com.backend.service.CarService;
+import com.backend.service.UserService;
 import com.backend.utils.services.LoggerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import static com.backend.utils.services.CustomDateTimeFormatter.formatter;
+
 public class PostBookingsHandler implements EndpointHandler {
 
     private final BookingService bookingService;
-    private final AuthService authService;
+    private final UserService userService;
     private final CarService carService;
     private final Gson gson;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public PostBookingsHandler(BookingService bookingService, AuthService authService, CarService carService, Gson gson) {
+    public PostBookingsHandler(BookingService bookingService, UserService userService, CarService carService, Gson gson) {
         this.bookingService = bookingService;
-        this.authService = authService;
+        this.userService = userService;
         this.carService = carService;
         this.gson = gson;
     }
@@ -39,10 +48,19 @@ public class PostBookingsHandler implements EndpointHandler {
                     gson.toJson(request));
 
             BookCarResponse response = new BookCarResponse();
+            String status = BookingStatus.RESERVED.getStatus();
+            try {
+                User user = userService.findByUserId(request.getClientId());
+                LoggerService.info("[PostBookingsHandler | handle] Found user {}", gson.toJson(user));
 
-            // 1. check user role
-            // if user is not Client or Support Agent response 400 with "User must sign in first"
+                if (user.getRole().equals(UserRole.SUPPORT_AGENT)){
+                    status = BookingStatus.RESERVED_BY_SUPPORT_AGENT.getStatus();
+                }
+                LoggerService.info("[PostBookingsHandler | handle] Status of booking {}", status);
 
+            } catch (Exception e) {
+                return new APIGatewayProxyResponseEvent().withStatusCode(400).withBody("User must sign in first");
+            }
 
             // 2. check car available
             // if not response 400 with "Car is not available"
@@ -80,7 +98,7 @@ public class PostBookingsHandler implements EndpointHandler {
             // - carImageUrl
 
 
-            String message = bookingService.create(request);
+            String message = bookingService.create(convertToBooking(request, status));
 
             response.setMessage(message);
             LoggerService.info("[PostBookingsHandler | handle] Response message {}", message);
@@ -95,28 +113,23 @@ public class PostBookingsHandler implements EndpointHandler {
         }
     }
 
-//    private BookCarRequest extractBookCarRequest(String body) throws Exception {
-//        LoggerService.info("[PostBookingsHandler | extractBookCarRequest] Extracting booking request from body {}", body);
-//
-//        try {
-//            Map<String, Object> requestBody = objectMapper.readValue(body, Map.class);
-//
-//            BookCarRequest request = new BookCarRequest();
-//            request.setCarId((String) requestBody.get("carId"));
-//            request.setClientId((String) requestBody.get("clientId"));
-//            request.setDropOffDateTime((String) requestBody.get("dropOffDateTime"));
-//            request.setDropOffLocationId((String) requestBody.get("dropOffLocationId"));
-//            request.setPickupDateTime((String) requestBody.get("pickupDateTime"));
-//            request.setPickupLocationId((String) requestBody.get("pickupLocationId"));
-//
-//            LoggerService.info("[PostBookingsHandler | extractBookCarRequest] Booking request extracted {}", gson.toJson(request));
-//
-//
-//            return request;
-//
-//        } catch (Exception exception) {
-//            LoggerService.error("Invalid BookCarRequest parameters");
-//            throw new Exception("Invalid BookCarRequest parameters");
-//        }
-//    }
+    private Booking convertToBooking(BookCarRequest request, String status) {
+        LoggerService.info("[BookingServiceImpl | convertToBooking] Converting booking from request {}", gson.toJson(request));
+        Booking booking = new Booking();
+        booking.setBookingId(UUID.randomUUID().toString());
+        booking.setCarId(request.getCarId());
+        booking.setClientId(request.getClientId());
+        booking.setDropOffDateTime(request.getDropOffDateTime());
+        booking.setDropOffLocationId(request.getDropOffLocationId());
+        booking.setPickupDateTime(request.getPickupDateTime());
+        booking.setPickupLocationId(request.getPickupLocationId());
+        booking.setCarModel("Audi");
+        booking.setBookingDateTime(LocalDateTime.now().format(formatter));
+        booking.setStatus(status);
+        booking.setCarImageUrl("asdfasdf");
+
+        LoggerService.info("[BookingServiceImpl | convertToBooking] Converted booking {}", gson.toJson(booking));
+        return booking;
+    }
+
 }

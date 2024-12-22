@@ -10,6 +10,7 @@ import com.backend.handler.impl.cars.GetCarsBookedDayByCarIdHandler;
 import com.backend.service.AuthService;
 import com.backend.service.BookingService;
 import com.backend.service.CarService;
+import com.backend.service.UserService;
 import com.google.gson.Gson;
 import dagger.Module;
 import dagger.Provides;
@@ -62,7 +63,7 @@ public class HandlersModule {
     @Provides
     @IntoMap
     @StringKey("POST:/v1/bookings")
-    public EndpointHandler providePostBookings(BookingService bookingService, AuthService userService, CarService carService, Gson gson) {
+    public EndpointHandler providePostBookings(BookingService bookingService, UserService userService, CarService carService, Gson gson) {
         return new PostBookingsHandler(bookingService, userService, carService, gson);
     }
 

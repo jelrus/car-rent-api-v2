@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 import static com.backend.utils.services.CustomDateTimeFormatter.convertDateTimeToDate;
@@ -29,24 +28,27 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public String create(BookCarRequest request) {
-        LoggerService.info("[BookingServiceImpl | create] Creating booking from request {}", gson.toJson(request));
+    public String create(Booking booking) {
+        LoggerService.info("[BookingServiceImpl | create] Creating booking from request {}", gson.toJson(booking));
 
-        Booking booking = bookingDao.create(convertToBooking(request));
+        Booking response = bookingDao.create(booking);
 
-        return "New booking was successfully created./n" +
-                booking.getCarModel() +
+        String message = "New booking was successfully created./n" +
+                response.getCarModel() +
                 " is booked for " +
-                booking.getPickupDateTime() + // todo pickupDate
+                convertDateTimeToDate(response.getPickupDateTime()) +
                 " - " +
-                booking.getDropOffDateTime() + // todo dropOffDate
+                convertDateTimeToDate(response.getDropOffDateTime()) +
                 "/nYou can change booking details until " +
-                booking.getPickupDateTime() + // todo pickupDateTime - 12H
+                LocalDateTime.parse(response.getPickupDateTime(),formatter).plusHours(12).format(formatter) +
                 "/nYour order: " +
-                booking.getBookingId() +
+                response.getBookingId() +
                 " (" +
-                booking.getBookingDateTime() +
+                response.getBookingDateTime() +
                 ")";
+        LoggerService.info("[BookingServiceImpl | create] Message {}", message);
+
+        return message;
     }
 
     @Override
@@ -94,25 +96,6 @@ public class BookingServiceImpl implements BookingService {
                 carId, gson.toJson(response));
 
         return response.stream().sorted().toList();
-    }
-
-    private Booking convertToBooking(BookCarRequest request) {
-        LoggerService.info("[BookingServiceImpl | convertToBooking] Converting booking from request {}", gson.toJson(request));
-        Booking booking = new Booking();
-        booking.setBookingId(UUID.randomUUID().toString());
-        booking.setCarId(request.getCarId());
-        booking.setClientId(request.getClientId());
-        booking.setDropOffDateTime(request.getDropOffDateTime());
-        booking.setDropOffLocationId(request.getDropOffLocationId());
-        booking.setPickupDateTime(request.getPickupDateTime());
-        booking.setPickupLocationId(request.getPickupLocationId());
-        booking.setCarModel("Audi");
-        booking.setBookingDateTime(LocalDate.now().toString());
-        booking.setStatus("RESERVED");
-        booking.setCarImageUrl("asdfasdf");
-
-        LoggerService.info("[BookingServiceImpl | convertToBooking] Converted booking {}", gson.toJson(booking));
-        return booking;
     }
 
     private BookingInfo convertToBookingInfo(Booking booking) {

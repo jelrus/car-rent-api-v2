@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
 
         LoggerService.warn("[AuthService | Sign Up] Attempting to create user in table");
         User user = convertToUser(userId, request);
-        userDao.create(convertToUser(userId, request));
+        userDao.create(convertToUser(userId, request)); // todo change to user
         LoggerService.info("[AuthService | Sign Up] User was successfully created");
 
         if (userDao.existsByUserId(userId)) {
