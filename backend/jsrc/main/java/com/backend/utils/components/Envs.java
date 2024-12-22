@@ -39,4 +39,14 @@ public class Envs {
      * Represents DynamoDB table designed for Location objects
      */
     public static final String LOCATIONS_TABLE = System.getenv("LOCATIONS_TABLE");
+
+    /**
+     * Represents DynamoDB table designed for About objects
+     */
+    public static final String ABOUT_TABLE = System.getenv("ABOUT_TABLE");
+
+    /**
+     * Represents DynamoDB table designed for About objects
+     */
+    public static final String FEEDBACK_TABLE = System.getenv("FEEDBACK_TABLE");
 }

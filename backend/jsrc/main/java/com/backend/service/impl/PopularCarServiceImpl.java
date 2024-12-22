@@ -13,9 +13,11 @@ import java.util.List;
 public class PopularCarServiceImpl implements PopularCarService {
 
     private final PopularCarDao popularCarDao;
+    private final CarMapper carMapper;
 
-    public PopularCarServiceImpl(PopularCarDao popularCarsDao) {
+    public PopularCarServiceImpl(PopularCarDao popularCarsDao, com.backend.mapper.CarMapper carMapper) {
         this.popularCarDao = popularCarsDao;
+        this.carMapper = carMapper;
     }
 
     @Override
@@ -23,8 +25,10 @@ public class PopularCarServiceImpl implements PopularCarService {
         List<CarBriefInfo> rsl = new ArrayList<>();
 
         popularCarDao.findAllByCategory(carCategory)
-                .forEach(carEntity ->
-                        rsl.add(CarMapper.carEntityToCarBriefInfo(carEntity)));
+                .forEach(carEntity -> {
+                    CarBriefInfo carBriefInfo = carMapper.carEntityToCarBriefInfo(carEntity);
+                    rsl.add(carBriefInfo);
+                });
         return new PopularCarResponse(rsl);
     }
 }

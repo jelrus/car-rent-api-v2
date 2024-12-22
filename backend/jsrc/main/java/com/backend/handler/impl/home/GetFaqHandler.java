@@ -10,11 +10,10 @@ import com.google.gson.Gson;
 
 public class GetFaqHandler implements EndpointHandler {
 
-    private final Gson gson;
+    private final Gson gson = new Gson();
     private final FaqService faqService;
 
-    public GetFaqHandler(FaqService faqService, Gson gson) {
-        this.gson = gson;
+    public GetFaqHandler(FaqService faqService) {
         this.faqService = faqService;
     }
 

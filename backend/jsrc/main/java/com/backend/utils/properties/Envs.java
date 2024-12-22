@@ -12,4 +12,8 @@ public class Envs {
     public static final String BOOKING_TABLE = System.getenv("BOOKING_TABLE");
     public static final String COGNITO_ID = System.getenv("COGNITO_ID");
     public static final String CLIENT_ID = System.getenv("CLIENT_ID");
+    public static final String ABOUT_TABLE = System.getenv("ABOUT_TABLE");
+    public static final String FEEDBACK_TABLE = System.getenv("FEEDBACK_TABLE");
+
+
 }

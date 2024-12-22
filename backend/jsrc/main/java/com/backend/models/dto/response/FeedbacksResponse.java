@@ -4,14 +4,14 @@ import com.backend.models.dto.request.FeedbackInfo;
 
 import java.util.List;
 
-public class FeedbacksResponseBody {
+public class FeedbacksResponse {
     private List<FeedbackInfo> content;
 
-    public FeedbacksResponseBody(List<FeedbackInfo> content) {
+    public FeedbacksResponse(List<FeedbackInfo> content) {
         this.content = content;
     }
 
-    public FeedbacksResponseBody() {
+    public FeedbacksResponse() {
     }
 
     public List<FeedbackInfo> getContent() {

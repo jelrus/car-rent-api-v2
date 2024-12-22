@@ -30,12 +30,14 @@ import static com.syndicate.deployment.model.environment.ValueTransformer.USER_P
 @DependsOn(name = "${user_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${faq_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${car_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${about_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${location_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${support_agents_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${home_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${faq_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${cars_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${booking_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${feedback_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${cognito_user_pool}", resourceType = ResourceType.COGNITO_USER_POOL)
 @LambdaHandler(
 		lambdaName = "api_handler",
@@ -51,6 +53,8 @@ import static com.syndicate.deployment.model.environment.ValueTransformer.USER_P
 		@DynamoDbTriggerEventSource(targetTable = "${faq_table}", batchSize = 10),
 		@DynamoDbTriggerEventSource(targetTable = "${location_table}", batchSize = 10),
 		@DynamoDbTriggerEventSource(targetTable = "${car_table}", batchSize = 10),
+		@DynamoDbTriggerEventSource(targetTable = "${about_table}", batchSize = 10),
+		@DynamoDbTriggerEventSource(targetTable = "${feedback_table}", batchSize = 10),
 })
 @EnvironmentVariables({
 		@EnvironmentVariable(key = "REGION", value = "${region}"),
@@ -63,6 +67,8 @@ import static com.syndicate.deployment.model.environment.ValueTransformer.USER_P
 		@EnvironmentVariable(key = "FAQ_TABLE", value = "${faq_table}"),
 		@EnvironmentVariable(key = "CARS_TABLE", value = "${car_table}"),
 		@EnvironmentVariable(key = "LOCATIONS_TABLE", value = "${location_table}"),
+		@EnvironmentVariable(key = "ABOUT_TABLE", value = "${about_table}"),
+		@EnvironmentVariable(key = "FEEDBACK_TABLE", value = "${feedback_table}"),
 		@EnvironmentVariable(key = "COGNITO_ID", value = "${cognito_user_pool}",
 				valueTransformer = USER_POOL_NAME_TO_USER_POOL_ID),
 		@EnvironmentVariable(key = "CLIENT_ID", value = "${cognito_user_pool}",
