@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Payload for user login request",
+  "properties": {
+    "email": {
+      "type": "string",
+      "description": "User email",
+      "minLength": 1,
+      "pattern": "^(?=.{1,254}$)(?=.{1,64}@.{1,255}$)(?!\\.)[A-Za-z0-9!#$%&'*+/=?^_`{|}~.-]+(?<!\\.)@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+      "example": "john_smith@example.com"
+    },
+    "password": {
+      "type": "string",
+      "description": "User password",
+      "pattern": "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}$",
+      "minLength": 8,
+      "example": "&Q5m#9bX^d8!FwZ2"
+    }
+  },
+  "required": ["email", "password"],
+  "additionalProperties": false
+}
