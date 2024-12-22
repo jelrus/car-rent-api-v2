@@ -22,7 +22,8 @@ public class PostUsersHandler implements EndpointHandler {
 
     @Override
     public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent requestEvent, Context context) {
-        LoggerService.info("Received request {}", requestEvent.getBody());
+        LoggerService.info("[PostUsersHandler | handle] Handling POST request with path '/v1/users' {}",
+                gson.toJson(requestEvent));
         try {
             UserSignUpRequest request = gson.fromJson(requestEvent.getBody(), UserSignUpRequest.class);
             UserSignUpResponse response = authService.userSignUp(request);

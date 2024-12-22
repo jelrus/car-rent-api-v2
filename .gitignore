@@ -1,1 +1,7 @@
-/backend/.syndicate
+.syndicate
+.syndicate-config-dev/
+target
+.idea
+backend.iml
+syndicate.yml
+.gitignore

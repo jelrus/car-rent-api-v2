@@ -25,7 +25,7 @@ public class UtilsModule {
     Gson provideGson() {
         return new GsonBuilder()
                 .setPrettyPrinting()
-                .excludeFieldsWithoutExposeAnnotation()
+                //.excludeFieldsWithoutExposeAnnotation()
                 .disableHtmlEscaping()
                 .create();
     }
