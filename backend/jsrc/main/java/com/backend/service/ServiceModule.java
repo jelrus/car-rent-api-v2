@@ -1,33 +1,45 @@
 package com.backend.service;
 
-import com.backend.dao.AuthDao;
-import com.backend.dao.UserDao;
-import com.backend.service.impl.AuthServiceImpl;
+import com.backend.service.impl.CognitoServiceImpl;
+import com.backend.service.impl.UserServiceImpl;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
-import com.google.gson.Gson;
+import com.backend.utils.components.Envs;
 import dagger.Module;
 import dagger.Provides;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 
-/**
- * ServiceModule is Dagger2 @Module archetype, provides dependencies related to service layer operations for
- * other application modules.
- */
+
 @Module
 public class ServiceModule {
 
-    /**
-     * Provides configured AuthService dependency based on singleton @Singleton Dagger2 archetype.
-     *
-     * @param authDao {@code AuthDao} AuthDao dependency
-     * @param userDao {@code UserDao} UserDao dependency
-     * @param gson {@code Gson} Gson dependency
-     * @return {@code AuthService} configured implementation of AuthService
-     */
     @Singleton
     @Provides
-    AuthService provideAuthService(AuthDao authDao, UserDao userDao, Gson gson) {
-        return new AuthServiceImpl(authDao, userDao, gson);
+    UserService provideUserService() {
+        return new UserServiceImpl();
     }
+
+    @Singleton
+    @Provides
+    @Named("faqService")
+    FaqService provideFaqService(@Named("faqDao") FaqDao faqDao) {
+        return new FaqServiceImpl(faqDao);
+    }
+
+    @Singleton
+    @Provides
+    @Named("popularCarService")
+    PopularCarService providePopularCarService(@Named("popularCarDao") PopularCarDao popularCarDao) {
+        return new PopularCarServiceImpl(popularCarDao);
+    }
+    @Singleton
+    @Provides
+    @Named("locationService")
+    LocationService locationService(@Named("locationDao") LocationDao locationDao) {
+        return new LocationServiceImpl(locationDao);
+    }
+
 }

@@ -1,11 +1,10 @@
 package com.backend.handler;
 
-import com.backend.handler.impl.GeneralHandler;
-import com.backend.handler.impl.PathNotFoundHandler;
-import com.backend.handler.impl.users.PostUsersLoginHandler;
-import com.backend.handler.impl.users.PostUsersHandler;
-import com.backend.service.AuthService;
-import com.backend.utils.services.JsonValidationService;
+import com.backend.handler.impl.*;
+import com.backend.handler.impl.users.PostHandler;
+import com.backend.handler.impl.users.PostLoginHandler;
+import com.backend.service.CognitoService;
+import com.backend.service.UserService;
 import com.google.gson.Gson;
 import dagger.Module;
 import dagger.Provides;
@@ -14,103 +13,144 @@ import dagger.multibindings.StringKey;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.HashMap;
 import java.util.Map;
 
-/**
- * DaoModule is Dagger2 @Module archetype, provides dependency injections related to handling endpoint requests and
- * responses operations for other application modules.
- */
 @Module
 public class HandlersModule {
+    private final Map<String, EndpointHandler> map = new HashMap<>();
 
-    /**
-     * Provides configured EndpointHandler dependency (GeneralHandler) based on singleton @Singleton Dagger2 archetype.
-     * This implementation of interface EndpointHandler marked with @Named("general") annotation, which means that
-     * this implementation can only be accessed with this name (general) if injection is needed.
-     * Created implementation of EndpointHandler is GeneralHandler which serves for most requests and responses
-     * processing.
-     *
-     * @param notFoundHandler {@code EndpointHandler} Endpoint handler dependency for error handling,
-     *                                               annotation @Named("pathNotFountHandler") means that it can only be
-     *                                               accessed via this name (pathNotFountHandler)
-     * @param handlerMap {@code Map<String, EndpointHandler>} map dependency, for method and resource resolution
-     * @return {@code EndpointHandler} configured EndpointHandler implementation, GeneralHandler
-     */
     @Singleton
     @Provides
-    @Named("generalHandler")
+    @Named("general")
     public EndpointHandler provideGeneralHandler(
-            @Named("pathNotFountHandler") EndpointHandler notFoundHandler,
-            Map<String, EndpointHandler> handlerMap
-    ) {
+            @Named("error") EndpointHandler notFoundHandler,
+         Map<String, EndpointHandler> handlerMap) {
         return new GeneralHandler(notFoundHandler, handlerMap);
     }
 
-    /**
-     * Provides configured EndpointHandler dependency (PathNotFoundHandler) based on singleton @Singleton Dagger2
-     * archetype.
-     * This implementation of interface EndpointHandler marked with @Named("pathNotFountHandler") annotation,
-     * which means that this implementation can only be accessed with this name (general) if injection is needed.
-     *
-     * @param gson {@code Gson} Gson dependency
-     * @return {@code EndpointHandler} configured EndpointHandler implementation, PathNotFoundHandler
-     */
     @Singleton
     @Provides
-    @Named("pathNotFountHandler")
+    @Named("error")
     public EndpointHandler provideErrorHandler(Gson gson) {
-        return new PathNotFoundHandler(gson);
+        return new ErrorHandler();
     }
 
-    /**
-     * Provides configured EndpointHandler dependency (PostUsersHandler) based on singleton @Singleton Dagger2
-     * archetype.
-     * This implementation of interface EndpointHandler marked with @IntoMap and @StringKey annotations which means
-     * that value of the @StringKey annotation will be put into the Map<String, EndpointHandler> handlerMap in
-     * GeneralHandler on compile-time.
-     * This handler is reached when processing 'POST':'v1/users/' endpoint
-     *
-     * @param authService {@code AuthService} AuthService dependency
-     * @param gson {@code Gson} Gson dependency
-     * @param jsonValidationService {@code JsonValidationService} JsonValidationService dependency
-     * @return {@code EndpointHandler} configured EndpointHandler implementation, PostUsersHandler
-     */
+//    @Singleton
+//    @Provides
+//    @IntoMap
+//    @StringKey("POST:/v1/users")
+//    public EndpointHandler providePostUsersHandler(UserService userService, CognitoService cognitoService, Gson gson) {
+//        return new PostUsersHandler(userService, cognitoService, gson);
+//    }
+
+//    private Map<String, EndpointHandler> getStringEndpointHandlerMap() {
+//            Map<String, EndpointHandler> map = new HashMap<>();
+//
+//        if (map.isEmpty()) {
+//            return Map.of(
+//                    "POST:/v1/users", new UsersHandler(),
+//                    "POST:/v1/users/login", new LoginHandler(),
+//                    "GET:/v1/home/about-us",new GetAboutHandler(),
+//                    "GET:/v1/home/faq",provideFaqHandler(FaqDao),
+//                    "GET:/v1/home/feedbacks",new GetFeedbacksHandler(),
+//                    "GET:/v1/home/locations",new GetLocationsHandler(),
+//                    "GET:/v1/home/popular-cars",new GetPopularCarsHandler()
+////                    ,
+////                    "GET:/v1/home/about-us",new AboutHandler(),
+////                    "GET:/v1/home/faq",new FaqHandler(),
+////                    "GET:/v1/home/feedbacks",new FeedbacksHandler(),
+////                    "GET:/v1/home/locations",new LocationsHandler(),
+////                    "GET:/v1/home/popular-cars",new PopularCars(),
+////                    "GET:/v1/cars",new CarsHandler(),
+////                    "GET:/v1/cars/{carId}",new CarsByCarIdHandler(),
+////                    "GET:/v1/cars/{carId}/booked-days",new CarsBookedDaysHandler(),
+////                    "GET:/v1/cars/{carId}/client-review",new CarsReviewHandler(),
+////                    "POST:/v1/bookings",new BookingsHandler(),
+////                    "GET:/v1/bookings/{clientId}",new  BookingsByClientIdHandler()
+//
+//            );
+//
+//        } else {
+//            return map;
+//        }
+//
+//    }
+//
+//    @Singleton
+//    @Provides
+//    @Named("endpointMap")
+//    public Map<String, EndpointHandler> provideEndpointMap() {
+//        return getStringEndpointHandlerMap();
+//    }
+//
+//    @Singleton
+//    @Provides
+//    @IntoMap
+//    @StringKey("POST:/v1/users")
+//    public EndpointHandler provideUsersHandler() {
+//        return new UsersHandler();
+//    }
+//
+//    @Singleton
+//    @Provides
+//    @IntoMap
+//    @StringKey("POST:/v1/users/login")
+//    public EndpointHandler provideLoginHandler() {
+//        return new LoginHandler();
+//    }
+
+
     @Singleton
     @Provides
     @IntoMap
     @StringKey("POST:/v1/users")
-    public EndpointHandler providePostUsersHandler(
-            AuthService authService,
-            Gson gson,
-            JsonValidationService jsonValidationService
-    ) {
-        return new PostUsersHandler(authService, gson, jsonValidationService);
+    public EndpointHandler providePostUsersHandler(AuthService authService, Gson gson) {
+        return new PostUsersHandler(authService, gson);
+    @StringKey("GET:/v1/home/about-us")
+    public EndpointHandler provideAboutHandler() {
+        return new GetAboutHandler();
     }
 
-    /**
-     * Provides configured EndpointHandler dependency (PostUsersLoginHandler) based on singleton @Singleton Dagger2
-     * archetype.
-     * This implementation of interface EndpointHandler marked with @IntoMap and @StringKey annotations which means
-     * that value of the @StringKey annotation will be put into the Map<String, EndpointHandler> handlerMap in
-     * GeneralHandler on compile-time.
-     * This handler is reached when processing 'POST':'v1/users/login' endpoint
-     *
-     * @param authService {@code AuthService} AuthService dependency
-     * @param gson {@code Gson} Gson dependency
-     * @param jsonValidationService {@code JsonValidationService} JsonValidationService dependency
-     * @return {@code EndpointHandler} configured EndpointHandler implementation, PostUsersLoginHandler
-     */
+
     @Singleton
     @Provides
     @IntoMap
     @StringKey("POST:/v1/users/login")
-    public EndpointHandler provideLoginHandler(
-            AuthService authService,
-            Gson gson,
-            JsonValidationService jsonValidationService
-    ) {
-        return new PostUsersLoginHandler(authService, gson, jsonValidationService);
+    public EndpointHandler provideLoginHandler(AuthService authService, Gson gson) {
+        return new PostUsersLoginHandler(gson, authService);
+    @StringKey("GET:/v1/home/faq")
+    public EndpointHandler provideFaqHandler(@Named("faqService") FaqService faqService,Gson gson) {
+        return new GetFaqHandler(faqService,gson);
     }
+
+
+    @Singleton
+    @Provides
+    @IntoMap
+    @StringKey("GET:/v1/home/feedbacks")
+    public EndpointHandler provideFeedbacksHandler() {
+        return new GetFeedbacksHandler();
+    }
+
+
+    @Singleton
+    @Provides
+    @IntoMap
+    @StringKey("GET:/v1/home/locations")
+    public EndpointHandler provideLocationsHandler() {
+        return new GetLocationsHandler();
+    }
+
+    @Singleton
+    @Provides
+    @IntoMap
+    @StringKey("GET:/v1/home/popular-cars")
+    public EndpointHandler providePopularCarsHandler() {
+        return new GetPopularCarsHandler();
+    }
+
+
 }
 
 
