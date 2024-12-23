@@ -1,16 +1,18 @@
-import AuthField from '@/components/atoms/AuthField/AuthField';
-import Button from '@components/atoms/Button/Button';
-import { registerUser } from '@redux/slices/registrationSlice';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import './RegistrationForm.css';
 import { useNavigate, Link } from 'react-router';
+import { registerUser } from '@redux/slices/registrationSlice';
+import AuthField from '@/components/atoms/AuthField/AuthField';
+import Button from '@components/atoms/Button/Button';
+import './RegistrationForm.css';
 
 const RegistrationForm = () => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+  });
   const [errors, setErrors] = useState({});
   const [touchedFields, setTouchedFields] = useState({});
   const [passwordInfoVisible, setPasswordInfoVisible] = useState(true);
@@ -20,9 +22,7 @@ const RegistrationForm = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuth) {
-      navigate('/home');
-    }
+    if (isAuth) navigate('/home');
   }, [isAuth, navigate]);
 
   const validateField = (name, value) => {
@@ -55,28 +55,36 @@ const RegistrationForm = () => {
     return error;
   };
 
-  const validateUserRegistration = (user) => {
-    const newErrors = {
-      firstName: validateField('firstName', user.firstName),
-      lastName: validateField('lastName', user.lastName),
-      email: validateField('email', user.email),
-      password: validateField('password', user.password),
-    };
+  const validateUserRegistration = () => {
+    const newErrors = Object.keys(formData).reduce((acc, field) => {
+      acc[field] = validateField(field, formData[field]);
+      return acc;
+    }, {});
     setErrors(newErrors);
     return Object.values(newErrors).every((error) => !error);
   };
 
   const handleFieldBlur = (field) => {
     setTouchedFields((prev) => ({ ...prev, [field]: true }));
-    const value = { firstName, lastName, email, password }[field]; 
     setErrors((prev) => ({
       ...prev,
-      [field]: validateField(field, value),
+      [field]: validateField(field, formData[field]),
+    }));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
     }));
   };
 
   const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
+    setFormData((prevData) => ({
+      ...prevData,
+      password: e.target.value,
+    }));
   };
 
   const handleSubmit = () => {
@@ -87,18 +95,19 @@ const RegistrationForm = () => {
       password: true,
     });
 
-    const user = { firstName, lastName, email, password };
-    if (!validateUserRegistration(user)) return;
+    if (!validateUserRegistration()) return;
 
-    setPasswordInfoVisible(false); 
-    dispatch(registerUser(user));
+    setPasswordInfoVisible(false);
+    dispatch(registerUser(formData));
   };
 
   const handleCancel = () => {
-    setFirstName('');
-    setLastName('');
-    setEmail('');
-    setPassword('');
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+    });
     setErrors({});
     setTouchedFields({});
     setPasswordInfoVisible(true);
@@ -115,12 +124,12 @@ const RegistrationForm = () => {
         <div className='registration-form__block-name'>
           <AuthField
             id='firstName'
+            name='firstName'
             type='text'
             placeholder='Write your name'
-            fieldType='input'
             label='First Name'
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
+            value={formData.firstName}
+            onChange={handleChange}
             onBlur={() => handleFieldBlur('firstName')}
             underMessage={touchedFields.firstName ? errors.firstName : ''}
             typeUnderMessage='error'
@@ -128,12 +137,12 @@ const RegistrationForm = () => {
 
           <AuthField
             id='lastName'
+            name='lastName'
             type='text'
             placeholder='Write your surname'
-            fieldType='input'
             label='Last Name'
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
+            value={formData.lastName}
+            onChange={handleChange}
             onBlur={() => handleFieldBlur('lastName')}
             underMessage={touchedFields.lastName ? errors.lastName : ''}
             typeUnderMessage='error'
@@ -142,12 +151,12 @@ const RegistrationForm = () => {
 
         <AuthField
           id='email'
+          name='email'
           type='email'
           placeholder='Write your email'
-          fieldType='input'
           label='Email'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={formData.email}
+          onChange={handleChange}
           onBlur={() => handleFieldBlur('email')}
           underMessage={touchedFields.email ? errors.email : ''}
           typeUnderMessage='error'
@@ -155,11 +164,11 @@ const RegistrationForm = () => {
 
         <AuthField
           id='password'
+          name='password'
           type='password'
           placeholder='Create password'
-          fieldType='password'
           label='Password'
-          value={password}
+          value={formData.password}
           onChange={handlePasswordChange}
           onBlur={() => handleFieldBlur('password')}
           underMessage={
