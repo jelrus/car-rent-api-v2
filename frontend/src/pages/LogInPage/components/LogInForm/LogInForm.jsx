@@ -1,12 +1,10 @@
 import FormField from '@/components/FormField/FormField';
+import { loginUser, setAuthError } from '@/redux/slices/authSlice';
 import Button from '@components/atoms/Button/Button';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useState, useEffect } from 'react'
-import { loginUser, setAuthError } from '@/redux/features/authSlice';
+import { Link, useNavigate } from 'react-router';
 import './LogInForm.css';
-import { Link } from 'react-router';
-import { useNavigate } from 'react-router';
-
 
 const LogInForm = () => {
   const dispatch = useDispatch();
@@ -35,10 +33,8 @@ const LogInForm = () => {
         ) {
           error =
             'Password must be at least 8 characters long with 1 capital letter and 1 digit.';
-        } else if ( authError
-        ) {
-          error =
-            "The password isn't correct. Check it and try again";
+        } else if (authError) {
+          error = "The password isn't correct. Check it and try again";
         }
         break;
       default:
@@ -80,16 +76,16 @@ const LogInForm = () => {
   };
 
   const handleSubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
     setTouchedFields({
       email: true,
       password: true,
     });
-  
-    const user = {email, password };
+
+    const user = { email, password };
     if (!validateUserLogin(user)) return;
-  
+
     dispatch(loginUser(user));
   };
 
@@ -108,7 +104,7 @@ const LogInForm = () => {
           type='email'
           placeholder='Write your email'
           value={email}
-          onChange={(event) => setEmail(event.target.value)} 
+          onChange={(event) => setEmail(event.target.value)}
           onBlur={() => handleFieldBlur('email')}
           underMessage={touchedFields.email ? errors.email : ''}
           typeUnderMessage='error'
@@ -131,12 +127,11 @@ const LogInForm = () => {
           }
           typeUnderMessage={passwordInfoVisible ? 'info' : 'error'}
         />
-        <Button type="submit" text='Login' />
+        <Button type='submit' text='Login' />
       </form>
 
-      
       <p className='create-account-page'>
-        New here? <Link to="/users">Create an account</Link>
+        New here? <Link to='/signup'>Create an account</Link>
       </p>
     </div>
   );

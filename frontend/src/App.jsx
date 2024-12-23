@@ -9,8 +9,8 @@ function App() {
           <ul>
             <li><a href="/home">Home</a></li>
             <li><a href="/cars">Cars</a></li>
-            <li><a href="/users/login">Log In</a></li>
-            <li><a href="/users">Register</a></li>
+            <li><a href="/login">Log In</a></li>
+            <li><a href="/signup">Register</a></li>
           </ul>
         </nav>
       </header>

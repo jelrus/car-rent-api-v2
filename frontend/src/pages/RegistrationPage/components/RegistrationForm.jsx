@@ -1,11 +1,11 @@
 import AuthField from '@/components/atoms/AuthField/AuthField';
 import Button from '@components/atoms/Button/Button';
-import { registerUser } from '@redux/actions/registerActions';
+import { registerUser } from '@redux/slices/registrationSlice';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './RegistrationForm.css';
-// import { useNavigate } from 'react-router';
-import { Link } from 'react-router';
+import { useNavigate, Link } from 'react-router';
+
 const RegistrationForm = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -16,16 +16,14 @@ const RegistrationForm = () => {
   const [passwordInfoVisible, setPasswordInfoVisible] = useState(true);
 
   const dispatch = useDispatch();
-  const { isAuth, loading } = useSelector((state) => state.register);
-  // const navigate = useNavigate();
+  const { isAuth, loading, error } = useSelector((state) => state.register);
+  const navigate = useNavigate();
 
-  /*
   useEffect(() => {
     if (isAuth) {
       navigate('/home');
     }
   }, [isAuth, navigate]);
-  */
 
   const validateField = (name, value) => {
     let error = '';
@@ -58,7 +56,6 @@ const RegistrationForm = () => {
   };
 
   const validateUserRegistration = (user) => {
-    setPasswordInfoVisible(false);
     const newErrors = {
       firstName: validateField('firstName', user.firstName),
       lastName: validateField('lastName', user.lastName),
@@ -69,25 +66,17 @@ const RegistrationForm = () => {
     return Object.values(newErrors).every((error) => !error);
   };
 
-  useEffect(() => {
-    if (Object.keys(touchedFields).length > 0) {
-      validateUserRegistration({ firstName, lastName, email, password });
-    }
-  }, [firstName, lastName, email, password]);
-
   const handleFieldBlur = (field) => {
     setTouchedFields((prev) => ({ ...prev, [field]: true }));
+    const value = { firstName, lastName, email, password }[field]; 
     setErrors((prev) => ({
       ...prev,
-      [field]: validateField(field, eval(field)),
+      [field]: validateField(field, value),
     }));
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
-    if (passwordInfoVisible) {
-      setPasswordInfoVisible(false);
-    }
   };
 
   const handleSubmit = () => {
@@ -97,10 +86,11 @@ const RegistrationForm = () => {
       email: true,
       password: true,
     });
-  
+
     const user = { firstName, lastName, email, password };
     if (!validateUserRegistration(user)) return;
-  
+
+    setPasswordInfoVisible(false); 
     dispatch(registerUser(user));
   };
 
@@ -113,7 +103,7 @@ const RegistrationForm = () => {
     setTouchedFields({});
     setPasswordInfoVisible(true);
   };
-  
+
   return (
     <div className='registration-form'>
       <div className='registration-form__title'>
@@ -191,10 +181,16 @@ const RegistrationForm = () => {
             disabled={loading}
           />
         </div>
-        <div className="registration-form__login-link">
-          <p>Already have an account? {/*<Link to="/login">Log In</Link>*/}
-          <a href="/login">Log In</a></p>
 
+        {error && (
+          <div className='registration-form__error'>
+            <p>{error}</p>
+          </div>
+        )}
+
+        <div className='registration-form__login-link'>
+          <p>Already have an account?</p>
+          <Link to='/login'>Log In</Link>
         </div>
       </div>
     </div>
