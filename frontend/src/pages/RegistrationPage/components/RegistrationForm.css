@@ -1,0 +1,68 @@
+.registration-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    gap: 50px;
+}
+
+.registration-form__title {
+    width: 497px;
+    line-height: 64px;
+}
+
+.registration-form__title h2 {
+    font-size: 56px;
+    line-height: 64px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-align: center;
+}
+
+.registration-form__title p {
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px;
+    color: #666666;
+    text-align: center;
+}
+
+.registration-form__block {
+    width: 448px;
+    margin-left: 25px;
+}
+
+.registration-form__block-name {
+    display: flex;
+    gap: 16px;
+}
+
+.registration-form__block-button {
+    display: flex;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.registration-form__login-link {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .registration-form__login-link p {
+    font-size: 16px;
+    color: #666666;
+  }
+  
+  .registration-form__login-link a {
+    color: #000000;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 18px;
+  }
+  
+  .registration-form__login-link a:hover {
+    text-decoration: underline;
+    font-weight: 700;
+    font-size: 18px;
+  }
+  

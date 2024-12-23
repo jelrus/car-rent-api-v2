@@ -1,10 +1,8 @@
 .custom-button {
   height: 46px;
   width: 100%;
-	background-color: #CC1D1D;
 	border: none;
 	border-radius: 30px;
-	color: #fff;
 	font-size: 14px;
   line-height: 14px;
 	font-weight: 500;
@@ -12,3 +10,23 @@
 	transition: background-color 0.3s ease;
 }
 
+.custom-button--primary {
+	background-color: #CC1D1D;
+	color: #fff;
+}
+
+.custom-button--primary:hover {
+	background-color: #851010;
+}
+
+.custom-button--secondary {
+	color: #000;
+	background-color: none;
+	border: 1px solid #000;
+	transition: all 0.3s ease;
+}
+
+.custom-button--secondary:hover {
+	color: #fff;
+	background-color: #000;
+}
