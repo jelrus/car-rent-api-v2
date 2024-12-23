@@ -1,14 +1,14 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_SERVER_API;
 
 export const registerUser = createAsyncThunk(
-  "auth/registerUser",
+  'auth/registerUser',
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/signup`, userData);
-      return response.data; 
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
@@ -25,7 +25,7 @@ const initialState = {
 };
 
 const registrationSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     setAccessToken: (state, action) => {

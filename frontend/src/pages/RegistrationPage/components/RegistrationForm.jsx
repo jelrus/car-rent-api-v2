@@ -20,6 +20,8 @@ const RegistrationForm = () => {
   const dispatch = useDispatch();
   const { isAuth, loading, error } = useSelector((state) => state.register);
   const navigate = useNavigate();
+  const { isAuth, loading, error } = useSelector((state) => state.register);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isAuth) navigate('/home');
@@ -66,6 +68,7 @@ const RegistrationForm = () => {
 
   const handleFieldBlur = (field) => {
     setTouchedFields((prev) => ({ ...prev, [field]: true }));
+    const value = { firstName, lastName, email, password }[field]; 
     setErrors((prev) => ({
       ...prev,
       [field]: validateField(field, formData[field]),
@@ -112,6 +115,7 @@ const RegistrationForm = () => {
     setTouchedFields({});
     setPasswordInfoVisible(true);
   };
+
 
   return (
     <div className='registration-form'>
@@ -190,6 +194,16 @@ const RegistrationForm = () => {
             disabled={loading}
           />
         </div>
+
+        {error && (
+          <div className='registration-form__error'>
+            <p>{error}</p>
+          </div>
+        )}
+
+        <div className='registration-form__login-link'>
+          <p>Already have an account?</p>
+          <Link to='/login'>Log In</Link>
 
         {error && (
           <div className='registration-form__error'>
