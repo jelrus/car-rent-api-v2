@@ -1,42 +1,43 @@
 package com.backend.models.table.types;
 
 /**
- * UserRole is the enumeration class, which contains available roles for User object
+ * UserRole is the enumeration class, enumerates accessible roles for User entity.
  */
 public enum UserRole {
 
     /**
-     * Represents administrator role
+     * Represents Admin role.
      */
     ADMIN("Admin"),
 
     /**
-     * Represents support agent role
+     * Represents Support Agent role.
      */
     SUPPORT_AGENT("Support Agent"),
 
     /**
-     * Represents client role
+     * Represents Client role.
      */
     CLIENT("Client");
 
     /**
-     * Represent string value of role
+     * Represents role in string format.
      */
     private final String role;
 
     /**
-     * Constructs UserRole enumeration with role param
-     * @param role {@code String} requested role
+     * Constructs UserRole from specified string role value
+     *
+     * @param role {@code String} role string representation
      */
     UserRole(String role) {
         this.role = role;
     }
 
     /**
-     * Getter for role string value
+     * Getter for role field
      *
-     * @return {@code String} role value
+     * @return {@code String} accessed role field
      */
     public String getRole() {
         return role;

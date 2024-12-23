@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Payload for user registration request",
+  "properties": {
+    "email": {
+      "type": "string",
+      "description": "User email",
+      "pattern": "^(?=.{1,254}$)(?=.{1,64}@.{1,255}$)(?!\\.)[A-Za-z0-9!#$%&'*+/=?^_`{|}~.-]+(?<!\\.)@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+      "minLength": 1,
+      "example": "john_smith@example.com"
+    },
+    "firstName": {
+      "type": "string",
+      "description": "User first name",
+      "pattern": "^(?!\\s)(?!.*\\s{2,})(?!.*-{2,})[A-Za-z]+([ -][A-Za-z]+)*$",
+      "minLength": 1,
+      "example": "John"
+    },
+    "lastName": {
+      "type": "string",
+      "description": "User last name",
+      "pattern": "^(?!\\s)(?!.*\\s{2,})(?!.*-{2,})[A-Za-z]+([ -][A-Za-z]+)*$",
+      "minLength": 1,
+      "example": "Smith"
+    },
+    "password": {
+      "type": "string",
+      "description": "User password",
+      "pattern": "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}$",
+      "minLength": 1,
+      "example": "&Q5m#9bX^d8!FwZ2"
+    }
+  },
+  "required": ["firstName", "lastName", "email", "password"],
+  "additionalProperties": false
+}
