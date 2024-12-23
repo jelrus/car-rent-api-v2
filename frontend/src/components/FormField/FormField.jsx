@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import InputField from '@components/atoms/InputField/InputField';
 import PasswordField from '@components/atoms/PasswordField/PasswordField';
+import AuthField from '../atoms/AuthField/AuthField';
 
 const FormField = ({ fieldType, ...props }) => {
   switch (fieldType) {
     case 'input':
-      return <InputField {...props} />;
+      return <AuthField {...props} />;
     case 'password':
       return <PasswordField {...props} />;
     default:
@@ -14,11 +14,7 @@ const FormField = ({ fieldType, ...props }) => {
 };
 
 FormField.propTypes = {
-  fieldType: PropTypes.oneOf(['input']).isRequired,
-};
-
-FormField.propTypes = {
-  fieldType: PropTypes.oneOf(['password']).isRequired,
+  fieldType: PropTypes.oneOf(['password','input']).isRequired,
 };
 
 export default FormField;

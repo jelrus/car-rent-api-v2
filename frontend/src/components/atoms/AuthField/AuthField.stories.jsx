@@ -1,11 +1,11 @@
-import InputField from '../InputField';
+import AuthField from './AuthField';
 
 export default {
-  title: 'Atoms/InputField',
-  component: InputField,
+  title: 'Atoms/AuthField',
+  component: AuthField,
 };
 
-const Template = (args) => <InputField {...args} />;
+const Template = (args) => <AuthField {...args} />;
 
 export const EmailInput = Template.bind({});
 EmailInput.args = {
