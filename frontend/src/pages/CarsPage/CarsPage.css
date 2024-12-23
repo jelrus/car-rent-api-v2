@@ -1,0 +1,15 @@
+.cars-page {
+    max-width: 1440px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    background-color: #FFFBF3;
+    padding: 32px;
+}
+
+.cars-page__car-list {
+    display: flex;
+    max-width: 1440px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+

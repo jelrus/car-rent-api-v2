@@ -7,11 +7,13 @@
     font-weight: 400;
     font-size: 18px;
     line-height: 24px;
+    margin-bottom: 0;
 }
 
-.car-location span {
+.car-location p {
     font-weight: 400;
     font-size: 14px;
-    line-height: 20px;
+    line-height: 24px;
     color: #666666;
+    margin-top: 0px;
 }
