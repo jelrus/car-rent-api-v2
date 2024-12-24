@@ -1,4 +1,9 @@
 .App {
   max-width: 1440px;
   margin-inline: auto;
+  font-family: 'Inter', sans-serif;
+}
+
+.main {
+  padding-inline: 32px;
 }

@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router';
+import { Outlet } from 'react-router-dom';
 import './App.css'
 
 function App() {
@@ -11,10 +11,11 @@ function App() {
             <li><a href="/cars">Cars</a></li>
             <li><a href="/login">Log In</a></li>
             <li><a href="/signup">Register</a></li>
+            <li><a href="/bookings">Bookings</a></li>
           </ul>
         </nav>
       </header>
-      <main>
+      <main className='main'>
         <Outlet />
       </main>
       <footer>
