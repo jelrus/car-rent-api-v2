@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "About us story info",
+  "properties": {
+    "description": {
+      "type": "string",
+      "description": "About us story description",
+      "example": "in car rentals highlights a steadfast commitment to excellence, marked by a track record of trust and satisfaction among thousands of clients worldwide"
+    },
+    "numericValue": {
+      "type": "string",
+      "description": "About us story numeric numericValue",
+      "example": "15"
+    },
+    "title": {
+      "type": "string",
+      "description": "About us story title",
+      "example": "years"
+    }
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Car details response body",
+  "properties": {
+    "carId": {
+      "type": "string",
+      "description": "Car ID",
+      "example": "92c87432-3383-4328-85f8-7d20ba8715ec"
+    },
+    "carRating": {
+      "type": "string",
+      "description": "Car rating",
+      "example": "4.5"
+    },
+    "climateControlOption": {
+      "type": "string",
+      "description": "Car climate control option",
+      "example": "CLIMATE_CONTROL",
+      "enum": [
+        "NONE",
+        "AIR_CONDITIONER",
+        "CLIMATE_CONTROL",
+        "TWO_ZONE_CLIMATE_CONTROL"
+      ]
+    },
+    "engineCapacity": {
+      "type": "string",
+      "description": "Car engine capacity",
+      "example": "3.0 turbo"
+    },
+    "fuelConsumption": {
+      "type": "string",
+      "description": "Car fuel consumption",
+      "example": "10.0 Liter/100km"
+    },
+    "fuelType": {
+      "type": "string",
+      "description": "Car fuel type",
+      "example": "PETROL",
+      "enum": [
+        "PETROL",
+        "DIESEL",
+        "ELECTRIC",
+        "HYBRID"
+      ]
+    },
+    "gearBoxType": {
+      "type": "string",
+      "description": "Car gear box type",
+      "example": "AUTOMATIC",
+      "enum": [
+        "MANUAL",
+        "AUTOMATIC"
+      ]
+    },
+    "images": {
+      "type": "array",
+      "description": "List of images",
+      "example": [
+        "https://carrent.s3.eu-central-1.amazonaws.com/img/cars/ff7863bf-63eb-4f2e-8041-75a81507acff.jpg"
+      ],
+      "items": {
+        "type": "string",
+        "description": "List of images",
+        "example": "[\"https://carrent.s3.eu-central-1.amazonaws.com/img/cars/ff7863bf-63eb-4f2e-8041-75a81507acff.jpg\"]"
+      }
+    },
+    "location": {
+      "type": "string",
+      "description": "Car location",
+      "example": "Ukraine, Kyiv"
+    },
+    "model": {
+      "type": "string",
+      "description": "Car brand, model, year",
+      "example": "Audi A6 Quattro 2023"
+    },
+    "passengerCapacity": {
+      "type": "string",
+      "description": "Car passenger capacity",
+      "example": "3.0 turbo"
+    },
+    "pricePerDay": {
+      "type": "string",
+      "description": "Car price per day",
+      "example": "180"
+    },
+    "serviceRating": {
+      "type": "string",
+      "description": "Service rating",
+      "example": "4.8"
+    },
+    "status": {
+      "type": "string",
+      "description": "Car status",
+      "example": "AVAILABLE",
+      "enum": [
+        "AVAILABLE",
+        "BOOKED",
+        "UNAVAILABLE"
+      ]
+    }
+  }
+}

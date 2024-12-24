@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Car brief information",
+  "properties": {
+    "carId": {
+      "type": "string",
+      "description": "Car ID",
+      "example": "92c87432-3383-4328-85f8-7d20ba8715ec"
+    },
+    "carRating": {
+      "type": "string",
+      "description": "Car rating",
+      "example": "4.5"
+    },
+    "imageUrl": {
+      "type": "string",
+      "description": "Car image URL",
+      "example": "https://application.s3.eu-central-1.amazonaws.com/img/cars/audi-A6-quattro-2023.jpg"
+    },
+    "location": {
+      "type": "string",
+      "description": "Car location",
+      "example": "Ukraine, Kyiv"
+    },
+    "model": {
+      "type": "string",
+      "description": "Car brand, model, year",
+      "example": "Audi A6 Quattro 2023"
+    },
+    "pricePerDay": {
+      "type": "string",
+      "description": "Car price per day",
+      "example": "180"
+    },
+    "serviceRating": {
+      "type": "string",
+      "description": "Service rating",
+      "example": "4.8"
+    },
+    "status": {
+      "type": "string",
+      "description": "Car status",
+      "example": "AVAILABLE",
+      "enum": [
+        "AVAILABLE",
+        "BOOKED",
+        "UNAVAILABLE"
+      ]
+    }
+  }
+}

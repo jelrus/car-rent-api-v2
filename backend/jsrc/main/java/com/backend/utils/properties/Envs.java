@@ -20,25 +20,15 @@ public class Envs {
      */
     public static final String SUPPORT_AGENTS_TABLE = System.getenv("SUPPORT_AGENTS_TABLE");
 
-    /**
-     * Represents DynamoDB Home table.
-     */
-    public static final String HOME_TABLE = System.getenv("HOME_TABLE");
-
-    /**
-     * Represents DynamoDB FAQ table.
-     */
     public static final String FAQ_TABLE = System.getenv("FAQ_TABLE");
 
-    /**
-     * Represents DynamoDB Cars table.
-     */
-    public static final String CARS_TABLE = System.getenv("CARS_TABLE");
+    public static final String ABOUT_US_TABLE = System.getenv("ABOUT_US_TABLE");
 
-    /**
-     * Represents DynamoDB Booking table.
-     */
-    public static final String BOOKING_TABLE = System.getenv("BOOKING_TABLE");
+    public static final String REVIEWS_TABLE = System.getenv("REVIEWS_TABLE");
+
+    public static final String LOCATIONS_TABLE = System.getenv("LOCATIONS_TABLE");
+
+    public static final String CARS_TABLE = System.getenv("CARS_TABLE");
 
     /**
      * Represents Cognito IDP Pool ID.
@@ -49,8 +39,4 @@ public class Envs {
      * Represents Cognito IDP Client ID.
      */
     public static final String CLIENT_ID = System.getenv("CLIENT_ID");
-    public static final String ABOUT_TABLE = System.getenv("ABOUT_TABLE");
-    public static final String FEEDBACK_TABLE = System.getenv("FEEDBACK_TABLE");
-
-
 }

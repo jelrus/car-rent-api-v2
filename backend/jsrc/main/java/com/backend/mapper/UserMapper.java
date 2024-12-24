@@ -1,8 +1,8 @@
 package com.backend.mapper;
 
-import com.backend.models.dto.request.UserSignUpRequest;
-import com.backend.models.dto.response.UserSignInResponse;
-import com.backend.models.dto.response.UserSignUpResponse;
+import com.backend.models.dto.request.auth.UserSignUpRequest;
+import com.backend.models.dto.response.auth.UserSignInResponse;
+import com.backend.models.dto.response.auth.UserSignUpResponse;
 import com.backend.models.table.User;
 import com.backend.models.table.types.UserRole;
 

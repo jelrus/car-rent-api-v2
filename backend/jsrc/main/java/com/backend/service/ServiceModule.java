@@ -1,70 +1,58 @@
 package com.backend.service;
 
-import com.backend.dao.AboutDao;
-import com.backend.dao.FaqDao;
-import com.backend.dao.FeedbackDao;
-import com.backend.dao.LocationDao;
-import com.backend.dao.PopularCarDao;
-import com.backend.mapper.CarMapper;
-import com.backend.mapper.FeedbackMapper;
-import com.backend.mapper.LocationMapper;
-import com.backend.service.impl.AboutServiceImpl;
-import com.backend.service.impl.FaqServiceImpl;
-import com.backend.service.impl.FeedbackServiceImpl;
-import com.backend.service.impl.LocationServiceImpl;
-import com.backend.service.impl.PopularCarServiceImpl;
+import com.backend.dao.components.AuthDao;
+import com.backend.dao.components.GeneralContentDao;
+import com.backend.dao.components.LocationDao;
+import com.backend.dao.components.UserDao;
+import com.backend.service.components.AuthService;
+import com.backend.service.components.GeneralContentService;
+import com.backend.service.components.LocationService;
+import com.backend.service.components.impl.AuthServiceImpl;
+import com.backend.service.components.impl.GeneralContentServiceImpl;
+import com.backend.service.components.impl.LocationServiceImpl;
+import com.google.gson.Gson;
 import dagger.Module;
 import dagger.Provides;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
-
+/**
+ * ServiceModule is Dagger2 @Module archetype, provides dependencies related to service layer operations for
+ * other application modules.
+ */
 @Module
 public class ServiceModule {
 
-//    @Singleton
-//    @Provides
-//    UserService provideUserService() {
-//        return new UserServiceImpl();
-//    }
-
+    /**
+     * Provides configured AuthService dependency based on singleton @Singleton Dagger2 archetype.
+     *
+     * @param authDao {@code AuthDao} AuthDao dependency
+     * @param userDao {@code UserDao} UserDao dependency
+     * @param gson {@code Gson} Gson dependency
+     * @return {@code AuthService} configured implementation of AuthService
+     */
     @Singleton
     @Provides
-    @Named("faqService")
-    FaqService provideFaqService(@Named("faqDao") FaqDao faqDao) {
-        return new FaqServiceImpl(faqDao);
+    AuthService provideAuthService(AuthDao authDao, UserDao userDao, Gson gson) {
+        return new AuthServiceImpl(authDao, userDao, gson);
+    }
+
+    /**
+     * Provides configured AuthService dependency based on singleton @Singleton Dagger2 archetype.
+     *
+     * @param generalContentDao {@code GeneralContentDao} GeneralContentDao dependency
+     * @param gson {@code Gson} Gson dependency
+     * @return {@code GeneralContentService} configured implementation of GeneralContentService
+     */
+    @Singleton
+    @Provides
+    GeneralContentService provideGeneralContentService(GeneralContentDao generalContentDao, Gson gson) {
+        return new GeneralContentServiceImpl(generalContentDao, gson);
     }
 
     @Singleton
     @Provides
-    @Named("popularCarService")
-    PopularCarService providePopularCarService(@Named("popularCarDao") PopularCarDao popularCarDao,
-                                               @Named("carMapper") CarMapper carMapper) {
-        return new PopularCarServiceImpl(popularCarDao, carMapper);
+    LocationService provideLocationService(LocationDao locationDao, Gson gson) {
+        return new LocationServiceImpl(locationDao, gson);
     }
-
-    @Singleton
-    @Provides
-    @Named("locationService")
-    LocationService locationService(@Named("locationDao") LocationDao locationDao,
-                                    @Named("locationMapper") LocationMapper locationMapper) {
-        return new LocationServiceImpl(locationDao, locationMapper);
-    }
-
-    @Singleton
-    @Provides
-    @Named("feedbackService")
-    FeedbackService feedbackService(@Named("feedbackDao") FeedbackDao feedbackDao,
-                                    @Named("feedbackMapper") FeedbackMapper feedbackMapper) {
-        return new FeedbackServiceImpl(feedbackDao, feedbackMapper);
-    }
-
-    @Singleton
-    @Provides
-    @Named("aboutService")
-    AboutService aboutService(@Named("aboutDao") AboutDao aboutDao) {
-        return new AboutServiceImpl(aboutDao);
-    }
-
 }
