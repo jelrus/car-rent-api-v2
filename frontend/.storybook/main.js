@@ -1,3 +1,4 @@
+/** @type { import('@storybook/react-vite').StorybookConfig } */
 const config = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
   addons: [
@@ -10,11 +11,5 @@ const config = {
     name: "@storybook/react-vite",
     options: {},
   },
-  viteFinal(config) {
-    // Якщо потрібно, можна модифікувати конфігурацію Vite
-    config.plugins.push(/* ваші плагіни для Vite */);
-    return config;
-  },
 };
-
 export default config;

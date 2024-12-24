@@ -1,0 +1,17 @@
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.rating-value {
+    color: #666666;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.rating-star {
+    width: 14px;
+    height: 14px;
+}
