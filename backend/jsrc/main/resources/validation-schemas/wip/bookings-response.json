@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Payload for get bookings request",
+  "properties": {
+    "content": {
+      "type": "array",
+      "items": {
+        "$ref": "/validation-schemas/wip/booking-info.json"
+      }
+    }
+  }
+}
