@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Booking information",
+  "properties": {
+    "bookingId": {
+      "type": "string",
+      "description": "Booking ID",
+      "example": "ce3d9306-ec01-48a9-9d1a-f9818063c734"
+    },
+    "bookingStatus": {
+      "type": "string",
+      "description": "Booking status",
+      "example": "RESERVED",
+      "enum": [
+        "RESERVED",
+        "RESERVED_BY_SUPPORT_AGENT",
+        "SERVICE_STARTED",
+        "SERVICE_PROVIDED",
+        "BOOKING_FINISHED",
+        "CANCELLED"
+      ]
+    },
+    "carImageUrl": {
+      "type": "string",
+      "description": "Car image URL",
+      "example": "https://application.s3.eu-central-1.amazonaws.com/img/cars/audi-A6-quattro-2023.jpg"
+    },
+    "carModel": {
+      "type": "string",
+      "description": "Car model",
+      "example": "Audi A6 Quattro 2023"
+    },
+    "orderDetails": {
+      "type": "string",
+      "description": "Order details",
+      "example": "#2437 (05.10.2024)"
+    }
+  }
+}
