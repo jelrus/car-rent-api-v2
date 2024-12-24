@@ -5,8 +5,18 @@ import { registerUser } from '@redux/slices/registrationSlice';
 import AuthField from '@/components/atoms/AuthField/AuthField';
 import Button from '@components/atoms/Button/Button';
 import './RegistrationForm.css';
+import { registerUser } from '@redux/slices/registrationSlice';
+import AuthField from '@/components/atoms/AuthField/AuthField';
+import Button from '@components/atoms/Button/Button';
+import './RegistrationForm.css';
 
 const RegistrationForm = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+  });
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -20,8 +30,11 @@ const RegistrationForm = () => {
   const dispatch = useDispatch();
   const { isAuth, loading, error } = useSelector((state) => state.register);
   const navigate = useNavigate();
+  const { isAuth, loading, error } = useSelector((state) => state.register);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (isAuth) navigate('/home');
     if (isAuth) navigate('/home');
   }, [isAuth, navigate]);
 
@@ -60,6 +73,11 @@ const RegistrationForm = () => {
       acc[field] = validateField(field, formData[field]);
       return acc;
     }, {});
+  const validateUserRegistration = () => {
+    const newErrors = Object.keys(formData).reduce((acc, field) => {
+      acc[field] = validateField(field, formData[field]);
+      return acc;
+    }, {});
     setErrors(newErrors);
     return Object.values(newErrors).every((error) => !error);
   };
@@ -89,7 +107,10 @@ const RegistrationForm = () => {
     });
 
     if (!validateUserRegistration()) return;
+    if (!validateUserRegistration()) return;
 
+    setPasswordInfoVisible(false);
+    dispatch(registerUser(formData));
     setPasswordInfoVisible(false);
     dispatch(registerUser(formData));
   };
@@ -101,10 +122,17 @@ const RegistrationForm = () => {
       email: '',
       password: '',
     });
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+    });
     setErrors({});
     setTouchedFields({});
     setPasswordInfoVisible(true);
   };
+
 
   return (
     <div className='registration-form'>
@@ -118,9 +146,12 @@ const RegistrationForm = () => {
           <AuthField
             id='firstName'
             name='firstName'
+            name='firstName'
             type='text'
             placeholder='Write your name'
             label='First Name'
+            value={formData.firstName}
+            onChange={handleChange}
             value={formData.firstName}
             onChange={handleChange}
             onBlur={() => handleFieldBlur('firstName')}
@@ -131,9 +162,12 @@ const RegistrationForm = () => {
           <AuthField
             id='lastName'
             name='lastName'
+            name='lastName'
             type='text'
             placeholder='Write your surname'
             label='Last Name'
+            value={formData.lastName}
+            onChange={handleChange}
             value={formData.lastName}
             onChange={handleChange}
             onBlur={() => handleFieldBlur('lastName')}
@@ -145,9 +179,12 @@ const RegistrationForm = () => {
         <AuthField
           id='email'
           name='email'
+          name='email'
           type='email'
           placeholder='Write your email'
           label='Email'
+          value={formData.email}
+          onChange={handleChange}
           value={formData.email}
           onChange={handleChange}
           onBlur={() => handleFieldBlur('email')}
@@ -157,6 +194,7 @@ const RegistrationForm = () => {
 
         <AuthField
           id='password'
+          name='password'
           name='password'
           type='password'
           placeholder='Create password'
@@ -183,6 +221,16 @@ const RegistrationForm = () => {
             disabled={loading}
           />
         </div>
+
+        {error && (
+          <div className='registration-form__error'>
+            <p>{error}</p>
+          </div>
+        )}
+
+        <div className='registration-form__login-link'>
+          <p>Already have an account?</p>
+          <Link to='/login'>Log In</Link>
 
         {error && (
           <div className='registration-form__error'>
