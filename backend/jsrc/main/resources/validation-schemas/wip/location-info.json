@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Location information",
+  "properties": {
+    "locationAddress": {
+      "type": "string",
+      "description": "Location address",
+      "example": "Alla Tarasova Street 5, Kyiv 01001"
+    },
+    "locationId": {
+      "type": "string",
+      "description": "Location ID",
+      "example": "9b903ebf-2b18-4946-bc58-045d86a2632e"
+    },
+    "locationImageUrl": {
+      "type": "string",
+      "description": "Location image URL",
+      "example": "https://application.s3.eu-central-1.amazonaws.com/img/locations/9b903ebf-2b18-4946-bc58-045d86a2632e.jpg"
+    },
+    "locationName": {
+      "type": "string",
+      "description": "Location name",
+      "example": "Kyiv Hayatt Hotel"
+    }
+  }
+}

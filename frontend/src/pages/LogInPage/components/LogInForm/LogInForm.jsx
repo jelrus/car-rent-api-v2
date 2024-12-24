@@ -9,7 +9,8 @@ import './LogInForm.css';
 const LogInForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { token, authError } = useSelector((state) => state.auth);
+  const { token, authError, loading } = useSelector((state) => state.auth);
+  const { userId } = useSelector((state) => state.auth.user);
 
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -62,6 +63,9 @@ const LogInForm = () => {
     }
   }, [email, password, token, authError]);
 
+  console.log(token)
+  console.log(userId)
+
   const handleFieldBlur = (field) => {
     setTouchedFields((prev) => ({ ...prev, [field]: true }));
     setErrors((prev) => ({
@@ -96,7 +100,7 @@ const LogInForm = () => {
         <p>Glad to see you again</p>
       </div>
 
-      <form onSubmit={handleSubmit} className='login-block'>
+      <div className='login-block'>
         <FormField
           label='Email'
           fieldType='input'
@@ -127,8 +131,13 @@ const LogInForm = () => {
           }
           typeUnderMessage={passwordInfoVisible ? 'info' : 'error'}
         />
-        <Button type='submit' text='Login' />
-      </form>
+        <Button
+            text='Login'
+            type='primary'
+            onClick={handleSubmit}
+            disabled={loading}
+          />
+      </div>
 
       <p className='create-account-page'>
         New here? <Link to='/signup'>Create an account</Link>
