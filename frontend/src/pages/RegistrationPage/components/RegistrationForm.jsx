@@ -20,8 +20,6 @@ const RegistrationForm = () => {
   const dispatch = useDispatch();
   const { isAuth, loading, error } = useSelector((state) => state.register);
   const navigate = useNavigate();
-  const { isAuth, loading, error } = useSelector((state) => state.register);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (isAuth) navigate('/home');
@@ -68,7 +66,6 @@ const RegistrationForm = () => {
 
   const handleFieldBlur = (field) => {
     setTouchedFields((prev) => ({ ...prev, [field]: true }));
-    const value = { firstName, lastName, email, password }[field]; 
     setErrors((prev) => ({
       ...prev,
       [field]: validateField(field, formData[field]),
@@ -80,13 +77,6 @@ const RegistrationForm = () => {
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
-    }));
-  };
-
-  const handlePasswordChange = (e) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      password: e.target.value,
     }));
   };
 
@@ -116,64 +106,63 @@ const RegistrationForm = () => {
     setPasswordInfoVisible(true);
   };
 
-
   return (
-    <div className='registration-form'>
-      <div className='registration-form__title'>
+    <div className="registration-form">
+      <div className="registration-form__title">
         <h2>Create an account</h2>
         <p>Enter your details below to get started</p>
       </div>
 
-      <div className='registration-form__block'>
-        <div className='registration-form__block-name'>
+      <div className="registration-form__block">
+        <div className="registration-form__block-name">
           <AuthField
-            id='firstName'
-            name='firstName'
-            type='text'
-            placeholder='Write your name'
-            label='First Name'
+            id="firstName"
+            name="firstName"
+            type="text"
+            placeholder="Write your name"
+            label="First Name"
             value={formData.firstName}
             onChange={handleChange}
             onBlur={() => handleFieldBlur('firstName')}
             underMessage={touchedFields.firstName ? errors.firstName : ''}
-            typeUnderMessage='error'
+            typeUnderMessage="error"
           />
 
           <AuthField
-            id='lastName'
-            name='lastName'
-            type='text'
-            placeholder='Write your surname'
-            label='Last Name'
+            id="lastName"
+            name="lastName"
+            type="text"
+            placeholder="Write your surname"
+            label="Last Name"
             value={formData.lastName}
             onChange={handleChange}
             onBlur={() => handleFieldBlur('lastName')}
             underMessage={touchedFields.lastName ? errors.lastName : ''}
-            typeUnderMessage='error'
+            typeUnderMessage="error"
           />
         </div>
 
         <AuthField
-          id='email'
-          name='email'
-          type='email'
-          placeholder='Write your email'
-          label='Email'
+          id="email"
+          name="email"
+          type="email"
+          placeholder="Write your email"
+          label="Email"
           value={formData.email}
           onChange={handleChange}
           onBlur={() => handleFieldBlur('email')}
           underMessage={touchedFields.email ? errors.email : ''}
-          typeUnderMessage='error'
+          typeUnderMessage="error"
         />
 
         <AuthField
-          id='password'
-          name='password'
-          type='password'
-          placeholder='Create password'
-          label='Password'
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Create password"
+          label="Password"
           value={formData.password}
-          onChange={handlePasswordChange}
+          onChange={handleChange}
           onBlur={() => handleFieldBlur('password')}
           underMessage={
             touchedFields.password
@@ -185,35 +174,25 @@ const RegistrationForm = () => {
           typeUnderMessage={passwordInfoVisible ? 'info' : 'error'}
         />
 
-        <div className='registration-form__block-button'>
-          <Button text='Cancel' type='secondary' onClick={handleCancel} />
+        <div className="registration-form__block-button">
+          <Button text="Cancel" type="secondary" onClick={handleCancel} />
           <Button
-            text='Register'
-            type='primary'
+            text="Register"
+            type="primary"
             onClick={handleSubmit}
             disabled={loading}
           />
         </div>
 
         {error && (
-          <div className='registration-form__error'>
+          <div className="registration-form__error">
             <p>{error}</p>
           </div>
         )}
 
-        <div className='registration-form__login-link'>
+        <div className="registration-form__login-link">
           <p>Already have an account?</p>
-          <Link to='/login'>Log In</Link>
-
-        {error && (
-          <div className='registration-form__error'>
-            <p>{error}</p>
-          </div>
-        )}
-
-        <div className='registration-form__login-link'>
-          <p>Already have an account?</p>
-          <Link to='/login'>Log In</Link>
+          <Link to="/login">Log In</Link>
         </div>
       </div>
     </div>
