@@ -1,0 +1,53 @@
+.bookings-filter {
+  text-align: start;
+}
+
+.bookings-title h2 {
+  line-height: 64px;
+  font-size: 56px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+}
+
+.tabs-list {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+
+.tab-item {
+  margin: 0 10px; 
+  font-size: 16px; 
+  font-weight: normal; 
+  cursor: pointer;
+  transition: none; 
+}
+
+.tab-item .tab-link {
+  text-decoration: none;
+  color: #000; 
+}
+
+.tab-item .tab-link:hover {
+  font-weight: normal; 
+  color: #555;
+}
+
+.tab-item.is-active .tab-link {
+  font-weight: bold; 
+  color: #000; 
+  border-bottom: 2px solid #000;
+  text-decoration: none;
+}
+.bookings-list {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.bookings-card {
+  width: 332px;
+  height: 360px;
+}
