@@ -27,8 +27,8 @@ SelectField.propTypes = {
     className: PropTypes.string
 };
 
-SelectField.defaultProps = {
-    className: ''
-};
+// SelectField.defaultProps = {
+//     className: ''
+// };
 
 export default SelectField;

@@ -3,93 +3,96 @@ package com.backend.handler.impl.users;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import com.backend.exception.AuthException;
+import com.backend.exception.UserNotFoundException;
+import com.backend.exception.ValidationSchemaException;
+import com.backend.handler.EndpointHandler;
 import com.backend.models.dto.request.UserSignUpRequest;
 import com.backend.models.dto.response.UserSignUpResponse;
-import com.backend.handler.EndpointHandler;
-import com.backend.service.CognitoService;
-import com.backend.service.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.backend.service.AuthService;
+import com.backend.utils.properties.JsonValidationSchema;
+import com.backend.utils.services.JsonValidationService;
+import com.backend.utils.services.LoggerService;
 import com.google.gson.Gson;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 /**
- *  A handler of 'POST' method and 'v1/users' path
+ * PostUsersHandler is the implementation of EndpointHandler, serves as handler for POST:/users endpoint,
+ * initiates User creation in Cognito IDP and DynamoDB Clients.
  */
 public class PostUsersHandler implements EndpointHandler {
 
-    private final Gson gson;
-    private final UserService userService;
-    private final CognitoService cognitoService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private static final Logger logger = LoggerFactory.getLogger(PostUsersHandler.class);
+    /**
+     * Provides AuthService for auth logic operations.
+     */
+    private final AuthService authService;
 
-    public PostUsersHandler(UserService userService, CognitoService cognitoService, Gson gson) {
-        this.userService = userService;
-        this.cognitoService = cognitoService;
+    /**
+     * Provides Gson for mapping objects into JSON format.
+     */
+    private final Gson gson;
+
+    /**
+     * Provides JsonValidationService for JSON schema validation.
+     */
+    private final JsonValidationService jsonValidationService;
+
+    /**
+     * Constructs PostUsersHandler object with injected AuthService, Gson and JsonValidationService.
+     *
+     * @param authService {@code AuthService} injected Auth Service
+     * @param gson {@code Gson} injected Gson
+     * @param jsonValidationService {@code JsonValidationService} injected JSON Validation Service
+     */
+    public PostUsersHandler(AuthService authService, Gson gson, JsonValidationService jsonValidationService) {
+        this.authService = authService;
         this.gson = gson;
+        this.jsonValidationService = jsonValidationService;
     }
 
+    /**
+     * Handles sign up request for POST:/users endpoint.
+     * Validates request from event body, forwards request and receives response from Auth Service, validates response,
+     * if received request and generated response are correct and there is no exception raised during this operation,
+     * generates response for POST:/users with HTTP status code 201. Otherwise, will return error message with status
+     * code 400.
+     *
+     * @param event {@code APIGatewayProxyRequestEvent} caught APIGatewayProxyRequestEvent
+     * @param context {@code Context} Lambda executable context
+     * @return {@code APIGatewayProxyResponseEvent} response as the result of handling request for POST:/users endpoint
+     */
     @Override
-    public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent requestEvent, Context context) {
-        logger.info("PostUsersHandler");
+    public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent event, Context context) {
         try {
-            // extracting user data from request body
-            UserSignUpRequest requestedUser = extractRequestedUser(requestEvent.getBody());
+            LoggerService.info("[POST @ /users] Request received {}", gson.toJson(event));
+            UserSignUpRequest request = gson.fromJson(event.getBody(), UserSignUpRequest.class);
 
-            // adding new user to the database
-            UserSignUpResponse response =
-                    userService.create(requestedUser);
+            LoggerService.warn("[POST @ /users] Validating received request...");
+            jsonValidationService.validateModelByJsonSchema(
+                    JsonValidationSchema.SIGNUP_REQUEST.getSchema(), gson.toJson(request)
+            );
+            LoggerService.info("[POST @ /users] Received request was validated successfully!");
 
-            // adding new user to the cognito pool
-            cognitoService.addUserToCognito(requestedUser.getEmail(), requestedUser.getPassword());
+            LoggerService.warn("[POST @ /users] Processing response...");
+            UserSignUpResponse response = authService.userSignUp(request);
+            LoggerService.info("[POST @ /users] Response received");
 
-            // authenticating new user
-            response.setAccessToken(cognitoService.getAccessToken(requestedUser.getEmail(), requestedUser.getPassword()));
+            LoggerService.warn("[POST @ /users] Validating response {}", gson.toJson(response));
+            jsonValidationService.validateModelByJsonSchema(
+                    JsonValidationSchema.SIGNUP_RESPONSE.getSchema(), gson.toJson(response)
+            );
+            LoggerService.info("[POST @ /users] Response was validated successfully!");
 
             return new APIGatewayProxyResponseEvent()
                     .withStatusCode(201)
                     .withBody(gson.toJson(response));
-
-        } catch (Exception exception){
-            logger.error(exception.getMessage());
+        } catch (AuthException | UserNotFoundException | ValidationSchemaException serviceException) {
+            LoggerService.error("[POST @ /users] Request or response was interrupted due to {}",
+                    gson.toJson(serviceException.getMessage()));
             return new APIGatewayProxyResponseEvent()
                     .withStatusCode(400)
-                    .withBody(exception.getMessage());
-        }
-    }
-
-    /**
-     * Extracts user data from request body
-     * @param body request body
-     * @return UserSignUpRequest with user data
-     * @throws Exception in case of invalid user parameters in the body
-     */
-    private UserSignUpRequest extractRequestedUser(String body) throws Exception {
-
-        logger.info("extractRequestedUser");
-
-        try {
-            Map<String, Object> requestBody = objectMapper.readValue(body, Map.class);
-
-            UserSignUpRequest requestedUser = new UserSignUpRequest();
-            requestedUser.setFirstName((String) requestBody.get("firstName"));
-            requestedUser.setLastName((String) requestBody.get("lastName"));
-            requestedUser.setEmail((String) requestBody.get("email"));
-            requestedUser.setPassword((String) requestBody.get("password"));
-
-            // todo
-            // validation
-
-            logger.info("User data extracted");
-
-            return requestedUser;
-
-        } catch (Exception exception) {
-            logger.error("Invalid user parameters");
-            throw new Exception("Invalid user parameters");
+                    .withBody(gson.toJson(Map.of("message", serviceException.getMessage())));
         }
     }
 }

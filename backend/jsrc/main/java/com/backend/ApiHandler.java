@@ -28,8 +28,16 @@ import static com.syndicate.deployment.model.environment.ValueTransformer.USER_P
  * Contains annotation configuration for Lambda function.
  */
 @DependsOn(name = "${user_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${faq_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${car_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${about_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${location_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${support_agents_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${home_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${faq_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${cars_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${booking_table}", resourceType = ResourceType.DYNAMODB_TABLE)
+@DependsOn(name = "${feedback_table}", resourceType = ResourceType.DYNAMODB_TABLE)
 @DependsOn(name = "${cognito_user_pool}", resourceType = ResourceType.COGNITO_USER_POOL)
 @LambdaHandler(
 		lambdaName = "api_handler",
@@ -42,12 +50,25 @@ import static com.syndicate.deployment.model.environment.ValueTransformer.USER_P
 )
 @DynamoDbEvents({
 		@DynamoDbTriggerEventSource(targetTable = "${user_table}", batchSize = 10),
+		@DynamoDbTriggerEventSource(targetTable = "${faq_table}", batchSize = 10),
+		@DynamoDbTriggerEventSource(targetTable = "${location_table}", batchSize = 10),
+		@DynamoDbTriggerEventSource(targetTable = "${car_table}", batchSize = 10),
+		@DynamoDbTriggerEventSource(targetTable = "${about_table}", batchSize = 10),
+		@DynamoDbTriggerEventSource(targetTable = "${feedback_table}", batchSize = 10),
 })
 @EnvironmentVariables({
 		@EnvironmentVariable(key = "REGION", value = "${region}"),
 		@EnvironmentVariable(key = "USERS_TABLE", value = "${user_table}"),
+		@EnvironmentVariable(key = "SUPPORT_AGENTS_TABLE", value = "${support_agents_table}"),
 		@EnvironmentVariable(key = "HOME_TABLE", value = "${home_table}"),
 		@EnvironmentVariable(key = "FAQ_TABLE", value = "${faq_table}"),
+		@EnvironmentVariable(key = "CARS_TABLE", value = "${cars_table}"),
+		@EnvironmentVariable(key = "BOOKING_TABLE", value = "${booking_table}"),
+		@EnvironmentVariable(key = "FAQ_TABLE", value = "${faq_table}"),
+		@EnvironmentVariable(key = "CARS_TABLE", value = "${car_table}"),
+		@EnvironmentVariable(key = "LOCATIONS_TABLE", value = "${location_table}"),
+		@EnvironmentVariable(key = "ABOUT_TABLE", value = "${about_table}"),
+		@EnvironmentVariable(key = "FEEDBACK_TABLE", value = "${feedback_table}"),
 		@EnvironmentVariable(key = "COGNITO_ID", value = "${cognito_user_pool}",
 				valueTransformer = USER_POOL_NAME_TO_USER_POOL_ID),
 		@EnvironmentVariable(key = "CLIENT_ID", value = "${cognito_user_pool}",
@@ -56,26 +77,27 @@ import static com.syndicate.deployment.model.environment.ValueTransformer.USER_P
 public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
 	/**
-	 * Represents built and initialized application
+	 * Initialised Car Rent Application.
 	 */
 	private final CarRentApplication carRentApplication = DaggerCarRentApplication.create();
 
 	/**
-	 * Represents main handler for request events handling
+	 * Initialised General endpoint handler.
 	 */
 	private final EndpointHandler generalHandler = carRentApplication.getGeneralApiHandler();
 
 	/**
-	 * Represents cors headers map
+	 * Initialised CORS headers.
 	 */
 	private final Map<String, String> corsHeaders = carRentApplication.getCorsHeaders();
 
 	/**
-	 * Entry point, which handles request event from API Gateway.
+	 * Main execution method, entry point for Lambda function execution, catches request from API Gateway and
+	 * forwards it to General handler for resolution.
 	 *
-	 * @param event {@code APIGatewayProxyRequestEvent} requested event for handling
-	 * @param context {@code Context} context of the request
-	 * @return {@code APIGatewayProxyResponseEvent} response to handled request event
+	 * @param event {@code APIGatewayProxyRequestEvent} caught APIGatewayProxyRequestEvent
+	 * @param context {@code Context} Lambda executable context
+	 * @return {@code APIGatewayProxyResponseEvent} response as the result of handling request
 	 */
 	@Override
 	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent event, Context context) {

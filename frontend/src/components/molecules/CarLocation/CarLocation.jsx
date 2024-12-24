@@ -10,7 +10,7 @@ const CarLocation = ({model, location}) => {
     )
 }
 
-CarLocation.PropTypes = {
+CarLocation.propTypes = {
     model: PropTypes.string.isRequired,
     location: PropTypes.string.isRequired
 }

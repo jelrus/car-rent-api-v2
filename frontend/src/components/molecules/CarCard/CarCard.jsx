@@ -6,9 +6,9 @@ import Button from '../../atoms/Button/Button.jsx';
 import './CarCard.css';
 
 const CarCard = ({car}) => {
-    // const handleBooking = () => {
-    //     console.log(`Booking car: ${car.model}`);
-    // };
+    const handleBooking = () => {
+        console.log(`Booking car: ${car.model}`);
+    };
 
     const handleDetails = () => {
         console.log(`Viewing details for: ${car.model}`);
@@ -21,14 +21,15 @@ const CarCard = ({car}) => {
                 <div className='car-card__status'>{car.status}</div>
             </div>
             <div className='car-card__info'>
-                <CarLocation model={car.model} location={car.location} />
-                <Rating rating={car.carRating} />
+                <CarLocation model={car.model} location={car.location}/>
+                <Rating rating={car.carRating}/>
             </div>
-            <Button text={`Book the car - ${car.pricePerDay}/day`} type='secondary' />
+            {/*<Button text={`Book the car - ${car.pricePerDay}/day`} type='secondary'/>*/}
+            <Button text={`Book the car - ${car.pricePerDay}/day`} type='secondary' onClick={handleBooking} />
 
-            {/*<Button text='Book the car' onClick={handleBooking} />*/}
-            <a href='#'>See more details</a>
-            {/*<Button text='See more details' onClick={handleDetails} />*/}
+            {/*<a href='#'>See more details</a>*/}
+            <a href='#' onClick={handleDetails}>See more details</a>
+
         </div>
     )
 }

@@ -16,7 +16,7 @@ const Rating = ({ rating }) => {
     );
 };
 
-Rating.PropTypes = {
+Rating.propTypes = {
     rating: PropTypes.number.isRequired,
 };
 

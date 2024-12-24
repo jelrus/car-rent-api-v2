@@ -1,0 +1,63 @@
+.cars-page__car-list {
+    transition: opacity 0.3s ease-in-out;
+}
+
+.cars-page__car-list.fade-out {
+    opacity: 0;
+}
+
+.cars-page__car-list.fade-in {
+    opacity: 1;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    margin-top: 32px;
+    margin-bottom: 55px;
+}
+
+.pagination-number {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination-number.active {
+    background-color: #000000;
+    color: white;
+    font-weight: bold;
+}
+
+.pagination-number:hover {
+    background-color: #bab6b6;
+}
+
+.pagination-arrow {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #000000;
+}
+
+.pagination-arrow:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.pagination-number.inactive {
+    background: none;
+    color: black;
+    cursor: pointer;
+}

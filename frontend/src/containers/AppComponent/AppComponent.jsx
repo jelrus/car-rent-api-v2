@@ -1,15 +1,16 @@
-// import LogInPage from "@pages/LogInPage/LogInPage.jsx";
+import RegistrationPage from "@pages/RegistrationPage/RegistrationPage";
 import './App.css'
-
-import CarsPage from "@pages/CarsPage/CarsPage.jsx";
-
+import store from "@/redux/store";
+import { Provider } from 'react-redux';
 function App() {
   return (
     <div className="App">
-      {/*<LogInPage/>*/}
-        <CarsPage />
+    <Provider store={store}>
+      <RegistrationPage/>
+    </Provider>
     </div>
   );
 }
 
 export default App;
+
