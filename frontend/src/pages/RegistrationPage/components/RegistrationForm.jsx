@@ -5,18 +5,8 @@ import { registerUser } from '@redux/slices/registrationSlice';
 import AuthField from '@/components/atoms/AuthField/AuthField';
 import Button from '@components/atoms/Button/Button';
 import './RegistrationForm.css';
-import { registerUser } from '@redux/slices/registrationSlice';
-import AuthField from '@/components/atoms/AuthField/AuthField';
-import Button from '@components/atoms/Button/Button';
-import './RegistrationForm.css';
 
 const RegistrationForm = () => {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-  });
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -30,11 +20,8 @@ const RegistrationForm = () => {
   const dispatch = useDispatch();
   const { isAuth, loading, error } = useSelector((state) => state.register);
   const navigate = useNavigate();
-  const { isAuth, loading, error } = useSelector((state) => state.register);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuth) navigate('/home');
     if (isAuth) navigate('/home');
   }, [isAuth, navigate]);
 
@@ -73,11 +60,6 @@ const RegistrationForm = () => {
       acc[field] = validateField(field, formData[field]);
       return acc;
     }, {});
-  const validateUserRegistration = () => {
-    const newErrors = Object.keys(formData).reduce((acc, field) => {
-      acc[field] = validateField(field, formData[field]);
-      return acc;
-    }, {});
     setErrors(newErrors);
     return Object.values(newErrors).every((error) => !error);
   };
@@ -107,10 +89,7 @@ const RegistrationForm = () => {
     });
 
     if (!validateUserRegistration()) return;
-    if (!validateUserRegistration()) return;
 
-    setPasswordInfoVisible(false);
-    dispatch(registerUser(formData));
     setPasswordInfoVisible(false);
     dispatch(registerUser(formData));
   };
@@ -122,83 +101,66 @@ const RegistrationForm = () => {
       email: '',
       password: '',
     });
-    setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-    });
     setErrors({});
     setTouchedFields({});
     setPasswordInfoVisible(true);
   };
 
-
   return (
-    <div className='registration-form'>
-      <div className='registration-form__title'>
+    <div className="registration-form">
+      <div className="registration-form__title">
         <h2>Create an account</h2>
         <p>Enter your details below to get started</p>
       </div>
 
-      <div className='registration-form__block'>
-        <div className='registration-form__block-name'>
+      <div className="registration-form__block">
+        <div className="registration-form__block-name">
           <AuthField
-            id='firstName'
-            name='firstName'
-            name='firstName'
-            type='text'
-            placeholder='Write your name'
-            label='First Name'
-            value={formData.firstName}
-            onChange={handleChange}
+            id="firstName"
+            name="firstName"
+            type="text"
+            placeholder="Write your name"
+            label="First Name"
             value={formData.firstName}
             onChange={handleChange}
             onBlur={() => handleFieldBlur('firstName')}
             underMessage={touchedFields.firstName ? errors.firstName : ''}
-            typeUnderMessage='error'
+            typeUnderMessage="error"
           />
 
           <AuthField
-            id='lastName'
-            name='lastName'
-            name='lastName'
-            type='text'
-            placeholder='Write your surname'
-            label='Last Name'
-            value={formData.lastName}
-            onChange={handleChange}
+            id="lastName"
+            name="lastName"
+            type="text"
+            placeholder="Write your surname"
+            label="Last Name"
             value={formData.lastName}
             onChange={handleChange}
             onBlur={() => handleFieldBlur('lastName')}
             underMessage={touchedFields.lastName ? errors.lastName : ''}
-            typeUnderMessage='error'
+            typeUnderMessage="error"
           />
         </div>
 
         <AuthField
-          id='email'
-          name='email'
-          name='email'
-          type='email'
-          placeholder='Write your email'
-          label='Email'
-          value={formData.email}
-          onChange={handleChange}
+          id="email"
+          name="email"
+          type="email"
+          placeholder="Write your email"
+          label="Email"
           value={formData.email}
           onChange={handleChange}
           onBlur={() => handleFieldBlur('email')}
           underMessage={touchedFields.email ? errors.email : ''}
-          typeUnderMessage='error'
+          typeUnderMessage="error"
         />
 
         <AuthField
-          id='password'
-          name='password'
-          name='password'
-          type='password'
-          placeholder='Create password'
-          label='Password'
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Create password"
+          label="Password"
           value={formData.password}
           onChange={handleChange}
           onBlur={() => handleFieldBlur('password')}
@@ -212,35 +174,25 @@ const RegistrationForm = () => {
           typeUnderMessage={passwordInfoVisible ? 'info' : 'error'}
         />
 
-        <div className='registration-form__block-button'>
-          <Button text='Cancel' type='secondary' onClick={handleCancel} />
+        <div className="registration-form__block-button">
+          <Button text="Cancel" type="secondary" onClick={handleCancel} />
           <Button
-            text='Register'
-            type='primary'
+            text="Register"
+            type="primary"
             onClick={handleSubmit}
             disabled={loading}
           />
         </div>
 
         {error && (
-          <div className='registration-form__error'>
+          <div className="registration-form__error">
             <p>{error}</p>
           </div>
         )}
 
-        <div className='registration-form__login-link'>
+        <div className="registration-form__login-link">
           <p>Already have an account?</p>
-          <Link to='/login'>Log In</Link>
-
-        {error && (
-          <div className='registration-form__error'>
-            <p>{error}</p>
-          </div>
-        )}
-
-        <div className='registration-form__login-link'>
-          <p>Already have an account?</p>
-          <Link to='/login'>Log In</Link>
+          <Link to="/login">Log In</Link>
         </div>
       </div>
     </div>
