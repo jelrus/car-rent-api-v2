@@ -216,7 +216,7 @@
       "/v1/cars/{carId}/booked-days": {
         "enable_cors": true,
         "GET": {
-          "authorization_type": "NONE",
+          "authorization_type": "authorizer",
           "integration_type": "lambda",
           "lambda_name": "api_handler",
           "enable_proxy": true
@@ -234,7 +234,7 @@
       "/v1/bookings": {
         "enable_cors": true,
         "POST": {
-          "authorization_type": "NONE",
+          "authorization_type": "authorizer",
           "integration_type": "lambda",
           "lambda_name": "api_handler",
           "enable_proxy": true
@@ -243,7 +243,7 @@
       "/v1/bookings/{clientId}": {
         "enable_cors": true,
         "GET": {
-          "authorization_type": "NONE",
+          "authorization_type": "authorizer",
           "integration_type": "lambda",
           "lambda_name": "api_handler",
           "enable_proxy": true
