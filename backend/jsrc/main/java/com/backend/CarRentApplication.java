@@ -7,8 +7,8 @@ import com.backend.service.ServiceModule;
 import com.backend.utils.UtilsModule;
 import dagger.Component;
 
-import javax.inject.Singleton;
 import javax.inject.Named;
+import javax.inject.Singleton;
 import java.util.Map;
 
 /**

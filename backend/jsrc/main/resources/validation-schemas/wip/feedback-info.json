@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Feedback information",
+  "properties": {
+    "author": {
+      "type": "string",
+      "description": "Feedback author",
+      "example": "John S., New York, USA"
+    },
+    "carImageUrl": {
+      "type": "string",
+      "description": "Car image URL",
+      "example": "https://application.s3.eu-central-1.amazonaws.com/img/cars/audi-A6-quattro-2023.jpg"
+    },
+    "carModel": {
+      "type": "string",
+      "description": "Car model",
+      "example": "Audi A6 Quattro 2023"
+    },
+    "carRating": {
+      "type": "string",
+      "description": "Car rating",
+      "example": "4.5"
+    },
+    "date": {
+      "type": "string",
+      "description": "Feedback date",
+      "example": "05.10.2024"
+    },
+    "feedbackId": {
+      "type": "string",
+      "description": "Feedback ID",
+      "example": "71ddc0d2-320b-41e0-9c57-8b6290de7a27"
+    },
+    "feedbackText": {
+      "type": "string",
+      "description": "Feedback text",
+      "example": "I am very satisfied with the service!"
+    },
+    "orderHistory": {
+      "type": "string",
+      "description": "Order history",
+      "example": "#2437 (05.10.2024)"
+    },
+    "serviceRating": {
+      "type": "string",
+      "description": "Service rating",
+      "example": "4.8"
+    }
+  }
+}

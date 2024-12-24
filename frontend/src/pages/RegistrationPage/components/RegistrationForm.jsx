@@ -80,13 +80,6 @@ const RegistrationForm = () => {
     }));
   };
 
-  const handlePasswordChange = (e) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      password: e.target.value,
-    }));
-  };
-
   const handleSubmit = () => {
     setTouchedFields({
       firstName: true,
@@ -169,7 +162,7 @@ const RegistrationForm = () => {
           placeholder="Create password"
           label="Password"
           value={formData.password}
-          onChange={handlePasswordChange}
+          onChange={handleChange}
           onBlur={() => handleFieldBlur('password')}
           underMessage={
             touchedFields.password

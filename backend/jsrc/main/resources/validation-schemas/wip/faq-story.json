@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "FAQ story",
+  "properties": {
+    "answer": {
+      "type": "string",
+      "description": "F&Q story answer",
+      "example": "To rent a car, you will need a valid driver's license, a credit card in your name, and a government-issued photo ID (such as a passport or national ID). International renters may also need to present an International Driving Permit (IDP) in addition to their home country driver’s license."
+    },
+    "question": {
+      "type": "string",
+      "description": "F&Q story question",
+      "example": "What documents do I need to rent a car?"
+    }
+  }
+}

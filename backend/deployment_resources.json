@@ -68,7 +68,7 @@
       ]
     }
   },
-  "${user_table}": {
+  "${users_table}": {
     "resource_type": "dynamodb_table",
     "hash_key_name": "userId",
     "hash_key_type": "S",
@@ -82,16 +82,30 @@
     "read_capacity": 25,
     "write_capacity": 10
   },
-  "${home_table}": {
+  "${faq_table}": {
     "resource_type": "dynamodb_table",
-    "hash_key_name": "id",
+    "hash_key_name": "contentId",
+    "hash_key_type": "N",
+    "read_capacity": 25,
+    "write_capacity": 10
+  },
+  "${about_us_table}": {
+    "resource_type": "dynamodb_table",
+    "hash_key_name": "contentId",
+    "hash_key_type": "N",
+    "read_capacity": 25,
+    "write_capacity": 10
+  },
+  "${reviews_table}": {
+    "resource_type": "dynamodb_table",
+    "hash_key_name": "reviewId",
     "hash_key_type": "S",
     "read_capacity": 25,
     "write_capacity": 10
   },
-  "${faq_table}": {
+  "${locations_table}": {
     "resource_type": "dynamodb_table",
-    "hash_key_name": "id",
+    "hash_key_name": "locationId",
     "hash_key_type": "S",
     "read_capacity": 25,
     "write_capacity": 10
@@ -99,41 +113,6 @@
   "${cars_table}": {
     "resource_type": "dynamodb_table",
     "hash_key_name": "carId",
-    "hash_key_type": "S",
-    "read_capacity": 25,
-    "write_capacity": 10
-  },
-  "${booking_table}": {
-    "resource_type": "dynamodb_table",
-    "hash_key_name": "bookingId",
-    "hash_key_type": "S",
-    "read_capacity": 25,
-    "write_capacity": 10
-  },
-  "${about_table}": {
-    "resource_type": "dynamodb_table",
-    "hash_key_name": "id",
-    "hash_key_type": "S",
-    "read_capacity": 25,
-    "write_capacity": 10
-  },
-  "${car_table}": {
-    "resource_type": "dynamodb_table",
-    "hash_key_name": "carId",
-    "hash_key_type": "S",
-    "read_capacity": 25,
-    "write_capacity": 10
-  },
-  "${location_table}": {
-    "resource_type": "dynamodb_table",
-    "hash_key_name": "locationId",
-    "hash_key_type": "S",
-    "read_capacity": 25,
-    "write_capacity": 10
-  },
-  "${feedback_table}": {
-    "resource_type": "dynamodb_table",
-    "hash_key_name": "feedbackId",
     "hash_key_type": "S",
     "read_capacity": 25,
     "write_capacity": 10
@@ -237,7 +216,7 @@
       "/v1/cars/{carId}/booked-days": {
         "enable_cors": true,
         "GET": {
-          "authorization_type": "NONE",
+          "authorization_type": "authorizer",
           "integration_type": "lambda",
           "lambda_name": "api_handler",
           "enable_proxy": true
@@ -255,7 +234,7 @@
       "/v1/bookings": {
         "enable_cors": true,
         "POST": {
-          "authorization_type": "NONE",
+          "authorization_type": "authorizer",
           "integration_type": "lambda",
           "lambda_name": "api_handler",
           "enable_proxy": true
@@ -264,7 +243,7 @@
       "/v1/bookings/{clientId}": {
         "enable_cors": true,
         "GET": {
-          "authorization_type": "NONE",
+          "authorization_type": "authorizer",
           "integration_type": "lambda",
           "lambda_name": "api_handler",
           "enable_proxy": true

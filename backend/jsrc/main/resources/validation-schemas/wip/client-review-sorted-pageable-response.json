@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Payload for response with sorted pageable list of client reviews",
+  "properties": {
+    "content": {
+      "type": "array",
+      "items": {
+        "$ref": "/validation-schemas/wip/client-review.json"
+      }
+    },
+    "currentPage": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "totalElements": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "totalPages": {
+      "type": "integer",
+      "format": "int32"
+    }
+  }
+}

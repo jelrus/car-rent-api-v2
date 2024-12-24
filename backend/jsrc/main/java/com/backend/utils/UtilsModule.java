@@ -1,11 +1,5 @@
 package com.backend.utils;
 
-import com.backend.mapper.CarMapper;
-import com.backend.mapper.CarMapperImpl;
-import com.backend.mapper.FeedbackMapper;
-import com.backend.mapper.FeedbackMapperImpl;
-import com.backend.mapper.LocationMapper;
-import com.backend.mapper.LocationMapperImpl;
 import com.backend.utils.services.JsonValidationService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -67,7 +61,7 @@ public class UtilsModule {
         );
     }
 
-    @Singleton
+    /*@Singleton
     @Provides
     @Named("carMapper")
     CarMapper provideCarMapper() {
@@ -85,5 +79,5 @@ public class UtilsModule {
     @Named("locationMapper")
     LocationMapper provideLocationMapper() {
         return new LocationMapperImpl();
-    }
-    }
+    }*/
+}

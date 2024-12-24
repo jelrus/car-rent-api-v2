@@ -1,13 +1,7 @@
 package com.backend.dao;
 
-import com.backend.dao.impl.AboutDaoImpl;
-import com.backend.dao.impl.AuthDaoImpl;
-import com.backend.dao.impl.FaqDaoImpl;
-import com.backend.dao.impl.FeedbackDaoImpl;
-import com.backend.dao.impl.LocationDaoImpl;
-import com.backend.dao.impl.PopularCarDaoImpl;
-import com.backend.dao.impl.UserDaoImpl;
-import com.backend.utils.components.Envs;
+import com.backend.dao.impl.*;
+import com.backend.utils.properties.Envs;
 import com.google.gson.Gson;
 import dagger.Module;
 import dagger.Provides;
@@ -16,7 +10,6 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 @Module
@@ -48,36 +41,19 @@ public class DaoModule {
 
     @Singleton
     @Provides
-    @Named("faqDao")
-    FaqDao provideFaqDao() {
-        return new FaqDaoImpl(provideDynamoDbEnhancedClient());
+    BookingDao provideBookingDao(DynamoDbEnhancedClient dbClient, Gson gson) {
+        return new BookingDaoImpl(dbClient, gson);
     }
 
     @Singleton
     @Provides
-    @Named("popularCarDao")
+    CarDao provideCarDao(DynamoDbEnhancedClient dbClient, Gson gson) {
+        return new CarDaoImpl(dbClient, gson);
+    }
+
+    @Singleton
+    @Provides
     PopularCarDao providePopularCarDao() {
         return new PopularCarDaoImpl(provideDynamoDbEnhancedClient());
-    }
-
-    @Singleton
-    @Provides
-    @Named("locationDao")
-    LocationDao provideLocationDao() {
-        return new LocationDaoImpl(provideDynamoDbEnhancedClient());
-    }
-
-    @Singleton
-    @Provides
-    @Named("aboutDao")
-    AboutDao provideAboutDao() {
-        return new AboutDaoImpl(provideDynamoDbEnhancedClient());
-    }
-
-    @Singleton
-    @Provides
-    @Named("feedbackDao")
-    FeedbackDao provideFeedbackDao() {
-        return new FeedbackDaoImpl(provideDynamoDbEnhancedClient());
     }
 }

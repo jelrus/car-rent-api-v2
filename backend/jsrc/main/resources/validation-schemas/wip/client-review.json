@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Client review",
+  "properties": {
+    "author": {
+      "type": "string",
+      "description": "Author name",
+      "example": "Sarah L."
+    },
+    "authorImageUrl": {
+      "type": "string",
+      "description": "Author image URL",
+      "example": "https://application.s3.eu-central-1.amazonaws.com/img/users/f47ac10b-58cc-4372-a567-0e02b2c3d479.png"
+    },
+    "date": {
+      "type": "string",
+      "description": "Date of review",
+      "example": "01.11.2024"
+    },
+    "rentalExperience": {
+      "type": "string",
+      "description": "Car model",
+      "example": "4.5"
+    },
+    "text": {
+      "type": "string",
+      "description": "Review text",
+      "example": "I rented a car for a week. The car was in good condition, the service was excellent. I am very satisfied with the service!"
+    }
+  }
+}
