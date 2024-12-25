@@ -1,6 +1,5 @@
 import './BookingsPage.css';
-import classNames from 'classnames';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBookings } from '@/redux/slices/bookingsSlice';
@@ -72,7 +71,7 @@ const BookingsPage = () => {
           {tabs.map(({ id, path, status, title }) => (
             <li
               key={id}
-              className={classNames('tab-item', { 'is-active': path === tabId })}
+              className={`tab-item ${path === tabId ? 'is-active' : ''}`}
               onClick={() => handleFilterChange(status)}
             >
               <Link to={`/bookings/${path}`} className='tab-link'>{title}</Link>
