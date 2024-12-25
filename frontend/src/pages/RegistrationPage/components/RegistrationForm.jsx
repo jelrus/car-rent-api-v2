@@ -18,12 +18,14 @@ const RegistrationForm = () => {
   const [passwordInfoVisible, setPasswordInfoVisible] = useState(true);
 
   const dispatch = useDispatch();
-  const { isAuth, loading, error } = useSelector((state) => state.register);
+  const { loading, error } = useSelector((state) => state.register);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuth) navigate('/home');
-  }, [isAuth, navigate]);
+    if (sessionStorage.getItem('token')) {
+      navigate('/home');
+    }
+  }, [navigate]);
 
   const validateField = (name, value) => {
     let error = '';
@@ -200,4 +202,3 @@ const RegistrationForm = () => {
 };
 
 export default RegistrationForm;
-

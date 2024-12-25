@@ -1,5 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import registrationReducer from './reducers/registerReducer';
+import registrationReducer from './slices/registrationSlice';
 import authReducer from './slices/authSlice';
 import carsReducer from './slices/carsSlice';
 import bookingsReducer from './slices/bookingsSlice'

@@ -8,6 +8,15 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/signup`, userData);
+      const { accessToken, userId, role, userImageUrl, username, email } = response.data;
+
+      sessionStorage.setItem('token', accessToken);
+      sessionStorage.setItem('userId', userId);
+      sessionStorage.setItem('role', role);
+      sessionStorage.setItem('userImageUrl', userImageUrl);
+      sessionStorage.setItem('username', username);
+      sessionStorage.setItem('email', email);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -16,26 +25,39 @@ export const registerUser = createAsyncThunk(
 );
 
 const initialState = {
-  accessToken: null,
-  user: null,
-  role: null,
+  token: sessionStorage.getItem('token') || null,
+  user: {
+    role: sessionStorage.getItem('role') || null,
+    userId: sessionStorage.getItem('userId') || null,
+    userImageUrl: sessionStorage.getItem('userImageUrl') || null,
+    username: sessionStorage.getItem('username') || null,
+    email: sessionStorage.getItem('email') || null,
+  },
   error: null,
   loading: false,
-  isAuth: false,
 };
 
 const registrationSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setAccessToken: (state, action) => {
-      state.accessToken = action.payload;
-      state.isAuth = true;
+    logOut: (state) => {
+      state.token = null;
+      state.user.role = null;
+      state.user.userId = null;
+      state.user.userImageUrl = null;
+      state.user.username = null;
+      state.user.email = null;
+
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('userId');
+      sessionStorage.removeItem('role');
+      sessionStorage.removeItem('userImageUrl');
+      sessionStorage.removeItem('username');
+      sessionStorage.removeItem('email');
     },
-    logout: (state) => {
-      state.accessToken = null;
-      state.isAuth = false;
-      state.user = null;
+    setAuthError: (state, action) => {
+      state.error = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -46,20 +68,20 @@ const registrationSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.username;
-        state.role = action.payload.role;
-        state.accessToken = action.payload.accessToken;
-        state.isAuth = true;
+        state.token = action.payload.accessToken;
+        state.user.role = action.payload.role;
+        state.user.userId = action.payload.userId;
+        state.user.userImageUrl = action.payload.userImageUrl;
+        state.user.username = action.payload.username;
+        state.user.email = action.payload.email;
         state.error = null;
-        localStorage.setItem('accessToken', action.payload.accessToken);
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.isAuth = false;
       });
   },
 });
 
-export const { setAccessToken, logout } = registrationSlice.actions;
+export const { logOut, setAuthError } = registrationSlice.actions;
 export default registrationSlice.reducer;
