@@ -1,26 +1,19 @@
-import { Outlet, Link } from 'react-router-dom';
-import './App.css'
+import { Outlet } from 'react-router';
+import './App.css';
+import Header from './components/core/Headers/Header';
+import Footer from './components/core/Footers/Footer';
 
-const App = () =>  {
+function App() {
   return (
-    <div className='App'>
+    <div className='container'>
       <header>
-        <nav>
-          <ul>
-            <li><Link to="/home">Home</Link></li>
-            <li><Link to="/cars">Cars</Link></li>
-            <li><Link to="/login">Log In</Link></li>
-            <li><Link to="/signup">Register</Link></li>
-            <li><Link to="/bookings">Bookings</Link></li>
-            <li><Link to="/booking/1">Booking Page</Link></li>
-          </ul>
-        </nav>
+        <Header />
       </header>
       <main className='main'>
         <Outlet />
       </main>
       <footer>
-        <p>Car Rent</p>
+        <Footer />
       </footer>
     </div>
   );

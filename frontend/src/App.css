@@ -1,8 +1,18 @@
 .App {
   max-width: 1440px;
   margin-inline: auto;
+  background-color: #fffbf3;
+  height: 100%;
 }
+
+.container {
+  background-color: #fffbf3;
+  justify-content: space-between;
+  height: 100vh;
+  flex-direction: column;
+  display: flex;
+}
+
 .main {
   padding-inline: 32px;
-  min-height: calc(100vh - 88px - 118px);
 }
