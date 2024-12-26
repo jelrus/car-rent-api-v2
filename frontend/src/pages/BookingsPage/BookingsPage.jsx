@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBookings } from '@/redux/slices/bookingsSlice';
 import Button from '@/components/atoms/Button/Button';
-import chatIcon from '@/assets/chat-icon.png'
+import chatIcon from '@/assets/chat-icon.png';
+import classNames from 'classnames';
 
 const tabs = [
   { id: 'tab-1', path: 'all', status: 'ALL', title: 'All bookings' },
