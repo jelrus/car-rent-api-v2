@@ -2,9 +2,12 @@ p, h2 {
   margin: 0;
 }
 
+ul {
+  padding: 0;
+}
+
 body {
   margin: 0;
   font-family: "Inter", sans-serif;
+  background-color: #FFFBF3;
 }
-
-

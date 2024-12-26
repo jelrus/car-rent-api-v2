@@ -1,9 +1,8 @@
 .App {
   max-width: 1440px;
   margin-inline: auto;
-  font-family: 'Inter', sans-serif;
 }
-
 .main {
   padding-inline: 32px;
+  min-height: calc(100vh - 88px - 118px);
 }

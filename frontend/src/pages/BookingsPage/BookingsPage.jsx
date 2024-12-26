@@ -1,9 +1,11 @@
 import './BookingsPage.css';
-import classNames from 'classnames';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBookings } from '@/redux/slices/bookingsSlice';
+import Button from '@/components/atoms/Button/Button';
+import chatIcon from '@/assets/chat-icon.png';
+import classNames from 'classnames';
 
 const tabs = [
   { id: 'tab-1', path: 'all', status: 'ALL', title: 'All bookings' },
@@ -59,7 +61,7 @@ const BookingsPage = () => {
   };
 
   if (loading) return <p>Loading bookings...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (error) return <p>something went wrong</p>;
 
   return (
     <div className='bookings-page'>
@@ -68,30 +70,68 @@ const BookingsPage = () => {
       </div>
 
       <div className='bookings-filter'>
-        <ul className='tabs-list'>
+        <ul className='bookings-navbar'>
           {tabs.map(({ id, path, status, title }) => (
             <li
               key={id}
-              className={classNames('tab-item', { 'is-active': path === tabId })}
+              className={classNames('bookings-navitem', { 'is-active': path === tabId })}
               onClick={() => handleFilterChange(status)}
             >
-              <Link to={`/bookings/${path}`} className='tab-link'>{title}</Link>
+              <Link to={`/bookings/${path}`} className='bookings-navlink'>{title}</Link>
             </li>
           ))}
         </ul>
       </div>
 
       <div className='bookings-list'>
-        {filteredBookings.map((booking) => (
-          <li key={booking.bookingId} className='bookings-card'>
-            <img src={booking.carImageUrl} alt={booking.carModel} />
-            <div>
+        {filteredBookings.length === 0 ? (
+          <div>
+            You have not placed an order yet
+          </div>
+        ) : filteredBookings.map((booking) => {
+          const { title } = tabs.find(tab => tab.status === booking.bookingStatus) || '';
+
+          return (
+            <div key={booking.bookingId} className='bookings-card'>
+              <img src={booking.carImageUrl} alt={booking.carModel} />
+              <p>{title}</p>
               <h2>{booking.carModel}</h2>
-              <p>{booking.orderDetails}</p>
-              <p>Status: {booking.bookingStatus}</p>
+              <span>{booking.orderDetails}</span>
+              <div className='card-container' >
+                {booking.bookingStatus === 'RESERVED' && (
+                  <div className='card-buttons'>
+                    <Button
+                      text='Cancel'
+                      type='secondary'
+                      // onClick={handleCancel}
+                      disabled={loading}
+                    />
+                    <Button
+                      text='Edit'
+                      type='primary'
+                      // onClick={handleEdit}
+                      disabled={loading}
+                    />
+                  </div>  
+                )} 
+              </div> 
+              {(booking.bookingStatus === 'RESERVED' 
+              || booking.bookingStatus === 'STARTED' 
+              || booking.bookingStatus === 'CANCELLED')
+              && (
+                <span>
+                  Have any questions?&nbsp;&nbsp;
+                  <a href="#">
+                    Support chat&nbsp;&nbsp;
+                    <img className='card-icon' src={chatIcon} alt="chat-icon" />
+                  </a>
+                  
+                </span>
+              )
+              }
             </div>
-          </li>
-        ))}
+          )
+        } )}
       </div>
     </div>
   );

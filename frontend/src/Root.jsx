@@ -1,12 +1,13 @@
 import { Provider } from 'react-redux';
 import store from "@/redux/store";
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router';
 import HomePage from '@pages/HomePage/HomePage';
 import LogInPage from '@pages/LogInPage/LogInPage';
 import RegistrationPage from '@pages/RegistrationPage/RegistrationPage';
 import App from './App.jsx'
 import CarsPage from '@pages/CarsPage/CarsPage';
 import BookingsPage from './pages/BookingsPage/BookingsPage.jsx';
+import CarBookPage from '@pages/CarBookPage/CarBookPage.jsx';
 
 export const Root = () => (
   <BrowserRouter>
@@ -23,6 +24,7 @@ export const Root = () => (
         </Route> 
         <Route path="/login" element={<LogInPage />} />
         <Route path="/signup" element={<RegistrationPage />} />
+        <Route path="/booking/1" element={<CarBookPage />} />
         <Route path="*" element={<p>Not Found</p>} />
       </Routes>
     </Provider>

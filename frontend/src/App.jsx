@@ -1,17 +1,18 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
 import './App.css'
 
-function App() {
+const App = () =>  {
   return (
-    <div>
+    <div className='App'>
       <header>
         <nav>
           <ul>
-            <li><a href="/home">Home</a></li>
-            <li><a href="/cars">Cars</a></li>
-            <li><a href="/login">Log In</a></li>
-            <li><a href="/signup">Register</a></li>
-            <li><a href="/bookings">Bookings</a></li>
+            <li><Link to="/home">Home</Link></li>
+            <li><Link to="/cars">Cars</Link></li>
+            <li><Link to="/login">Log In</Link></li>
+            <li><Link to="/signup">Register</Link></li>
+            <li><Link to="/bookings">Bookings</Link></li>
+            <li><Link to="/booking/1">Booking Page</Link></li>
           </ul>
         </nav>
       </header>
