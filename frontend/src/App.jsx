@@ -12,6 +12,7 @@ const App = () =>  {
             <li><Link to="/login">Log In</Link></li>
             <li><Link to="/signup">Register</Link></li>
             <li><Link to="/bookings">Bookings</Link></li>
+            <li><Link to="/booking/1">Booking Page</Link></li>
           </ul>
         </nav>
       </header>

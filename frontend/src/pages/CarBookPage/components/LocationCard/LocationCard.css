@@ -1,0 +1,24 @@
+.location-card {
+  border: 1px solid #000000;
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  column-gap: 50px;
+}
+
+.location-card  .location-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; 
+}
+
+.location-card  .location-header {
+  margin: 5px;
+  font-size: small;
+  font-weight: 300;
+}
+
+.location-card .location-name {
+  font-weight: 600;
+  font-size: 20px;
+}

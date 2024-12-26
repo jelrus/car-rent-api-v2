@@ -1,0 +1,59 @@
+.car-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: #f0f0f0;
+  display: flex;
+  font-size: 16px;
+  gap:0px;
+  flex-direction: column;
+}
+.car-card .content{
+  width: 100%;
+}
+.car-card .title{
+  margin: 0px;
+  font-weight: 500;
+}
+.car-card .location{
+  margin-bottom: 10px;
+  font-size: 14px;
+  color:#000000;
+  text-align: left;
+}
+.car-card .total{
+  margin-bottom: 5px;
+  font-size: 18px;
+  color:#000000;
+  font-weight: 800;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.car-card .deposit{
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+.car-card__image {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.car-card__confirm {
+  padding: 10px 20px;
+  background-color: #af6765;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 20px;
+}
+.car-card .hr{
+  border: 1px solid #dcdcdc;
+  color: #000000;
+  width: 100%;
+  margin: 0px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
