@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import { logOut } from '@/redux/slices/authSlice';
+import profileIcon from '@assets/user-grey-icon.png'
 
 const Header = () => {
   const { username, userImageUrl, role } = useSelector((state) => state.auth.user);
@@ -45,7 +46,7 @@ const Header = () => {
       {role && (
         <div className='auth-header'>
           <div>
-            <img className='userlogo' src={userImageUrl} />
+            <img className='userlogo' src={userImageUrl ? userImageUrl : profileIcon} />
           </div>
           <div className='client-information'>
             <span>

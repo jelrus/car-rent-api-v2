@@ -5,7 +5,7 @@ import  './PasswordField.css';
 import eyeClosedIcon from '@assets/Eye closed.svg';
 import eyeOpenIcon from '@assets/Eye.svg';
 
-const PasswordField = ({ id, placeholder, label, value, onChange, underMessage, typeUnderMessage }) => {
+const PasswordField = ({ id, placeholder, label, value, onChange, underMessage, typeUnderMessage, name }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -19,6 +19,7 @@ const PasswordField = ({ id, placeholder, label, value, onChange, underMessage, 
         <input
           type={showPassword ? 'text' : 'password'}
           id={id}
+          name={name}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
@@ -53,6 +54,7 @@ PasswordField.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  name: PropTypes.string,
   underMessage: PropTypes.string,
   typeUnderMessage: PropTypes.string,
 };
