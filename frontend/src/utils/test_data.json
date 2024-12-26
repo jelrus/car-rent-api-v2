@@ -1,0 +1,151 @@
+{
+	"auth":{
+		"registration_data":{
+			"accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDdhYzEwYi01OGNjLTQzNzItYTU2Ny0wZTAyYjJjM2Q0NzkiLCJuYW1lIjoiSm9obiBTbWl0aCIsImlhdCI6MTUxNjIzOTAyMn0.uDZewMhPPSmImx1e6g4Vf0zsJXyOJlAT8AKcerZitiw",
+			"role": "Client",
+			"userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+			"userImageUrl": "https://application.s3.eu-central-1.amazonaws.com/img/users/default_user.png",
+			"username": "John Smith"
+		},
+		"login_data":{
+			"accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDdhYzEwYi01OGNjLTQzNzItYTU2Ny0wZTAyYjJjM2Q0NzkiLCJuYW1lIjoiSm9obiBTbWl0aCIsImlhdCI6MTUxNjIzOTAyMn0.uDZewMhPPSmImx1e6g4Vf0zsJXyOJlAT8AKcerZitiw",
+			"role": "Client",
+			"userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+			"userImageUrl": "https://application.s3.eu-central-1.amazonaws.com/img/users/f47ac10b-58cc-4372-a567-0e02b2c3d479.png",
+			"username": "John Smith"
+		}
+	},
+	"main_page":{
+		"about-us":{
+			"content": [
+				{
+					"description": "in car rentals highlights a steadfast commitment to excellence, marked by a track record of trust and satisfaction among thousands of clients worldwide",
+					"numericValue": "15",
+					"title": "years"
+				}
+			]
+		},
+		"faq":{
+			"content": [
+				{
+					"answer": "To rent a car, you will need a valid driver's license, a credit card in your name, and a government-issued photo ID (such as a passport or national ID). International renters may also need to present an International Driving Permit (IDP) in addition to their home country driver’s license.",
+					"question": "What documents do I need to rent a car?"
+				}
+			]
+		},
+		"feedbacks":{
+			"content": [
+				{
+					"author": "John S., New York, USA",
+					"carImageUrl": "https://application.s3.eu-central-1.amazonaws.com/img/cars/audi-A6-quattro-2023.jpg",
+					"carModel": "Audi A6 Quattro 2023",
+					"carRating": "4.5",
+					"date": "05.10.2024",
+					"feedbackId": "71ddc0d2-320b-41e0-9c57-8b6290de7a27",
+					"feedbackText": "I am very satisfied with the service!",
+					"orderHistory": "#2437 (05.10.2024)",
+					"serviceRating": "4.8"
+				}
+			]
+		},
+		"locations":{
+			"content": [
+				{
+					"locationAddress": "Alla Tarasova Street 5, Kyiv 01001",
+					"locationId": "9b903ebf-2b18-4946-bc58-045d86a2632e",
+					"locationImageUrl": "https://application.s3.eu-central-1.amazonaws.com/img/locations/9b903ebf-2b18-4946-bc58-045d86a2632e.jpg",
+					"locationName": "Kyiv Hayatt Hotel"
+				}
+			]
+		},
+		"popular-cars":{
+			"content": [
+				{
+					"carId": "92c87432-3383-4328-85f8-7d20ba8715ec",
+					"carRating": "4.5",
+					"imageUrl": "https://application.s3.eu-central-1.amazonaws.com/img/cars/audi-A6-quattro-2023.jpg",
+					"location": "Ukraine, Kyiv",
+					"model": "Audi A6 Quattro 2023",
+					"pricePerDay": "180",
+					"serviceRating": "4.8",
+					"status": "AVAILABLE"
+				}
+			]
+		}
+
+	},
+	"cars":{
+		"all":{
+			"content": [
+				{
+					"carId": "92c87432-3383-4328-85f8-7d20ba8715ec",
+					"carRating": "4.5",
+					"imageUrl": "https://application.s3.eu-central-1.amazonaws.com/img/cars/audi-A6-quattro-2023.jpg",
+					"location": "Ukraine, Kyiv",
+					"model": "Audi A6 Quattro 2023",
+					"pricePerDay": "180",
+					"serviceRating": "4.8",
+					"status": "AVAILABLE"
+				}
+			],
+			"currentPage": 1,
+			"totalElements": 16,
+			"totalPages": 2
+		},
+		"byId":{
+			"carId": "92c87432-3383-4328-85f8-7d20ba8715ec",
+			"carRating": "4.5",
+			"climateControlOption": "CLIMATE_CONTROL",
+			"engineCapacity": "3.0 turbo",
+			"fuelConsumption": "10.0 Liter/100km",
+			"fuelType": "PETROL",
+			"gearBoxType": "AUTOMATIC",
+			"images": [
+				"https://carrent.s3.eu-central-1.amazonaws.com/img/cars/ff7863bf-63eb-4f2e-8041-75a81507acff.jpg"
+			],
+			"location": "Ukraine, Kyiv",
+			"model": "Audi A6 Quattro 2023",
+			"passengerCapacity": "3.0 turbo",
+			"pricePerDay": "180",
+			"serviceRating": "4.8",
+			"status": "AVAILABLE"
+		},
+		"byId-booked_days":{
+			"content": [
+				"2024-06-08",
+				"2024-06-09"
+			]
+		},
+		"byId-clientsReview":{
+			"content": [
+				{
+					"author": "Sarah L.",
+					"authorImageUrl": "https://application.s3.eu-central-1.amazonaws.com/img/users/f47ac10b-58cc-4372-a567-0e02b2c3d479.png",
+					"date": "01.11.2024",
+					"rentalExperience": "4.5",
+					"text": "I rented a car for a week. The car was in good condition, the service was excellent. I am very satisfied with the service!"
+				}
+			],
+			"currentPage": 0,
+			"totalElements": 0,
+			"totalPages": 0
+		}
+	},
+	"bookings":{
+		"book":{
+			"message": "New booking was successfully created. \nAudi A6 Quattro 2023 is booked for Nov 11 - Nov 16 \nYou can change booking details until 10:30 PM 10 Nov.\nYour order: #2437 (08.06.24) "
+		},
+		"byClientId":{
+			"content": [
+				{
+					"bookingId": "ce3d9306-ec01-48a9-9d1a-f9818063c734",
+					"bookingStatus": "RESERVED",
+					"carImageUrl": "https://application.s3.eu-central-1.amazonaws.com/img/cars/audi-A6-quattro-2023.jpg",
+					"carModel": "Audi A6 Quattro 2023",
+					"orderDetails": "#2437 (05.10.2024)"
+				}
+			]
+		}
+	}
+
+}

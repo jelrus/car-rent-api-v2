@@ -1,0 +1,21 @@
+.personal-card {
+  border: 1px solid #000000;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+
+}
+.personal-card .personal-info{
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+
+}
+.personal-card  .personal-info>span{
+  margin-bottom: 5px;
+}
+.personal-card  .personal-info :first-child{
+  color: #000000;
+  font-weight: 700;
+}
