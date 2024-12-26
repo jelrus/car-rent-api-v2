@@ -1,6 +1,6 @@
 import { Provider } from 'react-redux';
 import store from "@/redux/store";
-import { HashRouter, BrowserRouter, Route, Routes, Navigate } from 'react-router';
+import { HashRouter, Route, Routes, Navigate } from 'react-router';
 import HomePage from '@pages/HomePage/HomePage';
 import LogInPage from '@pages/LogInPage/LogInPage';
 import RegistrationPage from '@pages/RegistrationPage/RegistrationPage';
