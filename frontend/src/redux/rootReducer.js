@@ -1,11 +1,9 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import registrationReducer from './slices/registrationSlice';
 import authReducer from './slices/authSlice';
 import carsReducer from './slices/carsSlice';
 import bookingsReducer from './slices/bookingsSlice'
 
 const rootReducer = combineReducers({
-  register: registrationReducer,
   auth: authReducer,
   cars: carsReducer,
   bookings: bookingsReducer,

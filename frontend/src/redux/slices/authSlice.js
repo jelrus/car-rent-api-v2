@@ -1,36 +1,63 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '@/utils/axiosInstance';
 
-export const loginUser = createAsyncThunk('auth/login', async (data) => {
-  const response = await axiosInstance.post('users/login', data);
+const API_URL = import.meta.env.VITE_SERVER_API;
 
-  const { accessToken, userId, role, userImageUrl, username } = response.data;
-  
-  sessionStorage.setItem('token', accessToken);
-  sessionStorage.setItem('userId', userId);
-  sessionStorage.setItem('role', role);
-  sessionStorage.setItem('userImageUrl,', userImageUrl,);
-  sessionStorage.setItem('username', username);
-  sessionStorage.setItem('email', data.email);
+export const loginUser = createAsyncThunk('auth/login', async (data, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.post('users/login', data);
+    const { accessToken, userId, role, userImageUrl, username, email } = response.data;
+    
+    sessionStorage.setItem('token', accessToken);
+    sessionStorage.setItem('userId', userId);
+    sessionStorage.setItem('role', role);
+    sessionStorage.setItem('userImageUrl', userImageUrl);
+    sessionStorage.setItem('username', username);
+    sessionStorage.setItem('email', email);
 
-  return response.data; 
+    return response.data;
+  } catch (error) {
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
 });
 
+export const registerUser = createAsyncThunk(
+  'auth/registerUser',
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(`${API_URL}/signup`, userData);
+      const { accessToken, userId, role, userImageUrl, username, email } = response.data;
+
+      sessionStorage.setItem('token', accessToken);
+      sessionStorage.setItem('userId', userId);
+      sessionStorage.setItem('role', role);
+      sessionStorage.setItem('userImageUrl', userImageUrl);
+      sessionStorage.setItem('username', username);
+      sessionStorage.setItem('email', email);
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+const initialState = {
+  token: sessionStorage.getItem('token') || null,
+  user: {
+    role: sessionStorage.getItem('role') || null,
+    userId: sessionStorage.getItem('userId') || null,
+    userImageUrl: sessionStorage.getItem('userImageUrl') || null,
+    username: sessionStorage.getItem('username') || null,
+    email: sessionStorage.getItem('email') || null,
+  },
+  loading: false,
+  error: null,
+};
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState: {
-    token: sessionStorage.getItem('token') || null,
-    user: {
-      role: sessionStorage.getItem('role') || null,
-      userId: sessionStorage.getItem('userId') || null,
-      userImageUrl: sessionStorage.getItem('userImageUrl') || null,
-      username: sessionStorage.getItem('username') || null,
-      email: sessionStorage.getItem('email') || null,
-    },
-    loading: false,
-    authError: null,
-  },
+  initialState,
   reducers: {
     logOut: (state) => {
       state.token = null;
@@ -48,25 +75,42 @@ const authSlice = createSlice({
       sessionStorage.removeItem('email');
     },
     setAuthError: (state, action) => {
-      state.authError = action.payload;
+      state.error = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.token = action.payload.accessToken;
-        state.user.role = action.payload.role;
-        state.user.userId = action.payload.userId;
-        state.user.userImageUrl = action.payload.userImageUrl;
-        state.user.username = action.payload.username;
+        const { accessToken, userId, role, userImageUrl, username, email } = action.payload;
+        state.token = accessToken;
+        state.user = { userId, role, userImageUrl, username, email };
+        state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.authError = action.error.message;
+        state.error = action.payload;
+      });
+
+    builder
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.loading = false;
+        const { accessToken, userId, role, userImageUrl, username, email } = action.payload;
+        state.token = accessToken;
+        state.user = { userId, role, userImageUrl, username, email };
+        state.error = null;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
