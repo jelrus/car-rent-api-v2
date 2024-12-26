@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '@/utils/axiosInstance';
 
-const API_URL = import.meta.env.VITE_SERVER_API;
-
 export const loginUser = createAsyncThunk('auth/login', async (data, { rejectWithValue }) => {
   try {
     const response = await axiosInstance.post('users/login', data);
@@ -25,7 +23,7 @@ export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post(`${API_URL}/signup`, userData);
+      const response = await axiosInstance.post(`users`, userData);
       const { accessToken, userId, role, userImageUrl, username, email } = response.data;
 
       sessionStorage.setItem('token', accessToken);

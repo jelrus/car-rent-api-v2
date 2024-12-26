@@ -1,9 +1,10 @@
+import AuthField from '@/components/atoms/AuthField/AuthField';
+import PasswordField from '@/components/atoms/PasswordField/PasswordField';
+import Button from '@components/atoms/Button/Button';
+import { registerUser } from '@redux/slices/authSlice';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom';
-import { registerUser } from '@redux/slices/authSlice';
-import AuthField from '@/components/atoms/AuthField/AuthField';
-import Button from '@components/atoms/Button/Button';
+import { Link, useNavigate } from 'react-router-dom';
 import './RegistrationForm.css';
 
 const RegistrationForm = () => {
@@ -18,11 +19,12 @@ const RegistrationForm = () => {
   const [passwordInfoVisible, setPasswordInfoVisible] = useState(true);
 
   const dispatch = useDispatch();
-  const { error, token } = useSelector((state) => state.auth); 
+  const { error, token } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+
   useEffect(() => {
     if (token) {
-      navigate('/home'); 
+      navigate('/home');
     }
   }, [navigate, token]);
 
@@ -75,8 +77,8 @@ const RegistrationForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
+    setFormData((prevFormData) => ({
+      ...prevFormData,
       [name]: value,
     }));
   };
@@ -156,7 +158,7 @@ const RegistrationForm = () => {
           typeUnderMessage='error'
         />
 
-        <AuthField
+        <PasswordField
           id='password'
           name='password'
           type='password'
@@ -187,8 +189,9 @@ const RegistrationForm = () => {
         )}
 
         <div className='registration-form__login-link'>
-          <p>Already have an account?</p>
-          <Link to='/login'>Log In</Link>
+          <p>
+            Already have an account? <Link to='/login'>Log In</Link>
+          </p>
         </div>
       </div>
     </div>
