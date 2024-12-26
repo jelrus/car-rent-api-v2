@@ -6,14 +6,14 @@ const API_URL = import.meta.env.VITE_SERVER_API;
 export const loginUser = createAsyncThunk('auth/login', async (data, { rejectWithValue }) => {
   try {
     const response = await axiosInstance.post('users/login', data);
-    const { accessToken, userId, role, userImageUrl, username, email } = response.data;
+    const { accessToken, userId, role, userImageUrl, username } = response.data;
     
     sessionStorage.setItem('token', accessToken);
     sessionStorage.setItem('userId', userId);
     sessionStorage.setItem('role', role);
     sessionStorage.setItem('userImageUrl', userImageUrl);
     sessionStorage.setItem('username', username);
-    sessionStorage.setItem('email', email);
+    sessionStorage.setItem('email', data.email);
 
     return response.data;
   } catch (error) {

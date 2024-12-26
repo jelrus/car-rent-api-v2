@@ -63,8 +63,8 @@ const LogInForm = () => {
     }
   }, [email, password, token, authError]);
 
-  console.log(token)
-  console.log(userId)
+  console.log(token);
+  console.log(userId);
 
   const handleFieldBlur = (field) => {
     setTouchedFields((prev) => ({ ...prev, [field]: true }));
@@ -91,6 +91,9 @@ const LogInForm = () => {
     if (!validateUserLogin(user)) return;
 
     dispatch(loginUser(user));
+    if (token && !authError) {
+      navigate('/home');
+    }
   };
 
   return (
@@ -132,11 +135,11 @@ const LogInForm = () => {
           typeUnderMessage={passwordInfoVisible ? 'info' : 'error'}
         />
         <Button
-            text='Login'
-            type='primary'
-            onClick={handleSubmit}
-            disabled={loading}
-          />
+          text='Login'
+          type='primary'
+          onClick={handleSubmit}
+          disabled={loading}
+        />
       </div>
 
       <p className='create-account-page'>

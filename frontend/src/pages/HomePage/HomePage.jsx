@@ -1,7 +1,30 @@
+import { useSelector } from 'react-redux';
+import FiltersSection from '../CarsPage/components/FiltersSection';
+
 const HomePage = () => {
+  const {
+    pickupLocations,
+    dropOffLocations,
+    categories,
+    gearBoxies,
+    fuelTypes,
+    minPrice,
+    maxPrice,
+    onApplyFilters,
+  } = useSelector((state) => state.cars);
   return (
     <div>
-      Home Page
+      <FiltersSection
+        title='Choose a car for rental'
+        pickupLocations={pickupLocations}
+        dropOffLocations={dropOffLocations}
+        categories={categories}
+        gearBoxies={gearBoxies}
+        fuelTypes={fuelTypes}
+        minPrice={minPrice}
+        maxPrice={maxPrice}
+        onApplyFilters={onApplyFilters}
+      />
     </div>
   );
 };

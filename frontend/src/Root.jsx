@@ -1,6 +1,6 @@
 import { Provider } from 'react-redux';
 import store from "@/redux/store";
-import { BrowserRouter, Route, Routes } from 'react-router';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router';
 import HomePage from '@pages/HomePage/HomePage';
 import LogInPage from '@pages/LogInPage/LogInPage';
 import RegistrationPage from '@pages/RegistrationPage/RegistrationPage';
@@ -14,7 +14,7 @@ export const Root = () => (
     <Provider store={store}>
       <Routes>
         <Route path="/" element={<App />}>
-          <Route index element={<HomePage />} />
+          <Route index element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/cars" element={<CarsPage />} />  
           <Route path="/bookings">
