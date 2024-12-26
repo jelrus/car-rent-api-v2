@@ -7,39 +7,37 @@
   font-size: 56px;
   font-weight: 600;
   letter-spacing: 1.5px;
+  margin: 56px 0px 50px 8px;
+
 }
 
-.tabs-list {
+.bookings-navbar {
   list-style: none;
   display: flex;
-  padding: 0;
-  margin: 0;
+  gap: 32px;
+  font-weight: 400;
 }
 
-.tab-item {
-  margin: 0 10px; 
-  font-size: 16px; 
-  font-weight: normal; 
+.bookings-navitem {
   cursor: pointer;
-  transition: none; 
-}
-
-.tab-item .tab-link {
+  font-size: 18px;
   text-decoration: none;
-  color: #000; 
+  color:#666666;
+  padding: 8px;
 }
 
-.tab-item .tab-link:hover {
-  font-weight: normal; 
-  color: #555;
+
+.is-active {
+  font-weight: 700;
+  color: #000000;
 }
 
-.tab-item.is-active .tab-link {
-  font-weight: bold; 
-  color: #000; 
-  border-bottom: 2px solid #000;
+.bookings-navlink {
   text-decoration: none;
+  color: inherit;
 }
+
+
 .bookings-list {
   display: flex;
   flex-direction: row;
@@ -48,6 +46,66 @@
 }
 
 .bookings-card {
+  box-sizing: border-box;
+  position: relative;
   width: 332px;
   height: 360px;
+  background-color: #F0F0F0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border-radius: 6px;
+}
+
+.bookings-card img {
+  height: 159px;
+  object-fit: cover;
+  margin-bottom: 16px;
+}
+
+.bookings-card h2 {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.bookings-card p {
+  position: absolute;
+  background-color: #FFFFFF;
+  padding: 8px;
+  top: -6px;
+  left: -6px;
+  border-radius: 4px;
+}
+
+.bookings-card span {
+  font-size: 14px;
+  line-height: 20px;
+  color: #666666;
+}
+
+.bookings-card span a {
+  text-decoration: none;
+}
+
+.bookings-card a {
+  color: #000000;
+
+}
+
+.bookings-card .card-container {
+  margin-top: 16px;
+  height: 74px;
+}
+
+.bookings-card .card-buttons {
+  display: flex;
+  gap: 16px;
+}
+
+.bookings-card .card-icon {
+  width: 12px;
+  height: 11px;
+  margin: 0;
 }

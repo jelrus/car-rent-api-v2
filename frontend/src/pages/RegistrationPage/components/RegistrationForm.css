@@ -38,6 +38,7 @@
 }
 
 .registration-form__block-button {
+    height: 46px;
     display: flex;
     gap: 16px;
     margin-top: 32px;
