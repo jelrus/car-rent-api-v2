@@ -1,6 +1,6 @@
 import { Provider } from 'react-redux';
 import store from "@/redux/store";
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router';
+import { HashRouter, BrowserRouter, Route, Routes, Navigate } from 'react-router';
 import HomePage from '@pages/HomePage/HomePage';
 import LogInPage from '@pages/LogInPage/LogInPage';
 import RegistrationPage from '@pages/RegistrationPage/RegistrationPage';
@@ -10,7 +10,7 @@ import BookingsPage from './pages/BookingsPage/BookingsPage.jsx';
 import CarBookPage from '@pages/CarBookPage/CarBookPage.jsx';
 
 export const Root = () => (
-  <BrowserRouter>
+  <HashRouter>
     <Provider store={store}>
       <Routes>
         <Route path="/" element={<App />}>
@@ -28,6 +28,6 @@ export const Root = () => (
         <Route path="*" element={<p>Not Found</p>} />
       </Routes>
     </Provider>
-  </BrowserRouter>
+  </HashRouter>
 )
 
