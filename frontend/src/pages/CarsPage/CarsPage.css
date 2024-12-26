@@ -13,3 +13,9 @@
     flex-wrap: wrap;
 }
 
+.no-cars-message {
+    text-align: center;
+    font-size: 20px;
+    color: #666;
+    margin-top: 20px;
+}
