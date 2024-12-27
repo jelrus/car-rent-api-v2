@@ -1,18 +1,18 @@
 import PropTypes from 'prop-types';
 import CarLocation from '../CarLocation/CarLocation.jsx';
 import Rating from '../Rating/Rating.jsx';
-import Button from '../../atoms/Button/Button.jsx';
+import Button from '@components/atoms/Button/Button.jsx';
 
 import './CarCard.css';
 
-const CarCard = ({car}) => {
+const CarCard = ({car, onDetailsClick}) => {
     const handleBooking = () => {
         console.log(`Booking car: ${car.model}`);
     };
 
-    const handleDetails = () => {
-        console.log(`Viewing details for: ${car.model}`);
-    };
+    // const handleDetails = () => {
+    //     console.log(`Viewing details for: ${car.model}`);
+    // };
 
     return (
         <div className='car-card'>
@@ -25,10 +25,16 @@ const CarCard = ({car}) => {
                 <Rating rating={car.carRating}/>
             </div>
             {/*<Button text={`Book the car - ${car.pricePerDay}/day`} type='secondary'/>*/}
-            <Button text={`Book the car - ${car.pricePerDay}/day`} type='secondary' onClick={handleBooking} />
+            <Button text={`Book the car - ${car.pricePerDay}/day`} type='secondary' onClick={handleBooking}/>
 
             {/*<a href='#'>See more details</a>*/}
-            <a href='#' onClick={handleDetails}>See more details</a>
+            {/*<a href='#' onClick={handleDetails}>See more details</a>*/}
+            <a href='#' onClick={(e) => {
+                e.preventDefault();
+                onDetailsClick();
+            }}>
+                See more details
+            </a>
 
         </div>
     )
@@ -43,6 +49,7 @@ CarCard.propTypes = {
         status: PropTypes.string.isRequired,
         imageUrl: PropTypes.string.isRequired,
     }).isRequired,
+    onDetailsClick: PropTypes.func.isRequired,
 };
 
 export default CarCard;

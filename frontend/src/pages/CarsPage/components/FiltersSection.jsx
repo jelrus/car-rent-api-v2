@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import './FiltersSection.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import InputField from '@/components/atoms/InputField/InputField.jsx';
 import SelectField from "@components/atoms/SelectField/SelectField.jsx";
-import Button from '../../../components/atoms/Button/Button.jsx';
+import Button from '@components/atoms/Button/Button.jsx';
 import PriceRange from './PriceRange.jsx';
 
 const FiltersSection = ({ title, pickupLocations, dropOffLocations, categories, gearBoxies, fuelTypes, minPrice, maxPrice, onApplyFilters }) => {
@@ -19,8 +19,14 @@ const FiltersSection = ({ title, pickupLocations, dropOffLocations, categories, 
         gearBoxType: '',
         fuelType: '',
         priceRange: [minPrice, maxPrice],
-
     });
+
+    useEffect(() => {
+        setLocalFilters((prevFilters) => ({
+            ...prevFilters,
+            priceRange: [minPrice, maxPrice],
+        }));
+    }, [minPrice, maxPrice]);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
