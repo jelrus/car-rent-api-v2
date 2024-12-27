@@ -19,14 +19,12 @@ const RegistrationForm = () => {
   const [passwordInfoVisible, setPasswordInfoVisible] = useState(true);
 
   const dispatch = useDispatch();
-  const { error, token } = useSelector((state) => state.auth);
+  const { error } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (token) {
-      navigate('/home');
-    }
-  }, [navigate, token]);
+      navigate('/login');
+  }, [navigate]);
 
   const validateField = (name, value) => {
     let error = '';

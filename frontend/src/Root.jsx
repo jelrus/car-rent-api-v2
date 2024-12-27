@@ -20,11 +20,12 @@ export const Root = () => (
           <Route path="/bookings">
             <Route index element={<BookingsPage />} />
             <Route path=":tabId?" element={<BookingsPage />} />
+            <Route path=":paramCarId" element={<CarBookPage />} />
           </Route>
         </Route> 
         <Route path="/login" element={<LogInPage />} />
         <Route path="/signup" element={<RegistrationPage />} />
-        <Route path="/booking/1" element={<CarBookPage />} />
+        <Route path="/booking/:paramCarId" element={<CarBookPage />} />
         <Route path="*" element={<p>Not Found</p>} />
       </Routes>
     </Provider>
