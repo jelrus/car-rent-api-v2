@@ -1,0 +1,249 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 40px;
+    z-index: 1000;
+    box-sizing: border-box;
+    overflow: auto;
+}
+
+.modal-content {
+    background-color: #FFFBF3;
+    padding: 40px;
+    border-radius: 8px;
+    max-width: 1376px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    gap: 16px;
+}
+
+.modal-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.modal-top {
+    display: flex;
+    gap: 16px;
+}
+
+.modal-slider {
+    width: 856px;
+}
+
+.modal-car-info {
+    width: 424px;
+    background-color: #F0F0F0;
+    border-radius: 8px;
+    padding: 0px 16px 16px 16px;
+}
+
+.modal-car__title {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    border-bottom: 1px solid #DCDCDD;
+    padding-bottom: 16px;
+}
+
+.modal-car__details {
+    /*margin-top: 20px;*/
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 24px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.details-date {
+    display: flex;
+    gap: 24px;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.calendar-wrapper {
+    position: absolute;
+    top: 100%;
+    left: -200px;
+    right: 0;
+    z-index: 10;
+    width: 592px;
+    background: #fff;
+    /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+    border-radius: 8px;
+    /*padding: 10px;*/
+    /*overflow-x: auto;*/
+}
+
+.details-date input {
+    width: 168px;
+    border-color: #DCDCDD;
+}
+
+.date-picker-fields {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+}
+
+.date-picker-field {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    width: 175px;
+}
+.date-picker-field .dropdown-arrow {
+    font-size: 18px;
+    margin-left: 10px;
+    color: #666;
+}
+
+.date-picker-field.active .dropdown-arrow {
+    transform: rotate(180deg);
+    transition: transform 0.3s;
+}
+
+.date-picker-field:hover {
+    background-color: #f9f9f9;
+}
+
+.modal-slider {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.main-image img {
+    width: 705px;
+    height: 482px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+
+}
+
+.main-image {
+    position: relative;
+}
+
+.modal-card__status {
+    position: absolute;
+    top: 16px;
+    left: 8px;
+    background-color: #ffffff;
+    padding: 8px;
+    font-size: 14px;
+    line-height: 14px;
+    color: #000000;
+    border-radius: 4px;
+    width: 90px;
+}
+
+.thumbnail-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.thumbnail-gallery img {
+    width: 135px;
+    height: 83.6px;
+    object-fit: cover;
+    /*object-fit: contain;*/
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.thumbnail-gallery img:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.feedback-section {
+    background-color: #F0F0F0;
+    padding: 16px;
+    margin-top: 16px;
+    border-radius: 8px;
+}
+
+.feedback-header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #DCDCDD;
+}
+.feedback-title {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 400;
+}
+
+.feedback-sort label {
+    font-size: 14px;
+    line-height: 20px;
+    color: #666666;
+}
+
+.feedback-item {
+    display: flex;
+    font-size: 14px;
+    line-height: 20px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.feedback-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/*.feedback-list li */
+
+.feedback-content {
+    width: 1008px;
+}
+
+.feedback-user {
+    width: 110px;
+    margin-left: 0;
+}

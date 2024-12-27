@@ -50,19 +50,39 @@ const carsSlice = createSlice({
                 state.error = null;
             })
             .addCase(fetchCars.fulfilled, (state, action) => {
-                const prices = action.payload.map((car) => car.pricePerDay);
+                const data = action.payload;
+
+                if (!data || data.length === 0) {
+                    state.loading = false;
+                    state.error = 'No cars data available';
+                    state.carsData = [];
+                    state.filteredCarsData = [];
+                    return;
+                }
+
+                const availableCars = data.filter((car) => car.status === "AVAILABLE");
+
+                if (availableCars.length === 0) {
+                    state.loading = false;
+                    state.error = 'No available cars found';
+                    state.carsData = [];
+                    state.filteredCarsData = [];
+                    return;
+                }
+
+                const prices = availableCars.map((car) => car.pricePerDay);
                 state.minPrice = Math.min(...prices);
                 state.maxPrice = Math.max(...prices);
 
                 state.loading = false;
-                state.carsData = action.payload;
-                state.filteredCarsData = action.payload;
+                state.carsData = availableCars;
+                state.filteredCarsData = availableCars;
 
-                state.pickupLocations = [...new Set(action.payload.map((car) => car.pickupLocationId))];
-                state.dropOffLocations = [...new Set(action.payload.map((car) => car.dropOffLocationId))];
-                state.categories = [...new Set(action.payload.map((car) => car.category))];
-                state.gearBoxies = [...new Set(action.payload.map((car) => car.gearBoxType))];
-                state.fuelTypes = [...new Set(action.payload.map((car) => car.fuelType))];
+                state.pickupLocations = [...new Set(availableCars.map((car) => car.pickupLocationId))];
+                state.dropOffLocations = [...new Set(availableCars.map((car) => car.dropOffLocationId))];
+                state.categories = [...new Set(availableCars.map((car) => car.category))];
+                state.gearBoxies = [...new Set(availableCars.map((car) => car.gearBoxType))];
+                state.fuelTypes = [...new Set(availableCars.map((car) => car.fuelType))];
             })
             .addCase(fetchCars.rejected, (state, action) => {
                 state.loading = false;
