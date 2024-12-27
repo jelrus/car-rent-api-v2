@@ -1,14 +1,14 @@
 import axios from 'axios';
-
+const API_URL=import.meta.env.VITE_API_KEY
 const axiosInstance = axios.create({
-  baseURL: 'https://3jj7ijolj8.execute-api.eu-west-1.amazonaws.com/api/v1/',
+  baseURL: `${API_URL}/api/v1/`,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 axiosInstance.interceptors.request.use(config => {
-  const token = sessionStorage.getItem('token'); // Отримати актуальний токен
+  const token = sessionStorage.getItem('token');
   if (token) {
     config.headers['Authorization'] = `Bearer ${token}`;
   }
