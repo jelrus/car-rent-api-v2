@@ -117,7 +117,7 @@ const CarBookPage = () => {
       });
       setShowModal(true);
     }*/
-      navigate('/bookings', { state: { message: 'data.message' } });
+    navigate('/bookings', { state: { message: 'data.message' } });
   };
 
   return (
