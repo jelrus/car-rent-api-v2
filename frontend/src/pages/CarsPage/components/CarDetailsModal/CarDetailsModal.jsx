@@ -14,6 +14,7 @@ import CustomCalendar from '../CustomCalendar/CustomCalendar.jsx';
 import './CarDetailsModal.css';
 import { useNavigate } from 'react-router';
 
+
 const feedbacks = [
   {
     userImage: 'path/to/image1.jpg',
@@ -42,6 +43,7 @@ const feedbacks = [
 ];
 
 const CarDetailsModal = ({ car, onClose }) => {
+
   const navigate = useNavigate();
   const [mainImage, setMainImage] = useState(
     car.imageUrl || '/placeholder.jpg',
@@ -84,24 +86,25 @@ const CarDetailsModal = ({ car, onClose }) => {
     return text.toLowerCase().replace(/^\w/, (c) => c.toUpperCase());
   };
 
-  const handleBooking = (car) => {
-    const countDays = selectedDates.pickup - selectedDates.dropOff || 1;
-    console.log(countDays);
-    navigate(`/booking/${car.carId}`, {
-      state: {
-        car: {
-          id: car.carId,
-          image: mainImage,
-          model: car.model,
-          location: car.location,
-          /*dropOffId: car.dropOffLocationId,
-                    pickUpId: car.pickupLocationId,*/
-          deposit: car.deposit ? car.deposit : 0,
-          totalPrice: car.pricePerDay * countDays,
-        },
-      },
-    });
-  };
+    const handleBooking = (car) => {
+        const countDays=selectedDates.pickup-selectedDates.dropOff||1;
+        console.log(countDays);
+        navigate(`/booking/${car.carId}`, {
+            state: {
+                car: {
+                    id: car.carId,
+                    image: mainImage,
+                    model: car.model,
+                    location: car.location,
+                    /*dropOffId: car.dropOffLocationId,
+                    pickUpId: car.pickupLocationId,*/ 
+                    deposit: car.deposit?car.deposit:0,
+                    totalPrice: car.pricePerDay*countDays,
+                },
+            },
+        });
+    };
+
 
   const itemsPerPage = 5;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -249,13 +252,10 @@ const CarDetailsModal = ({ car, onClose }) => {
               )}
             </div>
 
-            <Button
-              text={`Book the car - ${car.pricePerDay || 'N/A'}/day`}
-              type="primary"
-              onClick={() => handleBooking(car)}
-            />
-          </div>
-        </div>
+                        <Button text={`Book the car - ${car.pricePerDay || "N/A"}/day`} type='primary'
+                                onClick={() => handleBooking(car)}/>
+                    </div>
+                </div>
 
         <div className="feedback-section">
           <div className="feedback-header">
@@ -304,6 +304,22 @@ const CarDetailsModal = ({ car, onClose }) => {
 };
 
 CarDetailsModal.propTypes = {
+    car: PropTypes.shape({
+        carId: PropTypes.string.isRequired,
+        model: PropTypes.string.isRequired,
+        location: PropTypes.string.isRequired,
+        fuelType: PropTypes.string,
+        gearBoxType: PropTypes.string,
+        engineCapacity: PropTypes.string,
+        passengerCapacity: PropTypes.number,
+        climateControlOption: PropTypes.bool,
+        pricePerDay: PropTypes.number.isRequired,
+        images: PropTypes.arrayOf(PropTypes.string),
+        fuelConsumption: PropTypes.string,
+        carRating: PropTypes.string||PropTypes.number,
+        status: PropTypes.string.isRequired,
+    }).isRequired,
+    onClose: PropTypes.func.isRequired,
   car: PropTypes.shape({
     carId: PropTypes.string.isRequired,
     model: PropTypes.string.isRequired,

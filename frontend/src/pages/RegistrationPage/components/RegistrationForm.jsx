@@ -23,8 +23,10 @@ const RegistrationForm = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate('/login');
-  }, [navigate]);
+    if (token) {
+      navigate('/home');
+    }
+  }, [navigate, token]);
 
   const validateField = (name, value) => {
     let error = '';
