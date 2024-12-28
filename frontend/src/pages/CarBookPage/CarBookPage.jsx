@@ -8,6 +8,7 @@ import { getCarDetails, getBookedDays } from '@/redux/slices/carSlice';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router';
 import image from '@public/imgCars/audi-a6-quattro-2023.jpg';
+import ModalMessageCard from '@/components/atoms/MessageCard/MessageCard';
 
 const CarBookPage = () => {
   const { carId: paramCarId } = useParams();
@@ -59,7 +60,11 @@ const CarBookPage = () => {
       deposit: car?.deposit || carDetails?.deposit || 0,
     },
   });
-
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState({
+    header: '',
+    message: '',
+  });
   useEffect(() => {
     if (carId) {
       dispatch(getCarDetails(carId));
@@ -87,19 +92,32 @@ const CarBookPage = () => {
       pickupDateTime: `${bookingInfo.pickUp.date} ${bookingInfo.pickUp.time}`,
       pickupLocationId: '9b903ebf-2b18-4946-bc58-045d86a2632e',
     };
+    /*try {
 
-    try {
       const actionResult = await dispatch(createBooking(bookingData));
       const data = actionResult.payload;
-
-      if (data?.message) {
-        navigate('/bookings', { state: { message: data.message } });
-      } else {
-        console.error('No message received in the booking response.');
+      if(data.booked_block){
+         setModalMessage({
+          header: `Sorry ${userInfo.name}`, 
+          message: <div className='modal-message-card__message'>
+          It seems like someone has already reserved this car. You can find similar cars{' '}
+          <Link className='modal-message-card__message-link' to="/cars">here</Link>.
+        </div>,
+        });
+        setShowModal(true);
+        return;
       }
+      navigate('/bookings', { state: { message: data.message } });
+
     } catch (error) {
-      console.error('Error confirming reservation:', error);
-    }
+
+      setModalMessage({
+        header: 'Booking Error',
+        message: 'An error occurred while confirming your booking. Please try again.',
+      });
+      setShowModal(true);
+    }*/
+      navigate('/bookings', { state: { message: 'data.message' } });
   };
 
   return (
@@ -131,6 +149,14 @@ const CarBookPage = () => {
           </>
         )}
       </div>
+
+      {showModal && (
+        <ModalMessageCard
+          header={modalMessage.header}
+          message={modalMessage.message}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 };
