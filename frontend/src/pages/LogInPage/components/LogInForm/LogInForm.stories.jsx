@@ -1,8 +1,8 @@
 import LogInForm from './LogInForm';
 
 export default {
-    title: 'Organisms/LogInForm',
-    component: LogInForm,
+  title: 'Organisms/LogInForm',
+  component: LogInForm,
 };
 
 const Template = () => <LogInForm />;

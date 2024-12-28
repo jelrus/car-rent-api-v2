@@ -1,7 +1,17 @@
 import PropTypes from 'prop-types';
 import './AuthField.css';
 
-const AuthField = ({ id, placeholder, label, value, onChange, onBlur, underMessage, typeUnderMessage }) => {
+const AuthField = ({
+  id,
+  name,
+  placeholder,
+  label,
+  value,
+  onChange,
+  onBlur,
+  underMessage,
+  typeUnderMessage,
+}) => {
   return (
     <div className="input-field">
       <label htmlFor={id}>{label}</label>
@@ -9,11 +19,14 @@ const AuthField = ({ id, placeholder, label, value, onChange, onBlur, underMessa
         <input
           type="text"
           id={id}
+          name={name}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
           onBlur={onBlur}
-          className={underMessage && typeUnderMessage === 'error' ? 'error' : ''}
+          className={
+            underMessage && typeUnderMessage === 'error' ? 'error' : ''
+          }
           aria-invalid={underMessage && typeUnderMessage === 'error'}
         />
       </div>
@@ -32,6 +45,7 @@ const AuthField = ({ id, placeholder, label, value, onChange, onBlur, underMessa
 
 AuthField.propTypes = {
   id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,

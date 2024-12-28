@@ -14,7 +14,7 @@ const FormField = ({ fieldType, ...props }) => {
 };
 
 FormField.propTypes = {
-  fieldType: PropTypes.oneOf(['password','input']).isRequired,
+  fieldType: PropTypes.oneOf(['password', 'input']).isRequired,
 };
 
 export default FormField;

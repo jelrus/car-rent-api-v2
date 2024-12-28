@@ -1,45 +1,48 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '@/utils/axiosInstance';
 
-const API_URL = import.meta.env.VITE_SERVER_API;
-
-export const loginUser = createAsyncThunk('auth/login', async (data, { rejectWithValue }) => {
-  try {
-    const response = await axiosInstance.post('users/login', data);
-    const { accessToken, userId, role, userImageUrl, username, email } = response.data;
-    
-    sessionStorage.setItem('token', accessToken);
-    sessionStorage.setItem('userId', userId);
-    sessionStorage.setItem('role', role);
-    sessionStorage.setItem('userImageUrl', userImageUrl);
-    sessionStorage.setItem('username', username);
-    sessionStorage.setItem('email', email);
-
-    return response.data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data?.message || error.message);
-  }
-});
-
-export const registerUser = createAsyncThunk(
-  'auth/registerUser',
-  async (userData, { rejectWithValue }) => {
+export const loginUser = createAsyncThunk(
+  'auth/login',
+  async (data, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post(`${API_URL}/signup`, userData);
-      const { accessToken, userId, role, userImageUrl, username, email } = response.data;
+      const response = await axiosInstance.post('/users/login', data);
+      const { accessToken, userId, role, userImageUrl, username } =
+        response.data;
 
       sessionStorage.setItem('token', accessToken);
       sessionStorage.setItem('userId', userId);
       sessionStorage.setItem('role', role);
       sessionStorage.setItem('userImageUrl', userImageUrl);
       sessionStorage.setItem('username', username);
-      sessionStorage.setItem('email', email);
+      sessionStorage.setItem('email', data.email);
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const registerUser = createAsyncThunk(
+  'auth/registerUser',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(`/users`, data);
+      const { accessToken, userId, role, userImageUrl, username } =
+        response.data;
+
+      sessionStorage.setItem('token', accessToken);
+      sessionStorage.setItem('userId', userId);
+      sessionStorage.setItem('role', role);
+      sessionStorage.setItem('userImageUrl', userImageUrl);
+      sessionStorage.setItem('username', username);
+      sessionStorage.setItem('email', data.email);
 
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
-  }
+  },
 );
 
 const initialState = {
@@ -86,7 +89,8 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        const { accessToken, userId, role, userImageUrl, username, email } = action.payload;
+        const { accessToken, userId, role, userImageUrl, username, email } =
+          action.payload;
         state.token = accessToken;
         state.user = { userId, role, userImageUrl, username, email };
         state.error = null;
@@ -103,7 +107,8 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        const { accessToken, userId, role, userImageUrl, username, email } = action.payload;
+        const { accessToken, userId, role, userImageUrl, username, email } =
+          action.payload;
         state.token = accessToken;
         state.user = { userId, role, userImageUrl, username, email };
         state.error = null;
