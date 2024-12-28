@@ -26,7 +26,7 @@ const CarBookPage = () => {
     error: carError,
   } = useSelector((state) => state.carBooked);
   const { loading: bookingLoading, error: bookingError } = useSelector(
-    (state) => state.createBooking
+    (state) => state.createBooking,
   );
 
   const isLoading = carLoading || bookingLoading;

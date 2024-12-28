@@ -2,13 +2,19 @@ import { useState } from 'react';
 import PasswordField from '../components/PasswordField';
 
 export default {
-  title: 'Components/PasswordField',  
+  title: 'Components/PasswordField',
   component: PasswordField,
 };
 
 const Template = (args) => {
   const [value, setValue] = useState('');
-  return <PasswordField {...args} value={value} onChange={(e) => setValue(e.target.value)} />;
+  return (
+    <PasswordField
+      {...args}
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+    />
+  );
 };
 
 export const Default = Template.bind({});

@@ -41,7 +41,7 @@ AuthenticatedRedirect.decorators = [
         reducer: rootReducer,
         preloadedState: {
           register: {
-            isAuth: true, 
+            isAuth: true,
             loading: false,
           },
         },

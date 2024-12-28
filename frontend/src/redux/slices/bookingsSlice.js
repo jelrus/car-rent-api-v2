@@ -1,14 +1,17 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '@/utils/axiosInstance';
 
-export const getBookings = createAsyncThunk('bookings/fetchBookings', async (clientId, thunkAPI) => {
-  try {
-    const response = await axiosInstance.get(`/bookings/${clientId}`);
-    return response.data.content;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data);
-  }
-});
+export const getBookings = createAsyncThunk(
+  'bookings/fetchBookings',
+  async (clientId, thunkAPI) => {
+    try {
+      const response = await axiosInstance.get(`/bookings/${clientId}`);
+      return response.data.content;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  },
+);
 
 const bookingSlice = createSlice({
   name: 'bookings',

@@ -5,12 +5,12 @@ export const createBooking = createAsyncThunk(
   'bookings/createBooking',
   async (bookingData, thunkAPI) => {
     try {
-      const response = await axiosInstance.post('/api/v1/bookings/', bookingData);
+      const response = await axiosInstance.post('/bookings', bookingData);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
 const initialState = {
@@ -26,7 +26,7 @@ const createBookingSlice = createSlice({
     builder
       .addCase(createBooking.pending, (state) => {
         state.loading = true;
-        state.error = null; 
+        state.error = null;
       })
       .addCase(createBooking.fulfilled, (state, action) => {
         state.data = action.payload;

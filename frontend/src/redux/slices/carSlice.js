@@ -1,23 +1,29 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '@/utils/axiosInstance';
 
-export const getCarDetails = createAsyncThunk('cars/getCarDetails', async (carId, thunkAPI) => {
-  try {
-    const response = await axiosInstance.get(`/api/v1/cars/${carId}`);
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data);
-  }
-});
+export const getCarDetails = createAsyncThunk(
+  'cars/getCarDetails',
+  async (carId, thunkAPI) => {
+    try {
+      const response = await axiosInstance.get(`/cars/${carId}`);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  },
+);
 
-export const getBookedDays = createAsyncThunk('cars/getBookedDays', async (carId, thunkAPI) => {
-  try {
-    const response = await axiosInstance.get(`/api/v1/cars/${carId}/booked-days`);
-    return response.data.content;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data);
-  }
-});
+export const getBookedDays = createAsyncThunk(
+  'cars/getBookedDays',
+  async (carId, thunkAPI) => {
+    try {
+      const response = await axiosInstance.get(`/cars/${carId}/booked-days`);
+      return response.data.content;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  },
+);
 
 const carSlice = createSlice({
   name: 'cars',
@@ -42,7 +48,7 @@ const carSlice = createSlice({
         state.error = action.payload?.message || 'Failed to fetch car details';
         state.loading = false;
       })
-      
+
       .addCase(getBookedDays.pending, (state) => {
         state.loading = true;
       })
