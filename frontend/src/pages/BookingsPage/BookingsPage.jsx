@@ -11,8 +11,18 @@ const tabs = [
   { id: 'tab-1', path: 'all', status: 'ALL', title: 'All bookings' },
   { id: 'tab-2', path: 'reserved', status: 'RESERVED', title: 'Reserved' },
   { id: 'tab-3', path: 'started', status: 'STARTED', title: 'Service started' },
-  { id: 'tab-4', path: 'provided', status: 'PROVIDED', title: 'Service provided' },
-  { id: 'tab-5', path: 'finished', status: 'FINISHED', title: 'Booking finished' },
+  {
+    id: 'tab-4',
+    path: 'provided',
+    status: 'PROVIDED',
+    title: 'Service provided',
+  },
+  {
+    id: 'tab-5',
+    path: 'finished',
+    status: 'FINISHED',
+    title: 'Booking finished',
+  },
   { id: 'tab-6', path: 'cancelled', status: 'CANCELLED', title: 'Cancelled' },
 ];
 
@@ -31,7 +41,7 @@ const BookingsPage = () => {
     if (userId) {
       dispatch(getBookings(userId));
     } else {
-      console.log("UserId is null, please log in");
+      console.log('UserId is null, please log in');
     }
   }, [dispatch, userId]);
 
@@ -49,7 +59,9 @@ const BookingsPage = () => {
     if (statusFilter === 'ALL') {
       setFilteredBookings(bookings);
     } else {
-      setFilteredBookings(bookings.filter((booking) => booking.bookingStatus === statusFilter));
+      setFilteredBookings(
+        bookings.filter((booking) => booking.bookingStatus === statusFilter),
+      );
     }
   }, [bookings, statusFilter]);
 
@@ -64,74 +76,80 @@ const BookingsPage = () => {
   if (error) return <p>something went wrong</p>;
 
   return (
-    <div className='bookings-page'>
-      <div className='bookings-title'>
+    <div className="bookings-page">
+      <div className="bookings-title">
         <h2>My bookings</h2>
       </div>
 
-      <div className='bookings-filter'>
-        <ul className='bookings-navbar'>
+      <div className="bookings-filter">
+        <ul className="bookings-navbar">
           {tabs.map(({ id, path, status, title }) => (
             <li
               key={id}
-              className={classNames('bookings-navitem', { 'is-active': path === tabId })}
+              className={classNames('bookings-navitem', {
+                'is-active': path === tabId,
+              })}
               onClick={() => handleFilterChange(status)}
             >
-              <Link to={`/bookings/${path}`} className='bookings-navlink'>{title}</Link>
+              <Link to={`/bookings/${path}`} className="bookings-navlink">
+                {title}
+              </Link>
             </li>
           ))}
         </ul>
       </div>
 
-      <div className='bookings-list'>
+      <div className="bookings-list">
         {filteredBookings.length === 0 ? (
-          <div>
-            You have not placed an order yet
-          </div>
-        ) : filteredBookings.map((booking) => {
-          const { title } = tabs.find(tab => tab.status === booking.bookingStatus) || '';
+          <div>You have not placed an order yet</div>
+        ) : (
+          filteredBookings.map((booking) => {
+            const { title } =
+              tabs.find((tab) => tab.status === booking.bookingStatus) || '';
 
-          return (
-            <div key={booking.bookingId} className='bookings-card'>
-              <img src={booking.carImageUrl} alt={booking.carModel} />
-              <p>{title}</p>
-              <h2>{booking.carModel}</h2>
-              <span>{booking.orderDetails}</span>
-              <div className='card-container' >
-                {booking.bookingStatus === 'RESERVED' && (
-                  <div className='card-buttons'>
-                    <Button
-                      text='Cancel'
-                      type='secondary'
-                      // onClick={handleCancel}
-                      disabled={loading}
-                    />
-                    <Button
-                      text='Edit'
-                      type='primary'
-                      // onClick={handleEdit}
-                      disabled={loading}
-                    />
-                  </div>  
-                )} 
-              </div> 
-              {(booking.bookingStatus === 'RESERVED' 
-              || booking.bookingStatus === 'STARTED' 
-              || booking.bookingStatus === 'CANCELLED')
-              && (
-                <span>
-                  Have any questions?&nbsp;&nbsp;
-                  <a href="#">
-                    Support chat&nbsp;&nbsp;
-                    <img className='card-icon' src={chatIcon} alt="chat-icon" />
-                  </a>
-                  
-                </span>
-              )
-              }
-            </div>
-          )
-        } )}
+            return (
+              <div key={booking.bookingId} className="bookings-card">
+                <img src={booking.carImageUrl} alt={booking.carModel} />
+                <p>{title}</p>
+                <h2>{booking.carModel}</h2>
+                <span>{booking.orderDetails}</span>
+                <div className="card-container">
+                  {booking.bookingStatus === 'RESERVED' && (
+                    <div className="card-buttons">
+                      <Button
+                        text="Cancel"
+                        type="secondary"
+                        // onClick={handleCancel}
+                        disabled={loading}
+                      />
+                      <Button
+                        text="Edit"
+                        type="primary"
+                        // onClick={handleEdit}
+                        disabled={loading}
+                      />
+                    </div>
+                  )}
+                </div>
+                {(booking.bookingStatus === 'RESERVED' ||
+                  booking.bookingStatus === 'STARTED' ||
+                  booking.bookingStatus === 'CANCELLED') && (
+                  <span>
+                    Have any questions?&nbsp;&nbsp;
+                    <a href="#">
+                      Support chat&nbsp;&nbsp;
+                      <img
+                        className="card-icon"
+                        src={chatIcon}
+                        alt="chat-icon"
+                      />
+                    </a>
+                  </span>
+                )}
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

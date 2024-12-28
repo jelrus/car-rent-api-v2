@@ -2,7 +2,13 @@ import PropTypes from 'prop-types';
 import './ButtonLink.css';
 import { Link } from 'react-router';
 
-const ButtonLink = ({ text, to, onClick, type = 'primary', disabled = false }) => {
+const ButtonLink = ({
+  text,
+  to,
+  onClick,
+  type = 'primary',
+  disabled = false,
+}) => {
   const buttonClasses = `button-link button-link--${type} ${disabled ? 'button-link--disabled' : ''}`;
 
   if (to) {

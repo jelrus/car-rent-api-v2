@@ -15,7 +15,7 @@ const HomePage = () => {
   return (
     <div>
       <FiltersSection
-        title='Choose a car for rental'
+        title="Choose a car for rental"
         pickupLocations={pickupLocations}
         dropOffLocations={dropOffLocations}
         categories={categories}
