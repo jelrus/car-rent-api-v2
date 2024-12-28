@@ -16,7 +16,12 @@ const CarCard = ({ car, onConfirm }) => {
         </div>
         <p className="deposit">Deposit: ${car.deposit}</p>
       </div>
-      <Button type="primary" text="Confirm reservation" onClick={onConfirm} />
+      <Button
+        ButtonType="primary"
+        type="submit"
+        text="Confirm reservation"
+        onClick={onConfirm}
+      />
     </div>
   );
 };

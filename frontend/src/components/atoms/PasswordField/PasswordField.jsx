@@ -11,6 +11,7 @@ const PasswordField = ({
   label,
   value,
   onChange,
+  onBlur,
   underMessage,
   typeUnderMessage,
   name,
@@ -32,6 +33,11 @@ const PasswordField = ({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
+          onBlur={onBlur}
+          className={
+            (underMessage && typeUnderMessage) === 'error' ? 'error' : ''
+          }
+          aria-invalid={underMessage && typeUnderMessage === 'error'}
         />
         <button
           type="button"
@@ -63,6 +69,7 @@ PasswordField.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  onBlur: PropTypes.func.isRequired,
   name: PropTypes.string,
   underMessage: PropTypes.string,
   typeUnderMessage: PropTypes.string,

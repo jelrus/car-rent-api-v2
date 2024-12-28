@@ -1,6 +1,6 @@
-import PropTypes from "prop-types";
-import './MessageCard.css'; 
-import Button from "../Button/Button";
+import PropTypes from 'prop-types';
+import './MessageCard.css';
+import Button from '../Button/Button';
 
 const ModalMessageCard = ({ header, message, onClose }) => {
   const handleOverlayClick = (e) => {
