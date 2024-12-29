@@ -5,6 +5,8 @@ import { registerUser } from '@redux/slices/authSlice';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { logOut } from '@redux/slices/authSlice';
+import { setAuthError } from '@/redux/slices/authSlice';
 import './RegistrationForm.css';
 
 const RegistrationForm = () => {
@@ -19,44 +21,61 @@ const RegistrationForm = () => {
   const [passwordInfoVisible, setPasswordInfoVisible] = useState(true);
 
   const dispatch = useDispatch();
-  const { error } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const { error, token } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    navigate('/login');
-  }, [navigate]);
+    if (Object.keys(touchedFields).length > 0) {
+      validateUserRegistration();
+    }
+    if (token) {
+      dispatch(logOut());
+      navigate('/success_signup');
+    }
+  }, [token, touchedFields, error, formData]);
 
   const validateField = (name, value) => {
-    let error = '';
+    let errorField = '';
     switch (name) {
       case 'firstName':
-        if (!value) error = 'First name is required.';
+        if (!value) errorField = 'First name is required.';
+        else if (!/^[a-zA-Z]+$/.test(value))
+          errorField = 'Only Latin letters are allowed.';
         break;
       case 'lastName':
-        if (!value) error = 'Last name is required.';
+        if (!value) errorField = 'Last name is required.';
+        else if (!/^[a-zA-Z]+$/.test(value))
+          errorField = 'Only Latin letters are allowed.';
         break;
       case 'email':
-        if (!value) error = 'Email is required.';
-        else if (!/\S+@\S+\.\S+/.test(value)) error = 'Invalid email format.';
+        if (error) {
+          errorField = 'Email already exists';
+        }
+        if (!value) errorField = 'Email is required.';
+        else if (!/\S+@\S+\.\S+/.test(value))
+          errorField = 'Invalid email format.';
         break;
       case 'password':
-        if (!value) error = 'Password is required.';
-        else if (
-          value.length < 8 ||
-          !/[A-Z]/.test(value) ||
-          !/\d/.test(value)
-        ) {
-          error =
-            'Password must be at least 8 characters long with 1 capital letter and 1 digit.';
-        }
+        if (!value) errorField = 'Password is required.';
+        else if (value.length < 8)
+          errorField = 'Password should contain minimum 8 characters.';
+        else if (!/[A-Z]/.test(value))
+          errorField = 'Password should contain at list 1 capital letter';
+        else if (!/[a-z]/.test(value))
+          errorField = 'Password should contain at list 1 small letter';
+        else if (!/\d/.test(value))
+          errorField = 'Password should contain at list 1 digit';
         break;
       default:
+        errorField =
+          'Password must be at least 8 characters long with 1 capital letter and 1 digit.';
         break;
     }
-    return error;
+    return errorField;
   };
 
   const validateUserRegistration = () => {
+    setPasswordInfoVisible(false);
     const newErrors = Object.keys(formData).reduce((acc, field) => {
       acc[field] = validateField(field, formData[field]);
       return acc;
@@ -75,13 +94,20 @@ const RegistrationForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (error) {
+      dispatch(setAuthError(null));
+    }
+
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
     setTouchedFields({
       firstName: true,
       lastName: true,
@@ -108,13 +134,13 @@ const RegistrationForm = () => {
   };
 
   return (
-    <div className="registration-form">
+    <form className="registration-form" onSubmit={handleSubmit}>
       <div className="registration-form__title">
         <h2>Create an account</h2>
         <p>Enter your details below to get started</p>
       </div>
 
-      <div className="registration-form__block">
+      <div className="registration-form__block" onSubmit={handleSubmit}>
         <div className="registration-form__block-name">
           <AuthField
             id="firstName"
@@ -175,16 +201,15 @@ const RegistrationForm = () => {
           typeUnderMessage={passwordInfoVisible ? 'info' : 'error'}
         />
 
-        <div className="registration-form__block-button">
-          <Button text="Cancel" type="secondary" onClick={handleCancel} />
-          <Button text="Register" type="primary" onClick={handleSubmit} />
+        <div className="registration-form__block-button" onReset={handleCancel}>
+          <Button
+            text="Cancel"
+            type="reset"
+            ButtonType="secondary"
+            onClick={handleCancel}
+          />
+          <Button text="Register" type="submit" ButtonType="primary" />
         </div>
-
-        {error && (
-          <div className="registration-form__error">
-            <p>{error}</p>
-          </div>
-        )}
 
         <div className="registration-form__login-link">
           <p>
@@ -192,7 +217,7 @@ const RegistrationForm = () => {
           </p>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 

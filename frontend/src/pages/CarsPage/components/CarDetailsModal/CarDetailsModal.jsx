@@ -251,7 +251,8 @@ const CarDetailsModal = ({ car, onClose }) => {
 
             <Button
               text={`Book the car - ${car.pricePerDay || 'N/A'}/day`}
-              type="primary"
+              type="submit"
+              ButtonType="primary"
               onClick={() => handleBooking(car)}
             />
           </div>
@@ -304,6 +305,22 @@ const CarDetailsModal = ({ car, onClose }) => {
 };
 
 CarDetailsModal.propTypes = {
+  car: PropTypes.shape({
+    carId: PropTypes.string.isRequired,
+    model: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+    fuelType: PropTypes.string,
+    gearBoxType: PropTypes.string,
+    engineCapacity: PropTypes.string,
+    passengerCapacity: PropTypes.number,
+    climateControlOption: PropTypes.bool,
+    pricePerDay: PropTypes.number.isRequired,
+    images: PropTypes.arrayOf(PropTypes.string),
+    fuelConsumption: PropTypes.string,
+    carRating: PropTypes.string || PropTypes.number,
+    status: PropTypes.string.isRequired,
+  }).isRequired,
+  onClose: PropTypes.func.isRequired,
   car: PropTypes.shape({
     carId: PropTypes.string.isRequired,
     model: PropTypes.string.isRequired,

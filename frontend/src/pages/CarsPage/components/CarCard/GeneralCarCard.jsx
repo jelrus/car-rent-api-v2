@@ -47,7 +47,8 @@ const CarCard = ({ car, onDetailsClick }) => {
       </div>
       <Button
         text={`Book the car - $${car.pricePerDay}/day`}
-        type="secondary"
+        ButtonType="primary"
+        type="button"
         onClick={handleBooking}
       />
       <a href="#" onClick={handleDetails} className="car-card__details-link">

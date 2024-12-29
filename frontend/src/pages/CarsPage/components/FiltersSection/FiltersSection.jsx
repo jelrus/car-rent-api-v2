@@ -168,7 +168,7 @@ const FiltersSection = ({
             />
           </div>
           <div className="filters-form__button">
-            <Button type="primary" text="Find a car" />
+            <Button type="submit" ButtonType="primary" text="Find a car" />
           </div>
         </div>
       </form>

@@ -72,7 +72,11 @@ const Header = () => {
       <div className="auth-container">
         <span>
           {role ? (
-            <button className="hyperlink-button" onClick={logOutHandler}>
+            <button
+              type="button"
+              className="hyperlink-button"
+              onClick={logOutHandler}
+            >
               Log out
             </button>
           ) : (
