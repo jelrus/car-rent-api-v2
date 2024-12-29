@@ -39,6 +39,8 @@
   width: 100%;
   border-radius: 8px;
   margin-bottom: 20px;
+  width: 300px;
+  height: 200px;
 }
 .car-card__confirm {
   padding: 10px 20px;
