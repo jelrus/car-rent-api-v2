@@ -1,0 +1,65 @@
+.filters-section {
+  max-width: 1440px;
+}
+
+.filters-section__title {
+  font-size: 56px;
+  font-weight: 600;
+  line-height: 64px;
+  padding-top: 56px;
+}
+
+.filters-form {
+  border: 1px solid #000000;
+  border-radius: 8px;
+  padding: 24px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 30px;
+  margin-bottom: 88px;
+}
+
+.filters-form__row {
+  display: flex;
+  gap: 24px;
+}
+
+.filters-form__select-location {
+  width: 398px;
+}
+
+.filters-form__field input {
+  max-width: 230px;
+}
+
+.filters-form__select-infoOfCar {
+  width: 230px;
+}
+
+.filters-form__button {
+  width: 240px;
+  gap: 8px;
+  margin-top: 20px;
+}
+option {
+  background-color: #fff;
+  color: #333;
+  padding: 8px;
+}
+
+.filters-form__input-range {
+  position: relative;
+  width: 290px;
+  margin: 0 auto;
+}
+
+.filters-form__input-range_label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-top: 20px;
+}
+
+.filters-form__input-range_label-price {
+  color: #666666;
+}

@@ -20,8 +20,10 @@
   box-sizing: border-box;
   font-size: 16px;
   line-height: 1.5;
-  background-color: #FFFBF3;
-  transition: border-color 0.3s, background-color 0.3s;
+  background-color: #fffbf3;
+  transition:
+    border-color 0.3s,
+    background-color 0.3s;
 }
 
 .input-field input:focus {
@@ -30,7 +32,7 @@
 }
 
 .input-field input.error {
-	border: 1px solid red;
+  border: 1px solid red;
 }
 
 .input-field input.error:hover {

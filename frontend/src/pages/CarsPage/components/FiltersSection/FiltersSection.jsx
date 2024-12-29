@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import './FiltersSection.css';
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import InputField from '@/components/atoms/InputField/InputField.jsx';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import InputField from '@components/atoms/InputField/InputField.jsx';
 import SelectField from '@components/atoms/SelectField/SelectField.jsx';
 import Button from '@components/atoms/Button/Button.jsx';
 import PriceRange from './PriceRange.jsx';
@@ -18,8 +18,8 @@ const FiltersSection = ({
   maxPrice,
   onApplyFilters,
 }) => {
-  const dispatch = useDispatch();
-
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [localFilters, setLocalFilters] = useState({
     pickupLocationId: '',
     dropOffLocationId: '',
@@ -30,6 +30,8 @@ const FiltersSection = ({
     fuelType: '',
     priceRange: [minPrice, maxPrice],
   });
+
+  console.log('Filters applied:', localFilters);
 
   useEffect(() => {
     setLocalFilters((prevFilters) => ({
@@ -55,7 +57,22 @@ const FiltersSection = ({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(onApplyFilters(localFilters));
+
+    const params = new URLSearchParams();
+    Object.entries(localFilters).forEach(([key, value]) => {
+      if (value) {
+        if (Array.isArray(value)) {
+          params.append(key, value.join(','));
+        } else {
+          params.append(key, value);
+        }
+      }
+    });
+
+    setSearchParams(params);
+    navigate(`/cars?${params.toString()}`);
+
+    onApplyFilters(localFilters);
   };
 
   return (

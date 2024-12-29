@@ -9,16 +9,16 @@
   display: flex;
   gap: 20px;
 }
-.car-book-page .user-info{
+.car-book-page .user-info {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-.car-book-page h2{
+.car-book-page h2 {
   font-weight: 600;
 }
 
-.car-book-page .links :nth-child(n){
+.car-book-page .links :nth-child(n) {
   padding-left: 5px;
   margin-bottom: 0px;
   margin-top: 0px;
@@ -26,11 +26,10 @@
   text-decoration: none;
   color: #000000;
   font-weight: 400;
-
 }
-.car-book-page .links :nth-child(2n-1):hover{
+.car-book-page .links :nth-child(2n-1):hover {
   text-decoration: underline;
 }
-.car-book-page .links :last-child{
+.car-book-page .links :last-child {
   font-weight: 600;
 }

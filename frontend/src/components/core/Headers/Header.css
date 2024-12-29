@@ -106,13 +106,13 @@
 }
 
 .language-dropdown {
-  outline: none; 
+  outline: none;
   padding: 10px;
   width: 62px;
   height: 40px;
   font-size: 18px;
   border: none;
-  background-color: #FFFBF3;
+  background-color: #fffbf3;
   cursor: pointer;
 }
 

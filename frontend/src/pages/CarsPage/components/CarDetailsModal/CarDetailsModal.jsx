@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import CarLocation from '../../../../components/molecules/CarLocation/CarLocation.jsx';
-import Rating from '../../../../components/molecules/Rating/Rating.jsx';
+import CarLocation from '@pages/CarsPage/components/CarLocation/CarLocation.jsx';
+import Rating from '@pages/CarsPage/components/Rating/Rating.jsx';
 import GasStation from '@assets/Gas-station.svg';
 import Gearbox from '@assets/manual-gearbox.svg';
 import Speedtest from '@assets/brand-speedtest.svg';
@@ -135,7 +135,7 @@ const CarDetailsModal = ({ car, onClose }) => {
     setCurrentPage(1);
   };
 
-  const handlePageChange = (page) => setCurrentPage(page);
+  // const handlePageChange = (page) => setCurrentPage(page);
 
   return (
     <div className="modal-overlay">
@@ -319,6 +319,7 @@ CarDetailsModal.propTypes = {
     fuelConsumption: PropTypes.string,
     carRating: PropTypes.string || PropTypes.number,
     status: PropTypes.string.isRequired,
+    deposit: PropTypes.number,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
 };

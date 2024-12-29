@@ -4,18 +4,16 @@
   padding: 10px;
   display: flex;
   justify-content: space-between;
-
 }
-.personal-card .personal-info{
+.personal-card .personal-info {
   display: flex;
   flex-direction: column;
   margin: 5px;
-
 }
-.personal-card  .personal-info>span{
+.personal-card .personal-info > span {
   margin-bottom: 5px;
 }
-.personal-card  .personal-info :first-child{
+.personal-card .personal-info :first-child {
   color: #000000;
   font-weight: 700;
 }
