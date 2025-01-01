@@ -63,8 +63,18 @@ const CarsPage = () => {
 
   const handleApplyFilters = (newFilters) => {
     console.log('Filters applied:', newFilters);
-    dispatch(setFilters(newFilters));
-    dispatch(fetchCars(newFilters));
+    const formattedFilters = {
+      ...newFilters,
+      pickupDate: newFilters.pickupDate
+        ? new Date(newFilters.pickupDate).toISOString()
+        : null,
+      dropOffDate: newFilters.dropOffDate
+        ? new Date(newFilters.dropOffDate).toISOString()
+        : null,
+    };
+
+    dispatch(setFilters(formattedFilters));
+    dispatch(fetchCars(formattedFilters));
     setCurrentPage(1);
   };
 
@@ -115,6 +125,7 @@ const CarsPage = () => {
         onApplyFilters={handleApplyFilters}
         minPrice={minPrice}
         maxPrice={maxPrice}
+        bookedDays={[]}
       />
 
       <div className="cars-page__results">

@@ -8,14 +8,11 @@
   display: flex;
   width: 100%;
   align-items: center;
-  /*margin: 40px 8px;*/
-  /*padding-top: 1.6rem;*/
   height: calc(16px + 1.6rem);
 }
 
 .input-wrapper {
   width: calc(100% + 16px);
-  margin: 0 -8px;
   position: absolute;
   height: 16px;
   width: 100%;

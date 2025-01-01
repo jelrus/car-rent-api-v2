@@ -2,7 +2,12 @@ import PropTypes from 'prop-types';
 import { useState, useMemo } from 'react';
 import './CustomCalendar.css';
 
-const CustomCalendar = ({ onDateSelect, onTimeSelect, selectedDates }) => {
+const CustomCalendar = ({
+  bookedDays,
+  onDateSelect,
+  onTimeSelect,
+  selectedDates,
+}) => {
   const [currentMonthLeft, setCurrentMonthLeft] = useState(new Date());
   const [currentMonthRight, setCurrentMonthRight] = useState(
     new Date(new Date().getFullYear(), new Date().getMonth() + 1),
@@ -34,6 +39,20 @@ const CustomCalendar = ({ onDateSelect, onTimeSelect, selectedDates }) => {
     );
   };
 
+  const isDateBooked = (day) => {
+    const formattedDate = day.toISOString().split('T')[0];
+    return bookedDays.includes(formattedDate);
+  };
+
+  const isTimeBooked = (day, time) => {
+    if (!day) return false;
+    const formattedDate = day.toISOString().split('T')[0];
+    const bookedDay = bookedDays.find(
+      (bookedDay) => bookedDay.date === formattedDate,
+    );
+    return bookedDay?.times?.includes(time) || false;
+  };
+
   const isInRange = (day) => {
     if (range.start && range.end) {
       return day >= range.start && day <= range.end;
@@ -42,10 +61,37 @@ const CustomCalendar = ({ onDateSelect, onTimeSelect, selectedDates }) => {
   };
 
   const handleDayClick = (day) => {
+    if (isSameDay(day, range.start)) {
+      setRange({ start: null, end: null });
+      onDateSelect('pickup', null);
+      onDateSelect('dropOff', null);
+      return;
+    }
+
     if (!range.start || (range.start && range.end)) {
       setRange({ start: day, end: null });
       onDateSelect('pickup', day);
     } else if (range.start && !range.end && day > range.start) {
+      const selectedRange = [];
+      for (
+        let d = new Date(range.start);
+        d <= day;
+        d.setDate(d.getDate() + 1)
+      ) {
+        selectedRange.push(new Date(d).toISOString().split('T')[0]);
+      }
+
+      const hasConflict = selectedRange.some((selectedDate) =>
+        bookedDays.includes(selectedDate),
+      );
+
+      if (hasConflict) {
+        alert(
+          'The selected range includes already booked dates. Please choose another range.',
+        );
+        return;
+      }
+
       setRange({ ...range, end: day });
       onDateSelect('dropOff', day);
     }
@@ -80,26 +126,38 @@ const CustomCalendar = ({ onDateSelect, onTimeSelect, selectedDates }) => {
     <div className="calendar-container">
       <div className="calendar-header">
         <button
-          onClick={() =>
+          onClick={() => {
             setCurrentMonthLeft(
               new Date(
                 currentMonthLeft.getFullYear(),
                 currentMonthLeft.getMonth() - 1,
               ),
-            )
-          }
+            );
+            setCurrentMonthRight(
+              new Date(
+                currentMonthRight.getFullYear(),
+                currentMonthRight.getMonth() - 1,
+              ),
+            );
+          }}
         >
           {'<'}
         </button>
         <button
-          onClick={() =>
+          onClick={() => {
+            setCurrentMonthLeft(
+              new Date(
+                currentMonthLeft.getFullYear(),
+                currentMonthLeft.getMonth() + 1,
+              ),
+            );
             setCurrentMonthRight(
               new Date(
                 currentMonthRight.getFullYear(),
                 currentMonthRight.getMonth() + 1,
               ),
-            )
-          }
+            );
+          }}
         >
           {'>'}
         </button>
@@ -126,8 +184,12 @@ const CustomCalendar = ({ onDateSelect, onTimeSelect, selectedDates }) => {
                 className={`calendar-day ${
                   isSameDay(day, range.start) ? 'start' : ''
                 } ${isSameDay(day, range.end) ? 'end' : ''} ${
-                  isInRange(day) ? 'in-range' : ''
-                }`}
+                  !isSameDay(day, range.start) &&
+                  !isSameDay(day, range.end) &&
+                  isInRange(day)
+                    ? 'in-range'
+                    : ''
+                } ${isDateBooked(day) ? 'booked' : ''}`}
               >
                 {day.getDate()}
               </div>
@@ -155,8 +217,12 @@ const CustomCalendar = ({ onDateSelect, onTimeSelect, selectedDates }) => {
                 className={`calendar-day ${
                   isSameDay(day, range.start) ? 'start' : ''
                 } ${isSameDay(day, range.end) ? 'end' : ''} ${
-                  isInRange(day) ? 'in-range' : ''
-                }`}
+                  !isSameDay(day, range.start) &&
+                  !isSameDay(day, range.end) &&
+                  isInRange(day)
+                    ? 'in-range'
+                    : ''
+                } ${isDateBooked(day) ? 'booked' : ''}`}
               >
                 {day.getDate()}
               </div>
@@ -173,7 +239,15 @@ const CustomCalendar = ({ onDateSelect, onTimeSelect, selectedDates }) => {
             onChange={(e) => onTimeSelect('pickup', e.target.value)}
           >
             {timeOptions.map((time) => (
-              <option key={time} value={time}>
+              <option
+                key={time}
+                value={time}
+                disabled={
+                  selectedDates.pickup?.date
+                    ? isTimeBooked(selectedDates.pickup.date, time)
+                    : false
+                }
+              >
                 {time}
               </option>
             ))}
@@ -186,7 +260,15 @@ const CustomCalendar = ({ onDateSelect, onTimeSelect, selectedDates }) => {
             onChange={(e) => onTimeSelect('dropOff', e.target.value)}
           >
             {timeOptions.map((time) => (
-              <option key={time} value={time}>
+              <option
+                key={time}
+                value={time}
+                disabled={
+                  selectedDates.pickup?.date
+                    ? isTimeBooked(selectedDates.pickup.date, time)
+                    : false
+                }
+              >
                 {time}
               </option>
             ))}
@@ -210,6 +292,12 @@ CustomCalendar.propTypes = {
       time: PropTypes.string,
     }),
   }).isRequired,
+  bookedDays: PropTypes.arrayOf(
+    PropTypes.shape({
+      date: PropTypes.string,
+      times: PropTypes.arrayOf(PropTypes.string),
+    }),
+  ),
 };
 
 export default CustomCalendar;

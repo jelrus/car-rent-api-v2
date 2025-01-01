@@ -29,6 +29,32 @@ export const fetchCars = createAsyncThunk(
   },
 );
 
+// export const fetchBookedDays = createAsyncThunk(
+//   'cars/fetchBookedDays',
+//   async (carId, thunkAPI) => {
+//     try {
+//       const response = await axiosInstance.get(`/cars/${carId}/booked-days`);
+//       return { carId, bookedDays: response.data.content };
+//     } catch (error) {
+//       return thunkAPI.rejectWithValue(error.response?.data || error.message);
+//     }
+//   },
+// );
+
+export const fetchBookedDays = createAsyncThunk(
+  'cars/fetchBookedDays',
+  async (carId, thunkAPI) => {
+    try {
+      const response = await axios.get('/cars.json');
+      const car = response.data.find((car) => car.carId === carId);
+      if (!car) throw new Error('Car not found');
+      return { carId, bookedDays: car.bookedDays || [] };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  },
+);
+
 const carsSlice = createSlice({
   name: 'cars',
   initialState: {
@@ -40,6 +66,7 @@ const carsSlice = createSlice({
     categories: [],
     gearBoxies: [],
     fuelTypes: [],
+    bookedDays: {},
     minPrice: 0,
     maxPrice: 0,
     loading: false,
@@ -109,6 +136,15 @@ const carsSlice = createSlice({
               ? car.pricePerDay >= filters.priceRange[0] &&
                 car.pricePerDay <= filters.priceRange[1]
               : true;
+          const isDateAvailable =
+            filters.pickupDate && filters.dropOffDate
+              ? !car.bookedDays?.some((bookedDay) => {
+                  const bookedDate = new Date(bookedDay).getTime();
+                  const pickupDate = new Date(filters.pickupDate).getTime();
+                  const dropOffDate = new Date(filters.dropOffDate).getTime();
+                  return bookedDate >= pickupDate && bookedDate <= dropOffDate;
+                })
+              : true;
 
           return (
             isPickupMatch &&
@@ -116,7 +152,8 @@ const carsSlice = createSlice({
             isCategoryMatch &&
             isGearBoxMatch &&
             isFuelTypeMatch &&
-            isPriceMatch
+            isPriceMatch &&
+            isDateAvailable
           );
         });
 
@@ -140,6 +177,20 @@ const carsSlice = createSlice({
         ];
       })
       .addCase(fetchCars.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(fetchBookedDays.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchBookedDays.fulfilled, (state, action) => {
+        const { carId, bookedDays } = action.payload;
+        state.bookedDays[carId] = bookedDays;
+        state.loading = false;
+      })
+      .addCase(fetchBookedDays.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

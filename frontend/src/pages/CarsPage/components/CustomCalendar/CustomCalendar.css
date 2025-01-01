@@ -65,7 +65,7 @@
 }
 
 .calendar-day.in-range {
-  background: #d3d3d3;
+  background: #F0F0F0;
   color: #000;
 }
 
@@ -99,4 +99,11 @@
   cursor: pointer;
   width: 268px;
   height: 47px;
+}
+
+.calendar-day.booked {
+  background-color: #ccc;
+  color: #666;
+  pointer-events: none;
+  cursor: not-allowed;
 }

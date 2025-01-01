@@ -10,6 +10,8 @@ import IconMan from '@assets/IconMan.svg';
 import Button from '@components/atoms/Button/Button.jsx';
 import { useState, useEffect } from 'react';
 import CustomCalendar from '../CustomCalendar/CustomCalendar.jsx';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchBookedDays } from '@/redux/slices/carsSlice';
 
 import './CarDetailsModal.css';
 import { useNavigate } from 'react-router';
@@ -43,6 +45,7 @@ const feedbacks = [
 
 const CarDetailsModal = ({ car, onClose }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [mainImage, setMainImage] = useState(
     car.imageUrl || '/placeholder.jpg',
   );
@@ -52,9 +55,19 @@ const CarDetailsModal = ({ car, onClose }) => {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [activeField, setActiveField] = useState(null);
   const [selectedDates, setSelectedDates] = useState({
-    pickup: { date: new Date(), time: '07:00AM' },
-    dropOff: { date: new Date(), time: '10:00AM' },
+    pickup: { date: null, time: '07:00AM' },
+    dropOff: { date: null, time: '10:00AM' },
   });
+
+  const bookedDays = useSelector(
+    (state) => state.cars.bookedDays[car.carId] || [],
+  );
+
+  useEffect(() => {
+    if (car?.carId) {
+      dispatch(fetchBookedDays(car.carId));
+    }
+  }, [car, dispatch]);
 
   useEffect(() => {
     if (!car) return;
@@ -138,8 +151,8 @@ const CarDetailsModal = ({ car, onClose }) => {
   // const handlePageChange = (page) => setCurrentPage(page);
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
+    <div className={`modal-overlay ${car ? 'open' : ''}`}>
+      <div className={`modal-content ${car ? 'open' : ''}`}>
         <button className="modal-close-button" onClick={onClose}>
           &times;
         </button>
@@ -231,6 +244,7 @@ const CarDetailsModal = ({ car, onClose }) => {
               {isCalendarVisible && (
                 <div className="calendar-wrapper">
                   <CustomCalendar
+                    bookedDays={bookedDays}
                     selectedDates={selectedDates}
                     onDateSelect={(field, date) => {
                       setSelectedDates((prev) => ({
@@ -319,23 +333,7 @@ CarDetailsModal.propTypes = {
     fuelConsumption: PropTypes.string,
     carRating: PropTypes.string || PropTypes.number,
     status: PropTypes.string.isRequired,
-  }).isRequired,
-  onClose: PropTypes.func.isRequired,
-  car: PropTypes.shape({
-    carId: PropTypes.string.isRequired,
-    model: PropTypes.string.isRequired,
-    location: PropTypes.string.isRequired,
     imageUrl: PropTypes.string,
-    fuelType: PropTypes.string,
-    gearBoxType: PropTypes.string,
-    engineCapacity: PropTypes.string,
-    passengerCapacity: PropTypes.number,
-    climateControlOption: PropTypes.bool,
-    pricePerDay: PropTypes.number.isRequired,
-    images: PropTypes.arrayOf(PropTypes.string),
-    fuelConsumption: PropTypes.string,
-    carRating: PropTypes.string || PropTypes.number,
-    status: PropTypes.string.isRequired,
     deposit: PropTypes.number,
   }).isRequired,
   onClose: PropTypes.func.isRequired,

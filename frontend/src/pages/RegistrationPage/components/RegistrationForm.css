@@ -45,25 +45,24 @@
 }
 
 .registration-form__login-link {
-    text-align: center;
-    margin-top: 20px;
-  }
-  
-  .registration-form__login-link p {
-    font-size: 16px;
-    color: #666666;
-  }
-  
-  .registration-form__login-link a {
-    color: #000000;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 18px;
-  }
-  
-  .registration-form__login-link a:hover {
-    text-decoration: underline;
-    font-weight: 600;
-    font-size: 18px;
-  }
-  
+  text-align: center;
+  margin-top: 20px;
+}
+
+.registration-form__login-link p {
+  font-size: 16px;
+  color: #666666;
+}
+
+.registration-form__login-link a {
+  color: #000000;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.registration-form__login-link a:hover {
+  text-decoration: underline;
+  font-weight: 600;
+  font-size: 18px;
+}

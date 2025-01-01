@@ -1,7 +1,7 @@
 .car-card {
   display: flex;
   flex-direction: column;
-  background-color: #F0F0F0;
+  background-color: #f0f0f0;
   border-radius: 8px;
   padding: 16px;
   max-width: 332px;
@@ -17,7 +17,6 @@
   width: 300px;
   height: 200px;
   position: relative;
-
 }
 
 .car-card__imageCar {
@@ -64,5 +63,5 @@
 }
 
 .car-card a:hover {
-  color: #CC1D1D;
+  color: #cc1d1d;
 }

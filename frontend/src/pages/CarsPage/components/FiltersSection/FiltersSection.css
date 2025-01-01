@@ -63,3 +63,36 @@ option {
 .filters-form__input-range_label-price {
   color: #666666;
 }
+
+.filters-form__date-picker-fields {
+  position: relative;
+  width: 484px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.filters-form__date-picker-field {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 230px;
+  height: 47px;
+  padding: 12px;
+  cursor: pointer;
+  /*margin-top: 18px;*/
+}
+
+.filters-form__calendar-wrapper {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 100;
+  border-radius: 8px;
+}
+
+.filters-form__label-date {
+  color: #666666;
+  font-size: 12px;
+  line-height: 16px;
+  margin-bottom: 5px;
+}

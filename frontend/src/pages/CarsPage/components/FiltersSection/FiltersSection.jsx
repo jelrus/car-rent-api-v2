@@ -2,10 +2,10 @@ import PropTypes from 'prop-types';
 import './FiltersSection.css';
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import InputField from '@components/atoms/InputField/InputField.jsx';
 import SelectField from '@components/atoms/SelectField/SelectField.jsx';
 import Button from '@components/atoms/Button/Button.jsx';
 import PriceRange from './PriceRange.jsx';
+import CustomCalendar from '../CustomCalendar/CustomCalendar.jsx';
 
 const FiltersSection = ({
   title,
@@ -17,14 +17,17 @@ const FiltersSection = ({
   minPrice,
   maxPrice,
   onApplyFilters,
+  bookedDays,
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [localFilters, setLocalFilters] = useState({
     pickupLocationId: '',
     dropOffLocationId: '',
-    pickupDate: '',
-    dropOffDate: '',
+    pickupDate: null,
+    dropOffDate: null,
+    pickupTime: '',
+    dropOffTime: '',
     category: '',
     gearBoxType: '',
     fuelType: '',
@@ -33,12 +36,39 @@ const FiltersSection = ({
 
   console.log('Filters applied:', localFilters);
 
+  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
+  const [activeField, setActiveField] = useState(null);
+
   useEffect(() => {
     setLocalFilters((prevFilters) => ({
       ...prevFilters,
       priceRange: [minPrice, maxPrice],
     }));
   }, [minPrice, maxPrice]);
+
+  const toggleCalendar = (field) => {
+    if (activeField === field && isCalendarVisible) {
+      setIsCalendarVisible(false);
+      setActiveField(null);
+    } else {
+      setActiveField(field);
+      setIsCalendarVisible(true);
+    }
+  };
+
+  const handleDateSelect = (field, date) => {
+    setLocalFilters((prevFilters) => ({
+      ...prevFilters,
+      [`${field}Date`]: date,
+    }));
+  };
+
+  const handleTimeSelect = (field, time) => {
+    setLocalFilters((prevFilters) => ({
+      ...prevFilters,
+      [`${field}Time`]: time,
+    }));
+  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -63,6 +93,8 @@ const FiltersSection = ({
       if (value) {
         if (Array.isArray(value)) {
           params.append(key, value.join(','));
+        } else if (value instanceof Date) {
+          params.append(key, value.toISOString());
         } else {
           params.append(key, value);
         }
@@ -71,7 +103,6 @@ const FiltersSection = ({
 
     setSearchParams(params);
     navigate(`/cars?${params.toString()}`);
-
     onApplyFilters(localFilters);
   };
 
@@ -98,24 +129,61 @@ const FiltersSection = ({
             onChange={handleInputChange}
             options={dropOffLocations}
           />
-          <InputField
-            label="Pick-up date"
-            type="datetime-local"
-            id="pickupDate"
-            name="pickupDate"
-            value={localFilters.pickupDate}
-            onChange={handleInputChange}
-            placeholder="Select pick-up date"
-          />
-          <InputField
-            label="Drop-off date"
-            type="datetime-local"
-            id="dropOffDate"
-            name="dropOffDate"
-            value={localFilters.dropOffDate}
-            onChange={handleInputChange}
-            placeholder="Select drop-off date"
-          />
+          <div className="filters-form__date-picker-fields">
+            <div>
+              <p className="filters-form__label-date">Pick-up date</p>
+              <div
+                className={`filters-form__date-picker-field ${
+                  activeField === 'pickup' ? 'active' : ''
+                }`}
+                onClick={() => toggleCalendar('pickup')}
+              >
+                {localFilters.pickupDate
+                  ? `${localFilters.pickupDate.toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                    })} ${localFilters.pickupTime || '07:00AM'}`
+                  : 'Pick-up date'}
+                <span className="filters-form__dropdown-arrow">&#9662;</span>
+              </div>
+            </div>
+            <div>
+              <p className="filters-form__label-date">Drop-off date</p>
+              <div
+                className={`filters-form__date-picker-field ${
+                  activeField === 'dropOff' ? 'active' : ''
+                }`}
+                onClick={() => toggleCalendar('dropOff')}
+              >
+                {localFilters.dropOffDate
+                  ? `${localFilters.dropOffDate.toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                    })} ${localFilters.dropOffTime || '10:00AM'}`
+                  : 'Drop-off date'}
+                <span className="filters-form__dropdown-arrow">&#9662;</span>
+              </div>
+            </div>
+            {isCalendarVisible && (
+              <div className="filters-form__calendar-wrapper">
+                <CustomCalendar
+                  bookedDays={bookedDays}
+                  selectedDates={{
+                    pickup: {
+                      date: localFilters.pickupDate,
+                      time: localFilters.pickupTime || '07:00AM',
+                    },
+                    dropOff: {
+                      date: localFilters.dropOffDate,
+                      time: localFilters.dropOffTime || '10:00AM',
+                    },
+                  }}
+                  onDateSelect={(field, date) => handleDateSelect(field, date)}
+                  onTimeSelect={(field, time) => handleTimeSelect(field, time)}
+                />
+              </div>
+            )}
+          </div>
         </div>
         <div className="filters-form__row">
           <SelectField
@@ -186,6 +254,7 @@ FiltersSection.propTypes = {
   onApplyFilters: PropTypes.func.isRequired,
   minPrice: PropTypes.number.isRequired,
   maxPrice: PropTypes.number.isRequired,
+  bookedDays: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default FiltersSection;
