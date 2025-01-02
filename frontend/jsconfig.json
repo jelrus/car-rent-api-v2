@@ -2,16 +2,16 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-			"@public/*": ["public/*"],
+      "@public/*": ["public/*"],
       "@/*": ["src/*"],
-			"@components/*": ["src/components/*"],
-			"@assets/*": ["src/assets/*"],
-			"@containers/*": ["src/containers/*"],
-			"@hooks/*": ["src/hooks/*"],
-			"@pages/*": ["src/pages/*"],
-			"@redux/*": ["src/redux/*"],
-			"@stories/*": ["src/stories/*"],
-			"@utils/*": ["src/utils/*"]
+      "@components/*": ["src/components/*"],
+      "@assets/*": ["src/assets/*"],
+      "@containers/*": ["src/containers/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@pages/*": ["src/pages/*"],
+      "@redux/*": ["src/redux/*"],
+      "@stories/*": ["src/stories/*"],
+      "@utils/*": ["src/utils/*"]
     }
   }
 }

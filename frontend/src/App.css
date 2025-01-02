@@ -13,7 +13,6 @@
   display: flex;
 }
 
-
 .main {
   padding-inline: 32px;
   min-height: calc(100% - 88px - 118px);

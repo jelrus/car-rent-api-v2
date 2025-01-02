@@ -6,8 +6,10 @@
   text-align: center;
   cursor: pointer;
   text-decoration: none;
-  transition: color 0.3s, text-decoration 0.3s;
-  background:none;
+  transition:
+    color 0.3s,
+    text-decoration 0.3s;
+  background: none;
 }
 
 .button-link--primary {
@@ -17,7 +19,7 @@
 .button-link--primary:hover {
   color: #000000;
   border: none;
-  text-decoration: underline; 
+  text-decoration: underline;
 }
 .button-link--danger {
   color: #e22d0d;
@@ -33,5 +35,5 @@
   color: #dcdcdd;
   cursor: not-allowed;
   pointer-events: none;
-  text-decoration: none; 
+  text-decoration: none;
 }

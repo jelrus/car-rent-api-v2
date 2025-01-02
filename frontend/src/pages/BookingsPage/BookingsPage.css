@@ -8,7 +8,6 @@
   font-weight: 600;
   letter-spacing: 1.5px;
   margin: 56px 0px 50px 8px;
-
 }
 
 .bookings-navbar {
@@ -22,10 +21,9 @@
   cursor: pointer;
   font-size: 18px;
   text-decoration: none;
-  color:#666666;
+  color: #666666;
   padding: 8px;
 }
-
 
 .is-active {
   font-weight: 700;
@@ -36,7 +34,6 @@
   text-decoration: none;
   color: inherit;
 }
-
 
 .bookings-list {
   display: flex;
@@ -50,7 +47,7 @@
   position: relative;
   width: 332px;
   height: 360px;
-  background-color: #F0F0F0;
+  background-color: #f0f0f0;
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -72,7 +69,7 @@
 
 .bookings-card p {
   position: absolute;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   padding: 8px;
   top: -6px;
   left: -6px;
@@ -91,7 +88,6 @@
 
 .bookings-card a {
   color: #000000;
-
 }
 
 .bookings-card .card-container {

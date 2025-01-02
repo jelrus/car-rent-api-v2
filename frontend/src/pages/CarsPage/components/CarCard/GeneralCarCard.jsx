@@ -3,7 +3,7 @@ import CarLocation from '../CarLocation/CarLocation.jsx';
 import Rating from '../Rating/Rating.jsx';
 import Button from '@components/atoms/Button/Button.jsx';
 
-import './CarCard.css';
+import './GeneralCarCard.css';
 import { useNavigate } from 'react-router';
 
 const CarCard = ({ car, onDetailsClick }) => {
@@ -13,7 +13,7 @@ const CarCard = ({ car, onDetailsClick }) => {
     navigate(`/booking/${car.carId}`, {
       state: {
         car: {
-          id: car.carId,
+          carId: car.carId,
           image: car.imageUrl,
           model: car.model,
           location: car.location,
@@ -34,7 +34,11 @@ const CarCard = ({ car, onDetailsClick }) => {
   return (
     <div className="car-card">
       <div className="car-card__img-container">
-        <img src={car.imageUrl} alt={car.model} className="car-card__image" />
+        <img
+          src={car.imageUrl}
+          alt={car.model}
+          className="car-card__imageCar"
+        />
         <div className="car-card__status">{car.status}</div>
       </div>
       <div className="car-card__info">
@@ -65,7 +69,7 @@ CarCard.propTypes = {
     imageUrl: PropTypes.string.isRequired,
     dropOffLocationId: PropTypes.string.isRequired,
     pickupLocationId: PropTypes.string.isRequired,
-    deposit: PropTypes.number.isRequired,
+    deposit: PropTypes.number,
   }).isRequired,
   onDetailsClick: PropTypes.func.isRequired,
 };

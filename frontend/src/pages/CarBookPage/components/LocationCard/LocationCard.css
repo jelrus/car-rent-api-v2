@@ -6,13 +6,13 @@
   column-gap: 50px;
 }
 
-.location-card  .location-content {
+.location-card .location-content {
   display: flex;
   flex-direction: column;
-  gap: 20px; 
+  gap: 20px;
 }
 
-.location-card  .location-header {
+.location-card .location-header {
   margin: 5px;
   font-size: small;
   font-weight: 300;

@@ -1,42 +1,80 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCars, applyFilters } from '@/redux/slices/carsSlice';
-import FiltersSection from '@pages/CarsPage/components/FiltersSection.jsx';
-import CarCard from '../../components/molecules/CarCard/CarCard.jsx';
+import { fetchCars, setFilters } from '@/redux/slices/carsSlice';
+import FiltersSection from '@pages/CarsPage/components/FiltersSection/FiltersSection.jsx';
+import GeneralCarCard from '@pages/CarsPage/components/CarCard/GeneralCarCard.jsx';
 import Pagination from './components/Pagination/Pagination.jsx';
 import CarDetailsModal from './components/CarDetailsModal/CarDetailsModal.jsx';
+import { useSearchParams } from 'react-router-dom';
 
 import './CarsPage.css';
 
 const CarsPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
-
   const {
-    // carsData,
-    filteredCarsData,
-    pickupLocations,
-    dropOffLocations,
-    categories,
-    gearBoxies,
-    fuelTypes,
-    minPrice,
-    maxPrice,
-    loading,
-    error,
+    filteredCarsData = [],
+    pickupLocations = [],
+    dropOffLocations = [],
+    categories = [],
+    gearBoxies = [],
+    fuelTypes = [],
+    minPrice = 0,
+    maxPrice = 0,
+    loading = false,
+    error = null,
+    // filters,
   } = useSelector((state) => state.cars);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 16;
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [selectedCar, setSelectedCar] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchCars());
-  }, [dispatch]);
+    const params = Object.fromEntries([...searchParams]);
+    const parsedFilters = {
+      ...params,
+      priceRange: params.priceRange
+        ? params.priceRange.split(',').map(Number)
+        : [minPrice, maxPrice],
+    };
 
-  const handleApplyFilters = (filters) => {
-    dispatch(applyFilters(filters));
+    dispatch(fetchCars(parsedFilters));
+    dispatch(setFilters(parsedFilters));
+  }, [dispatch, searchParams, minPrice, maxPrice]);
+
+  useEffect(() => {
+    const params = Object.fromEntries([...searchParams]);
+
+    if (!filteredCarsData || filteredCarsData.length === 0) {
+      setSelectedCar(null);
+      return;
+    }
+
+    if (params.carId) {
+      const selected = filteredCarsData.find(
+        (car) => car.carId === params.carId,
+      );
+      setSelectedCar(selected || null);
+    }
+  }, [searchParams, filteredCarsData]);
+
+  const handleApplyFilters = (newFilters) => {
+    console.log('Filters applied:', newFilters);
+    const formattedFilters = {
+      ...newFilters,
+      pickupDate: newFilters.pickupDate
+        ? new Date(newFilters.pickupDate).toISOString()
+        : null,
+      dropOffDate: newFilters.dropOffDate
+        ? new Date(newFilters.dropOffDate).toISOString()
+        : null,
+    };
+
+    dispatch(setFilters(formattedFilters));
+    dispatch(fetchCars(formattedFilters));
     setCurrentPage(1);
   };
 
@@ -60,12 +98,19 @@ const CarsPage = () => {
 
   const handleOpenModal = (car) => {
     setSelectedCar(car);
-    setIsModalOpen(true);
+    setSearchParams((prev) => ({
+      ...Object.fromEntries([...prev]),
+      carId: car.carId,
+    }));
   };
 
   const handleCloseModal = () => {
     setSelectedCar(null);
-    setIsModalOpen(false);
+    setSearchParams((prev) => {
+      const params = Object.fromEntries([...prev]);
+      delete params.carId;
+      return params;
+    });
   };
 
   return (
@@ -80,6 +125,7 @@ const CarsPage = () => {
         onApplyFilters={handleApplyFilters}
         minPrice={minPrice}
         maxPrice={maxPrice}
+        bookedDays={[]}
       />
 
       <div className="cars-page__results">
@@ -97,13 +143,15 @@ const CarsPage = () => {
                 isTransitioning ? 'fade-out' : 'fade-in'
               }`}
             >
-              {currentItems.map((car) => (
-                <CarCard
-                  key={car.carId}
-                  car={car}
-                  onDetailsClick={() => handleOpenModal(car)}
-                />
-              ))}
+              {currentItems.map((car) =>
+                car.carId ? (
+                  <GeneralCarCard
+                    key={car.carId}
+                    car={car}
+                    onDetailsClick={() => handleOpenModal(car)}
+                  />
+                ) : null,
+              )}
             </div>
             <Pagination
               currentPage={currentPage}
@@ -114,7 +162,7 @@ const CarsPage = () => {
         )}
       </div>
 
-      {isModalOpen && (
+      {selectedCar && (
         <CarDetailsModal car={selectedCar} onClose={handleCloseModal} />
       )}
     </div>

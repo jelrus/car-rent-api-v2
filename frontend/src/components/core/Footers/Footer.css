@@ -43,7 +43,6 @@
   font-size: 14px;
 } */
 
-
 .footer-nav {
   display: flex;
   align-items: center;
@@ -55,7 +54,6 @@
   gap: 20px;
   margin: 0;
   padding: 0;
-
 }
 .footer-nav__link {
   text-decoration: none;

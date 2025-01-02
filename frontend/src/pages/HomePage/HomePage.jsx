@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import FiltersSection from '../CarsPage/components/FiltersSection';
+import FiltersSection from '../CarsPage/components/FiltersSection/FiltersSection.jsx';
 
 const HomePage = () => {
   const {
