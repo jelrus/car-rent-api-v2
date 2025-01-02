@@ -6,6 +6,7 @@ import { getBookings } from '@/redux/slices/bookingsSlice';
 import Button from '@/components/atoms/Button/Button';
 import chatIcon from '@/assets/chat-icon.png';
 import classNames from 'classnames';
+import checkAuthRole from '@/containers/CheckAuthHoc/CheckAuthHoc';
 
 const tabs = [
   { id: 'tab-1', path: 'all', status: 'ALL', title: 'All bookings' },
@@ -32,8 +33,8 @@ const BookingsPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { message } = location.state || {};
-
-  console.log(location.state || null);
+  const { auth } = useSelector((state) => state.auth);
+  console.log(auth);
 
   const { userId } = useSelector((state) => state.auth.user);
   const { bookings, loading, error } = useSelector((state) => state.bookings);
@@ -168,4 +169,4 @@ const BookingsPage = () => {
   );
 };
 
-export default BookingsPage;
+export default checkAuthRole(BookingsPage, ['Client']);
