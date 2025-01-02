@@ -11,10 +11,10 @@ import image from '@public/imgCars/audi-a6-quattro-2023.jpg';
 import ModalMessageCard from '@/components/atoms/MessageCard/MessageCard';
 
 const CarBookPage = () => {
-  const { carId: paramCarId } = useParams();
+  const { paramCarId } = useParams();
   const carId = paramCarId;
-  const location = useLocation();
 
+  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -65,12 +65,12 @@ const CarBookPage = () => {
     header: '',
     message: '',
   });
-  useEffect(() => {
-    if (carId) {
-      dispatch(getCarDetails(carId));
-      dispatch(getBookedDays(carId));
-    }
-  }, [carId, dispatch]);
+  // useEffect(() => {
+  //   if (carId) {
+  //     dispatch(getCarDetails(carId));
+  //     dispatch(getBookedDays(carId));
+  //   }
+  // }, [carId, dispatch]);
 
   useEffect(() => {
     if (bookedDays.length > 0) {
@@ -92,32 +92,37 @@ const CarBookPage = () => {
       pickupDateTime: `${bookingInfo.pickUp.date} ${bookingInfo.pickUp.time}`,
       pickupLocationId: '9b903ebf-2b18-4946-bc58-045d86a2632e',
     };
-    /*try {
-
+    try {
       const actionResult = await dispatch(createBooking(bookingData));
       const data = actionResult.payload;
-      if(data.booked_block){
-         setModalMessage({
-          header: `Sorry ${userInfo.name}`, 
-          message: <div className='modal-message-card__message'>
-          It seems like someone has already reserved this car. You can find similar cars{' '}
-          <Link className='modal-message-card__message-link' to="/cars">here</Link>.
-        </div>,
+      if (data.booked_block) {
+        setModalMessage({
+          header: `Sorry ${userInfo.name}`,
+          message: (
+            <div className="modal-message-card__message">
+              It seems like someone has already reserved this car. You can find
+              similar cars{' '}
+              <Link className="modal-message-card__message-link" to="/cars">
+                here
+              </Link>
+              .
+            </div>
+          ),
         });
         setShowModal(true);
         return;
       }
+
       navigate('/bookings', { state: { message: data.message } });
-
     } catch (error) {
-
       setModalMessage({
         header: 'Booking Error',
-        message: 'An error occurred while confirming your booking. Please try again.',
+        message:
+          'An error occurred while confirming your booking. Please try again.',
       });
       setShowModal(true);
-    }*/
-    navigate('/bookings', { state: { message: 'data.message' } });
+    }
+    // navigate('/bookings', { state: { message: 'data.message' } });
   };
 
   return (

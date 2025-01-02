@@ -1,5 +1,5 @@
 import './BookingsPage.css';
-import { useParams, Link, useNavigate } from 'react-router';
+import { useParams, Link, useNavigate, useLocation } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBookings } from '@/redux/slices/bookingsSlice';
@@ -30,12 +30,18 @@ const BookingsPage = () => {
   const { tabId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { message } = location.state || {};
+
+  console.log(location.state || null);
 
   const { userId } = useSelector((state) => state.auth.user);
   const { bookings, loading, error } = useSelector((state) => state.bookings);
 
   const [filteredBookings, setFilteredBookings] = useState([]);
   const [statusFilter, setStatusFilter] = useState('ALL');
+
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     if (userId) {
@@ -65,6 +71,12 @@ const BookingsPage = () => {
     }
   }, [bookings, statusFilter]);
 
+  useEffect(() => {
+    if (message) {
+      setSuccessMessage(message);
+    }
+  }, [message]);
+
   const handleFilterChange = (filter) => {
     const tab = tabs.find((tab) => tab.status === filter);
     if (tab) {
@@ -80,6 +92,7 @@ const BookingsPage = () => {
       <div className="bookings-title">
         <h2>My bookings</h2>
       </div>
+      {successMessage && <div>Successfull book {successMessage}</div>}
 
       <div className="bookings-filter">
         <ul className="bookings-navbar">
