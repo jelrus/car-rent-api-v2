@@ -23,8 +23,6 @@
   gap: 16px;
   margin-top: 40px;
 }
-.unlogin .icon {
-}
 .unlogin .content {
   display: flex;
   flex-direction: column;

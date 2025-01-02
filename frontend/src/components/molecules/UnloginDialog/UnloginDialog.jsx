@@ -32,8 +32,8 @@ const UnloginDialog = ({ onClose }) => {
             </p>
           </div>
           <div className="button-container">
-            <Button text="Cancel" type="secondary" onClick={onClose} />
-            <Button text="Log in" type="primary" onClick={handleLogin} />
+            <Button text="Cancel" ButtonType="primary" onClick={onClose} />
+            <Button text="Log in" ButtonType="primary" onClick={handleLogin} />
           </div>
         </div>
       </div>

@@ -15,6 +15,7 @@ import { fetchBookedDays } from '@/redux/slices/carsSlice';
 
 import './CarDetailsModal.css';
 import { useNavigate } from 'react-router';
+import UnloginDialog from '@/components/molecules/UnloginDialog/UnloginDialog.jsx';
 
 const feedbacks = [
   {
@@ -46,6 +47,8 @@ const feedbacks = [
 const CarDetailsModal = ({ car, onClose }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const isAuth=useSelector((state) => state.auth.token!==null)
+  console.log(isAuth)
   const [mainImage, setMainImage] = useState(
     car.imageUrl || '/placeholder.jpg',
   );
@@ -54,6 +57,10 @@ const CarDetailsModal = ({ car, onClose }) => {
 
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [activeField, setActiveField] = useState(null);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(isAuth); 
+  const [showUnloginDialog, setShowUnloginDialog] = useState(false);
+  console.log(useSelector((state) => state.auth));
   const [selectedDates, setSelectedDates] = useState({
     pickup: { date: null, time: '07:00AM' },
     dropOff: { date: null, time: '10:00AM' },
@@ -62,6 +69,10 @@ const CarDetailsModal = ({ car, onClose }) => {
   const bookedDays = useSelector(
     (state) => state.cars.bookedDays[car.carId] || [],
   );
+  useEffect(() => {
+    !isLoggedIn && setShowUnloginDialog(true)
+    
+  },[isLoggedIn]);
 
   useEffect(() => {
     if (car?.carId) {
@@ -99,7 +110,6 @@ const CarDetailsModal = ({ car, onClose }) => {
 
   const handleBooking = (car) => {
     const countDays = selectedDates.pickup - selectedDates.dropOff || 1;
-    console.log(countDays);
     navigate(`/booking/${car.carId}`, {
       state: {
         car: {
@@ -107,8 +117,8 @@ const CarDetailsModal = ({ car, onClose }) => {
           image: mainImage,
           model: car.model,
           location: car.location,
-          /*dropOffId: car.dropOffLocationId,
-                    pickUpId: car.pickupLocationId,*/
+          dropOffId: car.dropOffLocationId,
+                    pickUpId: car.pickupLocationId,
           deposit: car.deposit ? car.deposit : 0,
           totalPrice: car.pricePerDay * countDays,
         },
@@ -147,11 +157,15 @@ const CarDetailsModal = ({ car, onClose }) => {
     setCurrentSort(value);
     setCurrentPage(1);
   };
-
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
   // const handlePageChange = (page) => setCurrentPage(page);
 
   return (
-    <div className={`modal-overlay ${car ? 'open' : ''}`}>
+    <div className={`modal-overlay ${car ? 'open' : ''}`} onClick={handleOverlayClick}>
       <div className={`modal-content ${car ? 'open' : ''}`}>
         <button className="modal-close-button" onClick={onClose}>
           &times;
@@ -263,12 +277,7 @@ const CarDetailsModal = ({ car, onClose }) => {
               )}
             </div>
 
-            <Button
-              text={`Book the car - ${car.pricePerDay || 'N/A'}/day`}
-              type="submit"
-              ButtonType="primary"
-              onClick={() => handleBooking(car)}
-            />
+            <Button text={`Book - ${car.pricePerDay || 'N/A'}/day`} type="submit" ButtonType="primary" onClick={handleBooking} disabled={!isLoggedIn} />
           </div>
         </div>
 
@@ -313,6 +322,7 @@ const CarDetailsModal = ({ car, onClose }) => {
             ))}
           </ul>
         </div>
+        {showUnloginDialog && <UnloginDialog onClose={() => setShowUnloginDialog(false)} />}
       </div>
     </div>
   );

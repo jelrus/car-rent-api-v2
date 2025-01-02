@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router';
 import image from '@public/imgCars/audi-a6-quattro-2023.jpg';
 import ModalMessageCard from '@/components/atoms/MessageCard/MessageCard';
+import checkAuthRole from '@/containers/CheckAuthHoc/CheckAuthHoc';
 
 const CarBookPage = () => {
   const { paramCarId } = useParams();
@@ -19,6 +20,7 @@ const CarBookPage = () => {
   const navigate = useNavigate();
 
   const { car } = location.state || {};
+  console.log('car', car);
   const user = useSelector((state) => state.auth.user);
   const {
     carDetails,
@@ -55,7 +57,7 @@ const CarBookPage = () => {
       id: carId,
       name: car?.model || carDetails?.model || 'Car Name',
       location: car?.location || carDetails?.location || 'Car Location',
-      image: carDetails?.images?.[0] || image,
+      image: car.image|| carDetails?.images?.[0] || image,
       price: car?.totalPrice || carDetails?.pricePerDay || 0,
       deposit: car?.deposit || carDetails?.deposit || 0,
     },
@@ -166,4 +168,4 @@ const CarBookPage = () => {
   );
 };
 
-export default CarBookPage;
+export default checkAuthRole(CarBookPage, ['Client']);
