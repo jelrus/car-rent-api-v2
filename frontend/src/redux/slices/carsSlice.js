@@ -2,32 +2,32 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '@/utils/axiosInstance';
 import axios from 'axios';
 
-export const fetchCars = createAsyncThunk(
-  'cars/fetchCars',
-  async (filters, thunkAPI) => {
-    try {
-      const response = await axiosInstance.get('/cars', {
-        params: {
-          ...filters,
-        },
-      });
-      return response.data.content;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data || error.message);
-    }
-  },
-);
 // export const fetchCars = createAsyncThunk(
 //   'cars/fetchCars',
 //   async (filters, thunkAPI) => {
 //     try {
-//       const response = await axios.get('/cars.json', { params: filters });
-//       return response.data;
+//       const response = await axiosInstance.get('/cars', {
+//         params: {
+//           ...filters,
+//         },
+//       });
+//       return response.data.content;
 //     } catch (error) {
 //       return thunkAPI.rejectWithValue(error.response?.data || error.message);
 //     }
 //   },
 // );
+export const fetchCars = createAsyncThunk(
+  'cars/fetchCars',
+  async (filters, thunkAPI) => {
+    try {
+      const response = await axios.get('/cars.json', { params: filters });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  },
+);
 
 // export const fetchBookedDays = createAsyncThunk(
 //   'cars/fetchBookedDays',
@@ -66,7 +66,7 @@ const carsSlice = createSlice({
     categories: [],
     gearBoxies: [],
     fuelTypes: [],
-    bookedDays: {},
+    bookedDays: [],
     minPrice: 0,
     maxPrice: 0,
     loading: false,

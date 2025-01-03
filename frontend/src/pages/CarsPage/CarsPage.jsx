@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCars, setFilters } from '@/redux/slices/carsSlice';
+import { fetchCars, setFilters, clearFilters } from '@/redux/slices/carsSlice';
 import FiltersSection from '@pages/CarsPage/components/FiltersSection/FiltersSection.jsx';
 import GeneralCarCard from '@pages/CarsPage/components/CarCard/GeneralCarCard.jsx';
 import Pagination from './components/Pagination/Pagination.jsx';
@@ -62,7 +62,6 @@ const CarsPage = () => {
   }, [searchParams, filteredCarsData]);
 
   const handleApplyFilters = (newFilters) => {
-    console.log('Filters applied:', newFilters);
     const formattedFilters = {
       ...newFilters,
       pickupDate: newFilters.pickupDate
@@ -75,6 +74,12 @@ const CarsPage = () => {
 
     dispatch(setFilters(formattedFilters));
     dispatch(fetchCars(formattedFilters));
+    setCurrentPage(1);
+  };
+
+  const handleClearFilters = () => {
+    dispatch(clearFilters());
+    setSearchParams({});
     setCurrentPage(1);
   };
 
@@ -123,6 +128,7 @@ const CarsPage = () => {
         gearBoxies={gearBoxies}
         fuelTypes={fuelTypes}
         onApplyFilters={handleApplyFilters}
+        onClearFilters={handleClearFilters}
         minPrice={minPrice}
         maxPrice={maxPrice}
         bookedDays={[]}

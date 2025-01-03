@@ -12,10 +12,7 @@
     "fuelType": "PETROL",
     "status": "AVAILABLE",
     "imageUrl": "/imgCars/nissan-z-2024.jpg",
-    "bookedDays": [
-      "2025-01-08",
-      "2025-01-09"
-    ]
+    "bookedDays": ["2025-01-08", "2025-01-09"]
   },
   {
     "carId": "2",
@@ -72,12 +69,7 @@
     "fuelType": "DIESEL",
     "status": "AVAILABLE",
     "imageUrl": "/imgCars/audi-a6-quattro-2023.jpg",
-    "bookedDays": [
-      "2025-01-14",
-      "2025-01-15",
-      "2025-01-16",
-      "2025-01-17"
-    ]
+    "bookedDays": ["2025-01-14", "2025-01-15", "2025-01-16", "2025-01-17"]
   },
   {
     "carId": "6",

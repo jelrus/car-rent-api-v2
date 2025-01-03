@@ -37,10 +37,34 @@
 }
 
 .filters-form__button {
-  width: 240px;
+  width: 200px;
   gap: 8px;
   margin-top: 20px;
+  display: flex;
+  align-items: center;
 }
+
+.filters-form__clear-filters {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filters-form__clear-filters img {
+  height: 43px;
+  width: 43px;
+  transition: transform 0.3s ease;
+}
+
+.filters-form__clear-filters:hover {
+  filter: brightness(0.7);
+}
+
 option {
   background-color: #fff;
   color: #333;
