@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
 import './FiltersSection.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import SelectField from '@components/atoms/SelectField/SelectField.jsx';
 import Button from '@components/atoms/Button/Button.jsx';
 import PriceRange from './PriceRange.jsx';
 import CustomCalendar from '../CustomCalendar/CustomCalendar.jsx';
+import clearIcon from '@assets/clear.svg';
 
 const FiltersSection = ({
   title,
@@ -17,9 +18,11 @@ const FiltersSection = ({
   minPrice,
   maxPrice,
   onApplyFilters,
+  onClearFilters,
   bookedDays,
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const calendarRef = useRef(null);
   const navigate = useNavigate();
   const [localFilters, setLocalFilters] = useState({
     pickupLocationId: '',
@@ -33,8 +36,6 @@ const FiltersSection = ({
     fuelType: '',
     priceRange: [minPrice, maxPrice],
   });
-
-  console.log('Filters applied:', localFilters);
 
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [activeField, setActiveField] = useState(null);
@@ -55,6 +56,20 @@ const FiltersSection = ({
       setIsCalendarVisible(true);
     }
   };
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (calendarRef.current && !calendarRef.current.contains(event.target)) {
+        setIsCalendarVisible(false);
+        setActiveField(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, []);
 
   const handleDateSelect = (field, date) => {
     setLocalFilters((prevFilters) => ({
@@ -129,7 +144,7 @@ const FiltersSection = ({
             onChange={handleInputChange}
             options={dropOffLocations}
           />
-          <div className="filters-form__date-picker-fields">
+          <div className="filters-form__date-picker-fields" ref={calendarRef}>
             <div>
               <p className="filters-form__label-date">Pick-up date</p>
               <div
@@ -237,6 +252,13 @@ const FiltersSection = ({
           </div>
           <div className="filters-form__button">
             <Button type="submit" ButtonType="primary" text="Find a car" />
+            <button
+              type="button"
+              className="filters-form__clear-filters"
+              onClick={onClearFilters}
+            >
+              <img src={clearIcon} alt="Clear Filters Icon" />
+            </button>
           </div>
         </div>
       </form>
@@ -252,6 +274,7 @@ FiltersSection.propTypes = {
   gearBoxies: PropTypes.arrayOf(PropTypes.string).isRequired,
   fuelTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
   onApplyFilters: PropTypes.func.isRequired,
+  onClearFilters: PropTypes.func.isRequired,
   minPrice: PropTypes.number.isRequired,
   maxPrice: PropTypes.number.isRequired,
   bookedDays: PropTypes.arrayOf(PropTypes.string),

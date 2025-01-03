@@ -8,7 +8,7 @@ import Engine from '@assets/Engine.svg';
 import CarFan from '@assets/Car-fan.svg';
 import IconMan from '@assets/IconMan.svg';
 import Button from '@components/atoms/Button/Button.jsx';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import CustomCalendar from '../CustomCalendar/CustomCalendar.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBookedDays } from '@/redux/slices/carsSlice';
@@ -49,6 +49,7 @@ const CarDetailsModal = ({ car, onClose }) => {
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.auth.token !== null);
   console.log(isAuth);
+  const calendarRef = useRef(null);
   const [mainImage, setMainImage] = useState(
     car.imageUrl || '/placeholder.jpg',
   );
@@ -139,6 +140,24 @@ const CarDetailsModal = ({ car, onClose }) => {
     }
   };
 
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (
+        calendarRef.current &&
+        !calendarRef.current.contains(event.target) &&
+        !event.target.closest('.date-picker-field')
+      ) {
+        setIsCalendarVisible(false);
+        setActiveField(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, []);
+
   const sortedFeedbacks = [...feedbacks].sort((a, b) => {
     if (currentSort === 'newest') return new Date(b.date) - new Date(a.date);
     if (currentSort === 'latest') return new Date(a.date) - new Date(b.date);
@@ -166,7 +185,11 @@ const CarDetailsModal = ({ car, onClose }) => {
   return (
     <div
       className={`modal-overlay ${car ? 'open' : ''}`}
-      onClick={handleOverlayClick}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
     >
       <div className={`modal-content ${car ? 'open' : ''}`}>
         <button className="modal-close-button" onClick={onClose}>
@@ -229,7 +252,10 @@ const CarDetailsModal = ({ car, onClose }) => {
               <div className="date-picker-fields">
                 <div
                   className={`date-picker-field ${activeField === 'pickup' ? 'active' : ''}`}
-                  onClick={() => toggleCalendar('pickup')}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleCalendar('pickup');
+                  }}
                 >
                   {selectedDates.pickup?.date instanceof Date
                     ? `${selectedDates.pickup.date.toLocaleDateString('en-US', {
@@ -242,7 +268,10 @@ const CarDetailsModal = ({ car, onClose }) => {
 
                 <div
                   className={`date-picker-field ${activeField === 'dropOff' ? 'active' : ''}`}
-                  onClick={() => toggleCalendar('dropOff')}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleCalendar('dropOff');
+                  }}
                 >
                   {selectedDates.dropOff?.date instanceof Date
                     ? `${selectedDates.dropOff.date.toLocaleDateString(
@@ -258,7 +287,11 @@ const CarDetailsModal = ({ car, onClose }) => {
               </div>
 
               {isCalendarVisible && (
-                <div className="calendar-wrapper">
+                <div
+                  className="calendar-wrapper"
+                  ref={calendarRef}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <CustomCalendar
                     bookedDays={bookedDays}
                     selectedDates={selectedDates}
