@@ -30,7 +30,12 @@ const RegistrationForm = () => {
     }
     if (token) {
       dispatch(logOut());
-      navigate('/success_signup');
+      navigate('/login', {
+        state: {
+          message:
+            'Registration successful! Please log in to access your account.',
+        },
+      });
     }
   }, [token, touchedFields, error, formData]);
 
@@ -49,7 +54,7 @@ const RegistrationForm = () => {
         break;
       case 'email':
         if (error) {
-          errorField = 'Email already exists';
+          errorField = error;
         }
         if (!value) errorField = 'Email is required.';
         else if (!/\S+@\S+\.\S+/.test(value))

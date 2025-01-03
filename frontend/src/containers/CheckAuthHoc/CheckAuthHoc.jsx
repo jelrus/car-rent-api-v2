@@ -15,7 +15,7 @@ const checkAuthRole = (WrappedComponent, allowedRoles = []) => {
     }, [token, user, allowedRoles, navigate]);
 
     if (!token || !allowedRoles.includes(user.role)) {
-      return null; 
+      return null;
     }
 
     return <WrappedComponent {...props} />;

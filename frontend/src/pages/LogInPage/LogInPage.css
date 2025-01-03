@@ -3,6 +3,13 @@
   grid-template-columns: 1fr 1fr;
   height: 100vh;
   background-color: #fffbf3;
+  position: relative;
+}
+
+.login-info-message {
+  position: absolute;
+  top: 0;
+  left: 50%;
 }
 
 .banner-container {

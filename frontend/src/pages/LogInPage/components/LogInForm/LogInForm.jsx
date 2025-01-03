@@ -50,7 +50,7 @@ const LogInForm = () => {
         else if (!/\d/.test(value))
           errorField = 'Password should contain at list 1 digit';
         else if (error) {
-          errorField = `The password or email isn't correct. Check it and try again`;
+          errorField = error;
         }
         break;
       default:

@@ -1,5 +1,12 @@
 .bookings-filter {
   text-align: start;
+  position: relative;
+}
+
+.bookings-info-message {
+  position: absolute;
+  top: 88px;
+  left: 40%;
 }
 
 .bookings-title h2 {
