@@ -57,7 +57,7 @@ const CarBookPage = () => {
       id: carId,
       name: car?.model || carDetails?.model || 'Car Name',
       location: car?.location || carDetails?.location || 'Car Location',
-      image: car.image|| carDetails?.images?.[0] || image,
+      image: car.image || carDetails?.images?.[0] || image,
       price: car?.totalPrice || carDetails?.pricePerDay || 0,
       deposit: car?.deposit || carDetails?.deposit || 0,
     },

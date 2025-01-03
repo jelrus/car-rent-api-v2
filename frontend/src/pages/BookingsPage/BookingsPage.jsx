@@ -7,6 +7,7 @@ import Button from '@/components/atoms/Button/Button';
 import chatIcon from '@/assets/chat-icon.png';
 import classNames from 'classnames';
 import checkAuthRole from '@/containers/CheckAuthHoc/CheckAuthHoc';
+import SuccessInfoMessage from '@/components/molecules/SuccessInfoMessage/SuccessInfoMessage';
 
 const tabs = [
   { id: 'tab-1', path: 'all', status: 'ALL', title: 'All bookings' },
@@ -33,8 +34,6 @@ const BookingsPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { message } = location.state || {};
-  const { auth } = useSelector((state) => state.auth);
-  console.log(auth);
 
   const { userId } = useSelector((state) => state.auth.user);
   const { bookings, loading, error } = useSelector((state) => state.bookings);
@@ -85,6 +84,10 @@ const BookingsPage = () => {
     }
   };
 
+  const handleCloseInfoMessage = () => {
+    setSuccessMessage('');
+  };
+
   if (loading) return <p>Loading bookings...</p>;
   if (error) return <p>something went wrong</p>;
 
@@ -93,7 +96,21 @@ const BookingsPage = () => {
       <div className="bookings-title">
         <h2>My bookings</h2>
       </div>
-      {successMessage && <div>Successfull book {successMessage}</div>}
+      {successMessage && (
+        <div className="bookings-info-message">
+          <SuccessInfoMessage
+            message={successMessage}
+            onClick={handleCloseInfoMessage}
+          />
+        </div>
+      )}
+
+      {/* <div className="bookings-info-message">
+        <SuccessInfoMessage
+          message={successMessage}
+          onClose={handleCloseInfoMessage}
+        />
+      </div> */}
 
       <div className="bookings-filter">
         <ul className="bookings-navbar">
@@ -132,13 +149,15 @@ const BookingsPage = () => {
                     <div className="card-buttons">
                       <Button
                         text="Cancel"
-                        type="secondary"
+                        type="button"
+                        ButtonType="secondary"
                         // onClick={handleCancel}
                         disabled={loading}
                       />
                       <Button
                         text="Edit"
-                        type="primary"
+                        type="button"
+                        ButtonType="primary"
                         // onClick={handleEdit}
                         disabled={loading}
                       />

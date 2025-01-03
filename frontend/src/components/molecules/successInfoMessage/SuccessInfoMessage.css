@@ -1,0 +1,35 @@
+.success-info__block {
+  display: flex;
+  padding: 16px;
+  width: 370px;
+  box-sizing: border-box;
+  border: solid #149E32 1px;
+  border-radius: 4px;
+  background-color: #E2FAE7;
+}
+
+.success-info__icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+
+.success-info__title {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.success-info__message {
+  font-size: 12px;
+  line-height: 18px;
+  color: #666666;
+}
+
+.success-info__close {
+  width: 16px;
+  height: 16px;
+  margin-left: auto;
+  cursor: pointer;
+  background-color: #E2FAE7;
+  border: none;
+}

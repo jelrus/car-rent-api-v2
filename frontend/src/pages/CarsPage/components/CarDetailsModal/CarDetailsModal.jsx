@@ -47,8 +47,8 @@ const feedbacks = [
 const CarDetailsModal = ({ car, onClose }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isAuth=useSelector((state) => state.auth.token!==null)
-  console.log(isAuth)
+  const isAuth = useSelector((state) => state.auth.token !== null);
+  console.log(isAuth);
   const [mainImage, setMainImage] = useState(
     car.imageUrl || '/placeholder.jpg',
   );
@@ -58,7 +58,7 @@ const CarDetailsModal = ({ car, onClose }) => {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [activeField, setActiveField] = useState(null);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(isAuth); 
+  const [isLoggedIn, setIsLoggedIn] = useState(isAuth);
   const [showUnloginDialog, setShowUnloginDialog] = useState(false);
   console.log(useSelector((state) => state.auth));
   const [selectedDates, setSelectedDates] = useState({
@@ -70,9 +70,8 @@ const CarDetailsModal = ({ car, onClose }) => {
     (state) => state.cars.bookedDays[car.carId] || [],
   );
   useEffect(() => {
-    !isLoggedIn && setShowUnloginDialog(true)
-    
-  },[isLoggedIn]);
+    !isLoggedIn && setShowUnloginDialog(true);
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (car?.carId) {
@@ -118,7 +117,7 @@ const CarDetailsModal = ({ car, onClose }) => {
           model: car.model,
           location: car.location,
           dropOffId: car.dropOffLocationId,
-                    pickUpId: car.pickupLocationId,
+          pickUpId: car.pickupLocationId,
           deposit: car.deposit ? car.deposit : 0,
           totalPrice: car.pricePerDay * countDays,
         },
@@ -165,7 +164,10 @@ const CarDetailsModal = ({ car, onClose }) => {
   // const handlePageChange = (page) => setCurrentPage(page);
 
   return (
-    <div className={`modal-overlay ${car ? 'open' : ''}`} onClick={handleOverlayClick}>
+    <div
+      className={`modal-overlay ${car ? 'open' : ''}`}
+      onClick={handleOverlayClick}
+    >
       <div className={`modal-content ${car ? 'open' : ''}`}>
         <button className="modal-close-button" onClick={onClose}>
           &times;
@@ -277,7 +279,13 @@ const CarDetailsModal = ({ car, onClose }) => {
               )}
             </div>
 
-            <Button text={`Book - ${car.pricePerDay || 'N/A'}/day`} type="submit" ButtonType="primary" onClick={handleBooking} disabled={!isLoggedIn} />
+            <Button
+              text={`Book - ${car.pricePerDay || 'N/A'}/day`}
+              type="submit"
+              ButtonType="primary"
+              onClick={handleBooking}
+              disabled={!isLoggedIn}
+            />
           </div>
         </div>
 
@@ -322,7 +330,9 @@ const CarDetailsModal = ({ car, onClose }) => {
             ))}
           </ul>
         </div>
-        {showUnloginDialog && <UnloginDialog onClose={() => setShowUnloginDialog(false)} />}
+        {showUnloginDialog && (
+          <UnloginDialog onClose={() => setShowUnloginDialog(false)} />
+        )}
       </div>
     </div>
   );
