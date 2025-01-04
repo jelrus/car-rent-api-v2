@@ -65,6 +65,11 @@ const CarsPage = () => {
       await dispatch(getBookedDays(car.carId));
       setSelectedCar(car);
       setIsModalOpen(true);
+      setSearchParams((prevParams) => {
+        const newParams = new URLSearchParams(prevParams);
+        newParams.set('carId', car.carId);
+        return newParams;
+      });
     } catch (error) {
       console.error('Failed to fetch car details:', error);
     }
@@ -73,6 +78,12 @@ const CarsPage = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedCar(null);
+
+    setSearchParams((prevParams) => {
+      const newParams = new URLSearchParams(prevParams);
+      newParams.delete('carId');
+      return newParams;
+    });
   };
 
   return (
