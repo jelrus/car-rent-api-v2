@@ -24,7 +24,7 @@ const CustomCalendar = ({
       day <= end;
       day.setDate(day.getDate() + 1)
     ) {
-      days.push(new Date(day));
+      days.push(new Date(day.getTime()));
     }
     return days;
   };
@@ -40,8 +40,12 @@ const CustomCalendar = ({
   };
 
   const isDateBooked = (day) => {
-    const formattedDate = day.toISOString().split('T')[0];
-    return bookedDays.includes(formattedDate);
+    const formattedDate = new Date(
+      day.getTime() - day.getTimezoneOffset() * 60000,
+    )
+      .toISOString()
+      .split('T')[0];
+    return bookedDays.some((bookedDay) => bookedDay.startsWith(formattedDate));
   };
 
   const isTimeBooked = (day, time) => {
@@ -61,39 +65,45 @@ const CustomCalendar = ({
   };
 
   const handleDayClick = (day) => {
-    if (isSameDay(day, range.start)) {
+    if (isSameDay(day, range.start) && isSameDay(day, range.end)) {
       setRange({ start: null, end: null });
       onDateSelect('pickup', null);
       onDateSelect('dropOff', null);
       return;
     }
-
     if (!range.start || (range.start && range.end)) {
       setRange({ start: day, end: null });
       onDateSelect('pickup', day);
-    } else if (range.start && !range.end && day > range.start) {
-      const selectedRange = [];
-      for (
-        let d = new Date(range.start);
-        d <= day;
-        d.setDate(d.getDate() + 1)
-      ) {
-        selectedRange.push(new Date(d).toISOString().split('T')[0]);
-      }
+    } else if (range.start && !range.end) {
+      if (isSameDay(day, range.start)) {
+        setRange({ ...range, end: day });
+        onDateSelect('dropOff', day);
+      } else if (day > range.start) {
+        const selectedRange = [];
+        for (
+          let d = new Date(range.start);
+          d <= day;
+          d.setDate(d.getDate() + 1)
+        ) {
+          selectedRange.push(new Date(d).toISOString().split('T')[0]);
+        }
 
-      const hasConflict = selectedRange.some((selectedDate) =>
-        bookedDays.includes(selectedDate),
-      );
-
-      if (hasConflict) {
-        alert(
-          'The selected range includes already booked dates. Please choose another range.',
+        const hasConflict = selectedRange.some((selectedDate) =>
+          bookedDays.includes(selectedDate),
         );
-        return;
-      }
 
-      setRange({ ...range, end: day });
-      onDateSelect('dropOff', day);
+        if (hasConflict) {
+          alert(
+            'The selected range includes already booked dates. Please choose another range.',
+          );
+          return;
+        }
+
+        setRange({ ...range, end: day });
+        onDateSelect('dropOff', day);
+      } else {
+        alert('Drop-off date cannot be earlier than the pick-up date.');
+      }
     }
   };
 

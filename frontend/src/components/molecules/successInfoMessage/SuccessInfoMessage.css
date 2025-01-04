@@ -3,9 +3,9 @@
   padding: 16px;
   width: 370px;
   box-sizing: border-box;
-  border: solid #149E32 1px;
+  border: solid #149e32 1px;
   border-radius: 4px;
-  background-color: #E2FAE7;
+  background-color: #e2fae7;
 }
 
 .success-info__icon {
@@ -30,6 +30,6 @@
   height: 16px;
   margin-left: auto;
   cursor: pointer;
-  background-color: #E2FAE7;
+  background-color: #e2fae7;
   border: none;
 }

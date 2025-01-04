@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '@/utils/axiosInstance';
-import axios from 'axios';
+// import axios from 'axios';
 
 export const fetchCars = createAsyncThunk(
   'cars/fetchCars',
@@ -30,16 +30,32 @@ export const fetchCars = createAsyncThunk(
 //   },
 // );
 
+// export const fetchBookedDays = createAsyncThunk(
+//   'cars/fetchBookedDays',
+//   async (carId, thunkAPI) => {
+//     try {
+//       const response = await axios.get('/cars.json');
+//       const car = response.data.find((car) => car.carId === carId);
+//       if (!car) throw new Error('Car not found');
+//       return { carId, bookedDays: car.bookedDays || [] };
+//     } catch (error) {
+//       return thunkAPI.rejectWithValue(error.message);
+//     }
+//   },
+// );
 export const fetchBookedDays = createAsyncThunk(
   'cars/fetchBookedDays',
   async (carId, thunkAPI) => {
     try {
-      const response = await axios.get('/cars.json');
-      const car = response.data.find((car) => car.carId === carId);
-      if (!car) throw new Error('Car not found');
-      return { carId, bookedDays: car.bookedDays || [] };
+      const response = await axiosInstance.get(`/cars/${carId}/booked-days`);
+      return { carId, bookedDays: response.data.content };
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message ||
+          error.response?.data ||
+          error.message ||
+          'Unknown error',
+      );
     }
   },
 );
@@ -54,6 +70,7 @@ const carsSlice = createSlice({
     filters: {},
     loading: false,
     error: null,
+    bookedDays: {},
   },
   reducers: {
     setFilters: (state, action) => {
@@ -85,6 +102,19 @@ const carsSlice = createSlice({
       .addCase(fetchCars.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(fetchBookedDays.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchBookedDays.fulfilled, (state, action) => {
+        const { carId, bookedDays } = action.payload;
+        state.bookedDays[carId] = bookedDays;
+        state.loading = false;
+      })
+      .addCase(fetchBookedDays.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || 'Failed to fetch booked days.';
       });
   },
 });

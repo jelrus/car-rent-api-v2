@@ -12,7 +12,7 @@ import { useState, useEffect, useRef } from 'react';
 import CustomCalendar from '../CustomCalendar/CustomCalendar.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBookedDays } from '@/redux/slices/carsSlice';
-import { getCarDetails } from '@/redux/slices/carSlice';
+// import { getCarDetails } from '@/redux/slices/carSlice';
 
 import './CarDetailsModal.css';
 import { useNavigate } from 'react-router';
@@ -69,7 +69,7 @@ const CarDetailsModal = ({ car, onClose }) => {
     dropOff: { date: null, time: '10:00AM' },
   });
 
-  const bookedDays = useSelector((state) => state.carBooked.bookedDays || []);
+  const bookedDays = useSelector((state) => state.cars.bookedDays[car.carId] || []);
   console.log(bookedDays);
   useEffect(() => {
     !isLoggedIn && setShowUnloginDialog(true);
@@ -80,6 +80,11 @@ const CarDetailsModal = ({ car, onClose }) => {
       dispatch(fetchBookedDays(car.carId));
     }
   }, [car, dispatch]);
+
+  const formattedBookedDays = bookedDays.map((date) => {
+    const [day, month, year] = date.split('.');
+    return `${year}-${month}-${day}`;
+  });
 
   useEffect(() => {
     if (!car) return;
@@ -300,7 +305,7 @@ const CarDetailsModal = ({ car, onClose }) => {
                   onClick={(e) => e.stopPropagation()}
                 >
                   <CustomCalendar
-                    bookedDays={bookedDays}
+                    bookedDays={formattedBookedDays}
                     selectedDates={selectedDates}
                     onDateSelect={(field, date) => {
                       setSelectedDates((prev) => ({

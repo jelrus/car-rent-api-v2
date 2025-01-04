@@ -8,7 +8,6 @@ import SelectField from '@components/atoms/SelectField/SelectField.jsx';
 import Button from '@components/atoms/Button/Button.jsx';
 import PriceRange from './PriceRange.jsx';
 import CustomCalendar from '../CustomCalendar/CustomCalendar.jsx';
-import clearIcon from '@assets/clear.svg';
 
 const data = {
   pickupLocations: [
@@ -114,8 +113,8 @@ const FiltersSection = () => {
   const [localFilters, setLocalFilters] = useState({
     pickupLocationId: null,
     dropOffLocationId: null,
-    pickupDate: null,
-    dropOffDate: null,
+    pickupDateTime: null,
+    dropOffDateTime: null,
     pickupTime: null,
     dropOffTime: null,
     category: null,
@@ -163,7 +162,7 @@ const FiltersSection = () => {
   const handleDateSelect = (field, date) => {
     setLocalFilters((prevFilters) => ({
       ...prevFilters,
-      [`${field}Date`]: date,
+      [`${field}DateTime`]: date,
     }));
   };
 
@@ -184,15 +183,22 @@ const FiltersSection = () => {
   };
 
   const handleApplyFilters = (newFilters) => {
+    const formatDateTime = (date) => {
+      if (!date) return null;
+      return date.toISOString().split('.')[0];
+    };
+
     const formattedFilters = {
       ...newFilters,
-      pickupDate: newFilters.pickupDate
-        ? new Date(newFilters.pickupDate).toISOString()
+      pickupDateTime: newFilters.pickupDateTime
+        ? formatDateTime(newFilters.pickupDateTime)
         : null,
-      dropOffDate: newFilters.dropOffDate
-        ? new Date(newFilters.dropOffDate).toISOString()
+      dropOffDateTime: newFilters.dropOffDateTime
+        ? formatDateTime(newFilters.dropOffDateTime)
         : null,
     };
+
+    console.log('Formatted Filters', formattedFilters);
 
     dispatch(setFilters(formattedFilters));
     dispatch(fetchCars(formattedFilters));
@@ -204,8 +210,8 @@ const FiltersSection = () => {
     setLocalFilters({
       pickupLocationId: null,
       dropOffLocationId: null,
-      pickupDate: null,
-      dropOffDate: null,
+      pickupDateTime: null,
+      dropOffDateTime: null,
       pickupTime: null,
       dropOffTime: null,
       category: null,
@@ -228,11 +234,18 @@ const FiltersSection = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
+    const formatDateTime = (date) => {
+      if (!date) return null;
+      return date.toISOString().split('.')[0];
+    };
+
     Object.keys(localFilters).forEach((key) => {
       if (localFilters[key] === '') {
         localFilters[key] = null;
       }
     });
+
+    console.log('Filters before applying:', localFilters);
 
     const params = new URLSearchParams();
     Object.entries(localFilters).forEach(([key, value]) => {
@@ -240,15 +253,16 @@ const FiltersSection = () => {
         if (Array.isArray(value)) {
           params.append(key, value.join(','));
         } else if (value instanceof Date) {
-          params.append(key, value.toISOString());
+          params.append(key, formatDateTime(value));
         } else {
           params.append(key, value);
         }
       }
     });
 
-    setSearchParams(params);
-    navigate(`/cars?${params.toString()}`);
+    const paramsString = params.toString().replace(/%3A/g, ':');
+    setSearchParams(paramsString);
+    navigate(`/cars?${paramsString}`);
     handleApplyFilters(localFilters);
   };
 
@@ -256,13 +270,22 @@ const FiltersSection = () => {
     <div className="filters-section">
       <h2 className="filters-section__title">Choose a car for rental </h2>
       <form className="filters-form" onSubmit={handleSubmit}>
+        <div className="filters-form__clear-filters-block">
+          <button
+            type="button"
+            className="filters-form__clear-filters"
+            onClick={handleClearFilters}
+          >
+            Clear all filters
+          </button>
+        </div>
         <div className="filters-form__row">
           <SelectField
             className="filters-form__select-location"
             label="Pick-up location"
             id="pickupLocationId"
             name="pickupLocationId"
-            value={localFilters.pickupLocationId}
+            value={localFilters.pickupLocationId || ''}
             onChange={handleInputChange}
             options={data.pickupLocations}
           />
@@ -271,7 +294,7 @@ const FiltersSection = () => {
             label="Drop-off location"
             id="dropOffLocationId"
             name="dropOffLocationId"
-            value={localFilters.dropOffLocationId}
+            value={localFilters.dropOffLocationId || ''}
             onChange={handleInputChange}
             options={data.dropOffLocations}
           />
@@ -284,8 +307,8 @@ const FiltersSection = () => {
                 }`}
                 onClick={() => toggleCalendar('pickup')}
               >
-                {localFilters.pickupDate
-                  ? `${localFilters.pickupDate.toLocaleDateString('en-US', {
+                {localFilters.pickupDateTime
+                  ? `${localFilters.pickupDateTime.toLocaleDateString('en-US', {
                       month: 'short',
                       day: 'numeric',
                     })} ${localFilters.pickupTime || '07:00AM'}`
@@ -301,11 +324,11 @@ const FiltersSection = () => {
                 }`}
                 onClick={() => toggleCalendar('dropOff')}
               >
-                {localFilters.dropOffDate
-                  ? `${localFilters.dropOffDate.toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                    })} ${localFilters.dropOffTime || '10:00AM'}`
+                {localFilters.dropOffDateTime
+                  ? `${localFilters.dropOffDateTime.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                      })} ${localFilters.dropOffTime || '10:00AM'}`
                   : 'Drop-off date'}
                 <span className="filters-form__dropdown-arrow">&#9662;</span>
               </div>
@@ -316,11 +339,11 @@ const FiltersSection = () => {
                   bookedDays={[]}
                   selectedDates={{
                     pickup: {
-                      date: localFilters.pickupDate,
+                      date: localFilters.pickupDateTime,
                       time: localFilters.pickupTime || '07:00AM',
                     },
                     dropOff: {
-                      date: localFilters.dropOffDate,
+                      date: localFilters.dropOffDateTime,
                       time: localFilters.dropOffTime || '10:00AM',
                     },
                   }}
@@ -337,7 +360,7 @@ const FiltersSection = () => {
             id="category"
             label="Car category"
             name="category"
-            value={localFilters.category}
+            value={localFilters.category || ''}
             onChange={handleInputChange}
             options={data.categories}
           />
@@ -346,7 +369,7 @@ const FiltersSection = () => {
             id="gearBoxType"
             label="Gearbox"
             name="gearBoxType"
-            value={localFilters.gearBoxType}
+            value={localFilters.gearBoxType || ''}
             onChange={handleInputChange}
             options={data.gearBoxType}
           />
@@ -355,7 +378,7 @@ const FiltersSection = () => {
             id="fuelType"
             label="Type of engine"
             name="fuelType"
-            value={localFilters.fuelType}
+            value={localFilters.fuelType || ''}
             onChange={handleInputChange}
             options={data.fuelType}
           />
@@ -383,13 +406,6 @@ const FiltersSection = () => {
           </div>
           <div className="filters-form__button">
             <Button type="submit" ButtonType="primary" text="Find a car" />
-            <button
-              type="button"
-              className="filters-form__clear-filters"
-              onClick={handleClearFilters}
-            >
-              <img src={clearIcon} alt="Clear Filters Icon" />
-            </button>
           </div>
         </div>
       </form>
