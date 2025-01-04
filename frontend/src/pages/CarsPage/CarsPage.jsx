@@ -1,159 +1,101 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCars, setFilters, clearFilters } from '@/redux/slices/carsSlice';
+import { fetchCars, setCurrentPage } from '@/redux/slices/carsSlice';
 import FiltersSection from '@pages/CarsPage/components/FiltersSection/FiltersSection.jsx';
 import GeneralCarCard from '@pages/CarsPage/components/CarCard/GeneralCarCard.jsx';
 import Pagination from './components/Pagination/Pagination.jsx';
 import CarDetailsModal from './components/CarDetailsModal/CarDetailsModal.jsx';
 import { useSearchParams } from 'react-router-dom';
+import { getCarDetails, getBookedDays } from '@/redux/slices/carSlice';
+import UnloginDialog from '@/components/molecules/UnloginDialog/UnloginDialog.jsx';
 
 import './CarsPage.css';
 
 const CarsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
-  const {
-    filteredCarsData = [],
-    pickupLocations = [],
-    dropOffLocations = [],
-    categories = [],
-    gearBoxies = [],
-    fuelTypes = [],
-    minPrice = 0,
-    maxPrice = 0,
-    loading = false,
-    error = null,
-    // filters,
-  } = useSelector((state) => state.cars);
+  const { carsData, totalPages, currentPage, loading, error, filters } =
+    useSelector((state) => state.cars);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 16;
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const isAuth = useSelector((state) => state.auth.token !== null);
+
   const [selectedCar, setSelectedCar] = useState(null);
-  // const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showUnloginDialog, setShowUnloginDialog] = useState(false);
+
+  useEffect(() => {
+    dispatch(fetchCars({ filters }));
+  }, []);
+
+  // useEffect(() => {
+  //   const params = Object.fromEntries([...searchParams]);
+  //   const parsedFilters = {
+  //     ...params,
+  //     priceRange: params.priceRange
+  //       ? params.priceRange.split(',').map(Number)
+  //       : [minPrice, maxPrice],
+  //   };
+
+  //   dispatch(fetchCars(parsedFilters));
+  //   dispatch(setFilters(parsedFilters));
+  // }, [dispatch, searchParams, minPrice, maxPrice]);
 
   useEffect(() => {
     const params = Object.fromEntries([...searchParams]);
-    const parsedFilters = {
-      ...params,
-      priceRange: params.priceRange
-        ? params.priceRange.split(',').map(Number)
-        : [minPrice, maxPrice],
-    };
 
-    dispatch(fetchCars(parsedFilters));
-    dispatch(setFilters(parsedFilters));
-  }, [dispatch, searchParams, minPrice, maxPrice]);
-
-  useEffect(() => {
-    const params = Object.fromEntries([...searchParams]);
-
-    if (!filteredCarsData || filteredCarsData.length === 0) {
+    if (!carsData || carsData.length === 0) {
       setSelectedCar(null);
       return;
     }
 
     if (params.carId) {
-      const selected = filteredCarsData.find(
-        (car) => car.carId === params.carId,
-      );
+      const selected = carsData.find((car) => car.carId === params.carId);
       setSelectedCar(selected || null);
     }
-  }, [searchParams, filteredCarsData]);
-
-  const handleApplyFilters = (newFilters) => {
-    const formattedFilters = {
-      ...newFilters,
-      pickupDate: newFilters.pickupDate
-        ? new Date(newFilters.pickupDate).toISOString()
-        : null,
-      dropOffDate: newFilters.dropOffDate
-        ? new Date(newFilters.dropOffDate).toISOString()
-        : null,
-    };
-
-    dispatch(setFilters(formattedFilters));
-    dispatch(fetchCars(formattedFilters));
-    setCurrentPage(1);
-  };
-
-  const handleClearFilters = () => {
-    dispatch(clearFilters());
-    setSearchParams({});
-    setCurrentPage(1);
-  };
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredCarsData.slice(
-    indexOfFirstItem,
-    indexOfLastItem,
-  );
-  const totalPages = Math.ceil(filteredCarsData.length / itemsPerPage);
+  }, [searchParams, carsData]);
 
   const handlePageChange = (page) => {
-    if (page !== currentPage) {
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setCurrentPage(page);
-        setIsTransitioning(false);
-      }, 300);
-    }
+    dispatch(setCurrentPage(page));
+    dispatch(fetchCars({ filters, page }));
   };
 
-  const handleOpenModal = (car) => {
-    setSelectedCar(car);
-    setSearchParams((prev) => ({
-      ...Object.fromEntries([...prev]),
-      carId: car.carId,
-    }));
+  const handleOpenModal = async (car) => {
+    try {
+      await dispatch(getCarDetails(car.carId)).unwrap();
+      await dispatch(getBookedDays(car.carId));
+      setSelectedCar(car);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error('Failed to fetch car details:', error);
+    }
   };
 
   const handleCloseModal = () => {
+    setIsModalOpen(false);
     setSelectedCar(null);
-    setSearchParams((prev) => {
-      const params = Object.fromEntries([...prev]);
-      delete params.carId;
-      return params;
-    });
   };
 
   return (
     <div className="cars-page">
-      <FiltersSection
-        title="Choose a car for rental"
-        pickupLocations={pickupLocations}
-        dropOffLocations={dropOffLocations}
-        categories={categories}
-        gearBoxies={gearBoxies}
-        fuelTypes={fuelTypes}
-        onApplyFilters={handleApplyFilters}
-        onClearFilters={handleClearFilters}
-        minPrice={minPrice}
-        maxPrice={maxPrice}
-        bookedDays={[]}
-      />
+      <FiltersSection />
 
       <div className="cars-page__results">
         {loading && <p>Loading cars...</p>}
         {error && <p>Error: {error}</p>}
-        {!loading && !error && filteredCarsData.length === 0 && (
+        {!loading && !error && carsData.length === 0 && (
           <div className="no-cars-message">
             <p>No cars available for your search.</p>
           </div>
         )}
-        {!loading && !error && filteredCarsData.length > 0 && (
+        {!loading && !error && carsData.length > 0 && (
           <>
-            <div
-              className={`cars-page__car-list ${
-                isTransitioning ? 'fade-out' : 'fade-in'
-              }`}
-            >
-              {currentItems.map((car) =>
+            <div className="cars-page__car-list">
+              {carsData.map((car) =>
                 car.carId ? (
                   <GeneralCarCard
                     key={car.carId}
                     car={car}
+                    onShowUnloginModal={() => setShowUnloginDialog(true)}
                     onDetailsClick={() => handleOpenModal(car)}
                   />
                 ) : null,
@@ -168,8 +110,11 @@ const CarsPage = () => {
         )}
       </div>
 
-      {selectedCar && (
+      {isModalOpen && (
         <CarDetailsModal car={selectedCar} onClose={handleCloseModal} />
+      )}
+      {showUnloginDialog && (
+        <UnloginDialog onClose={() => setShowUnloginDialog(false)} />
       )}
     </div>
   );

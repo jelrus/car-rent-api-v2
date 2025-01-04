@@ -15,9 +15,9 @@ const SelectField = ({
       <label htmlFor={id}>{label}</label>
       <select id={id} name={name} value={value} onChange={onChange}>
         <option value="">Select</option>
-        {options.map((option, index) => (
-          <option key={index} value={option}>
-            {option}
+        {options.map((option) => (
+          <option key={option.id} value={option.value}>
+            {option.name}
           </option>
         ))}
       </select>
@@ -31,12 +31,8 @@ SelectField.propTypes = {
   name: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  options: PropTypes.arrayOf(PropTypes.string).isRequired, // Масив опцій
+  options: PropTypes.arrayOf(PropTypes.object).isRequired,
   className: PropTypes.string,
 };
-
-// SelectField.defaultProps = {
-//     className: ''
-// };
 
 export default SelectField;

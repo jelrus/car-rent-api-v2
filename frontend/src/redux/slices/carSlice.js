@@ -26,7 +26,7 @@ export const getBookedDays = createAsyncThunk(
 );
 
 const carSlice = createSlice({
-  name: 'cars',
+  name: 'car',
   initialState: {
     carDetails: null,
     bookedDays: [],
@@ -36,29 +36,29 @@ const carSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-
       .addCase(getCarDetails.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(getCarDetails.fulfilled, (state, action) => {
         state.carDetails = action.payload;
         state.loading = false;
       })
       .addCase(getCarDetails.rejected, (state, action) => {
-        state.error = action.payload?.message || 'Failed to fetch car details';
         state.loading = false;
+        state.error = action.payload?.message || 'Failed to fetch car details';
       })
-
       .addCase(getBookedDays.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(getBookedDays.fulfilled, (state, action) => {
         state.bookedDays = action.payload;
         state.loading = false;
       })
       .addCase(getBookedDays.rejected, (state, action) => {
-        state.error = action.payload?.message || 'Failed to fetch booked days';
         state.loading = false;
+        state.error = action.payload?.message || 'Failed to fetch booked days';
       });
   },
 });

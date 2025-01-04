@@ -2,50 +2,139 @@ import PropTypes from 'prop-types';
 import './FiltersSection.css';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { fetchCars, setFilters, clearFilters } from '@/redux/slices/carsSlice';
 import SelectField from '@components/atoms/SelectField/SelectField.jsx';
 import Button from '@components/atoms/Button/Button.jsx';
 import PriceRange from './PriceRange.jsx';
 import CustomCalendar from '../CustomCalendar/CustomCalendar.jsx';
 import clearIcon from '@assets/clear.svg';
 
-const FiltersSection = ({
-  title,
-  pickupLocations,
-  dropOffLocations,
-  categories,
-  gearBoxies,
-  fuelTypes,
-  minPrice,
-  maxPrice,
-  onApplyFilters,
-  onClearFilters,
-  bookedDays,
-}) => {
+const data = {
+  pickupLocations: [
+    {
+      id: 1,
+      value: 'ac1a3a1d-3fb2-4eb6-b27a-1c034929aee4',
+      name: 'Location 1',
+    },
+    {
+      id: 2,
+      value: '26979fed-8e9a-429f-810f-2fce633ad01e',
+      name: 'Location 2',
+    },
+    {
+      id: 3,
+      value: '2aacd5df-b679-49f4-9c20-ecbead6e6ff9',
+      name: 'Location 3',
+    },
+    {
+      id: 4,
+      value: '4f4b5e1d-841f-4006-b29c-5b0e8724ad74',
+      name: 'Location 4',
+    },
+    {
+      id: 5,
+      value: '28b2926a-7d91-45ec-9957-4c910d30dced',
+      name: 'Location 5',
+    },
+    {
+      id: 6,
+      value: 'f5445579-8c1d-4962-8b55-f27d49922da9',
+      name: 'Location 6',
+    },
+    {
+      id: 7,
+      value: '2c9b6f42-a3f3-4508-9e1a-d3753cf36292',
+      name: 'Location 7',
+    },
+  ],
+  dropOffLocations: [
+    {
+      id: 1,
+      value: 'ac1a3a1d-3fb2-4eb6-b27a-1c034929aee4',
+      name: 'Location 1',
+    },
+    {
+      id: 2,
+      value: '26979fed-8e9a-429f-810f-2fce633ad01e',
+      name: 'Location 2',
+    },
+    {
+      id: 3,
+      value: '2aacd5df-b679-49f4-9c20-ecbead6e6ff9',
+      name: 'Location 3',
+    },
+    {
+      id: 4,
+      value: '4f4b5e1d-841f-4006-b29c-5b0e8724ad74',
+      name: 'Location 4',
+    },
+    {
+      id: 5,
+      value: '28b2926a-7d91-45ec-9957-4c910d30dced',
+      name: 'Location 5',
+    },
+    {
+      id: 6,
+      value: 'f5445579-8c1d-4962-8b55-f27d49922da9',
+      name: 'Location 6',
+    },
+    {
+      id: 7,
+      value: '2c9b6f42-a3f3-4508-9e1a-d3753cf36292',
+      name: 'Location 7',
+    },
+  ],
+  categories: [
+    { id: 8, value: 'ECONOMY', name: 'Economy' },
+    { id: 9, value: 'COMFORT', name: 'Comfort' },
+    { id: 10, value: 'BUSINESS', name: 'Business' },
+    { id: 11, value: 'PREMIUM', name: 'Premium' },
+    { id: 12, value: 'CROSSOVER', name: 'Crossover' },
+    { id: 13, value: 'MINIVAN', name: 'Minivan' },
+    { id: 14, value: 'ELECTRIC', name: 'Electric' },
+  ],
+  gearBoxType: [
+    { id: 15, value: 'MANUAL', name: 'Manual' },
+    { id: 16, value: 'AUTOMATIC', name: 'Automatic' },
+  ],
+  fuelType: [
+    { id: 17, value: 'PETROL', name: 'Petrol' },
+    { id: 18, value: 'DIESEL', name: 'Diesel' },
+    { id: 19, value: 'ELECTRIC', name: 'Electric' },
+    { id: 20, value: 'HYBRID', name: 'Hybrid' },
+  ],
+};
+
+const FiltersSection = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const calendarRef = useRef(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [localFilters, setLocalFilters] = useState({
-    pickupLocationId: '',
-    dropOffLocationId: '',
+    pickupLocationId: null,
+    dropOffLocationId: null,
     pickupDate: null,
     dropOffDate: null,
-    pickupTime: '',
-    dropOffTime: '',
-    category: '',
-    gearBoxType: '',
-    fuelType: '',
-    priceRange: [minPrice, maxPrice],
+    pickupTime: null,
+    dropOffTime: null,
+    category: null,
+    gearBoxType: null,
+    fuelType: null,
+    minPrice: 0,
+    maxPrice: 1000,
   });
 
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [activeField, setActiveField] = useState(null);
 
-  useEffect(() => {
-    setLocalFilters((prevFilters) => ({
-      ...prevFilters,
-      priceRange: [minPrice, maxPrice],
-    }));
-  }, [minPrice, maxPrice]);
+  // useEffect(() => {
+  //   setLocalFilters((prevFilters) => ({
+  //     ...prevFilters,
+  //     minPrice,
+  //     maxPrice,
+  //   }));
+  // }, [minPrice, maxPrice]);
 
   const toggleCalendar = (field) => {
     if (activeField === field && isCalendarVisible) {
@@ -87,21 +176,63 @@ const FiltersSection = ({
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+
     setLocalFilters((prevFilters) => ({
       ...prevFilters,
       [name]: value,
     }));
   };
 
-  const handlePriceChange = (newRange) => {
+  const handleApplyFilters = (newFilters) => {
+    const formattedFilters = {
+      ...newFilters,
+      pickupDate: newFilters.pickupDate
+        ? new Date(newFilters.pickupDate).toISOString()
+        : null,
+      dropOffDate: newFilters.dropOffDate
+        ? new Date(newFilters.dropOffDate).toISOString()
+        : null,
+    };
+
+    dispatch(setFilters(formattedFilters));
+    dispatch(fetchCars(formattedFilters));
+  };
+
+  const handleClearFilters = () => {
+    dispatch(clearFilters());
+    setSearchParams({});
+    setLocalFilters({
+      pickupLocationId: null,
+      dropOffLocationId: null,
+      pickupDate: null,
+      dropOffDate: null,
+      pickupTime: null,
+      dropOffTime: null,
+      category: null,
+      gearBoxType: null,
+      fuelType: null,
+      minPrice: 0,
+      maxPrice: 1000,
+    });
+    dispatch(fetchCars({}));
+  };
+
+  const handlePriceChange = (newMinPrice, newMaxPrice) => {
     setLocalFilters((prevFilters) => ({
       ...prevFilters,
-      priceRange: newRange,
+      minPrice: newMinPrice,
+      maxPrice: newMaxPrice,
     }));
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    Object.keys(localFilters).forEach((key) => {
+      if (localFilters[key] === '') {
+        localFilters[key] = null;
+      }
+    });
 
     const params = new URLSearchParams();
     Object.entries(localFilters).forEach(([key, value]) => {
@@ -118,12 +249,12 @@ const FiltersSection = ({
 
     setSearchParams(params);
     navigate(`/cars?${params.toString()}`);
-    onApplyFilters(localFilters);
+    handleApplyFilters(localFilters);
   };
 
   return (
     <div className="filters-section">
-      <h2 className="filters-section__title">{title}</h2>
+      <h2 className="filters-section__title">Choose a car for rental </h2>
       <form className="filters-form" onSubmit={handleSubmit}>
         <div className="filters-form__row">
           <SelectField
@@ -133,7 +264,7 @@ const FiltersSection = ({
             name="pickupLocationId"
             value={localFilters.pickupLocationId}
             onChange={handleInputChange}
-            options={pickupLocations}
+            options={data.pickupLocations}
           />
           <SelectField
             className="filters-form__select-location"
@@ -142,7 +273,7 @@ const FiltersSection = ({
             name="dropOffLocationId"
             value={localFilters.dropOffLocationId}
             onChange={handleInputChange}
-            options={dropOffLocations}
+            options={data.dropOffLocations}
           />
           <div className="filters-form__date-picker-fields" ref={calendarRef}>
             <div>
@@ -182,7 +313,7 @@ const FiltersSection = ({
             {isCalendarVisible && (
               <div className="filters-form__calendar-wrapper">
                 <CustomCalendar
-                  bookedDays={bookedDays}
+                  bookedDays={[]}
                   selectedDates={{
                     pickup: {
                       date: localFilters.pickupDate,
@@ -208,7 +339,7 @@ const FiltersSection = ({
             name="category"
             value={localFilters.category}
             onChange={handleInputChange}
-            options={categories}
+            options={data.categories}
           />
           <SelectField
             className="filters-form__select-infoOfCar"
@@ -217,7 +348,7 @@ const FiltersSection = ({
             name="gearBoxType"
             value={localFilters.gearBoxType}
             onChange={handleInputChange}
-            options={gearBoxies}
+            options={data.gearBoxType}
           />
           <SelectField
             className="filters-form__select-infoOfCar"
@@ -226,7 +357,7 @@ const FiltersSection = ({
             name="fuelType"
             value={localFilters.fuelType}
             onChange={handleInputChange}
-            options={fuelTypes}
+            options={data.fuelType}
           />
           <div className="filters-form__input-range">
             <div className="filters-form__input-range_label">
@@ -234,19 +365,19 @@ const FiltersSection = ({
                 Price per day
               </span>
               <span>
-                ${localFilters.priceRange[0]} - ${localFilters.priceRange[1]}
+                ${localFilters.minPrice} - ${localFilters.maxPrice}
               </span>
             </div>
             <PriceRange
-              min={minPrice}
-              max={maxPrice}
+              min={0}
+              max={1000}
               step={5}
               value={{
-                min: localFilters.priceRange[0],
-                max: localFilters.priceRange[1],
+                min: localFilters.minPrice,
+                max: localFilters.maxPrice,
               }}
               onChange={(newValue) =>
-                handlePriceChange([newValue.min, newValue.max])
+                handlePriceChange(newValue.min, newValue.max)
               }
             />
           </div>
@@ -255,7 +386,7 @@ const FiltersSection = ({
             <button
               type="button"
               className="filters-form__clear-filters"
-              onClick={onClearFilters}
+              onClick={handleClearFilters}
             >
               <img src={clearIcon} alt="Clear Filters Icon" />
             </button>
@@ -264,20 +395,6 @@ const FiltersSection = ({
       </form>
     </div>
   );
-};
-
-FiltersSection.propTypes = {
-  pickupLocations: PropTypes.arrayOf(PropTypes.string).isRequired,
-  dropOffLocations: PropTypes.arrayOf(PropTypes.string).isRequired,
-  categories: PropTypes.arrayOf(PropTypes.string).isRequired,
-  title: PropTypes.string,
-  gearBoxies: PropTypes.arrayOf(PropTypes.string).isRequired,
-  fuelTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onApplyFilters: PropTypes.func.isRequired,
-  onClearFilters: PropTypes.func.isRequired,
-  minPrice: PropTypes.number.isRequired,
-  maxPrice: PropTypes.number.isRequired,
-  bookedDays: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default FiltersSection;

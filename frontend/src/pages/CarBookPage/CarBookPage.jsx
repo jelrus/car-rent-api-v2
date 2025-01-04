@@ -13,6 +13,9 @@ import checkAuthRole from '@/containers/CheckAuthHoc/CheckAuthHoc';
 
 const CarBookPage = () => {
   const { paramCarId } = useParams();
+  const { filters } = useSelector((state) => state.cars);
+  console.log(filters);
+
   const carId = paramCarId;
 
   const location = useLocation();
@@ -67,12 +70,12 @@ const CarBookPage = () => {
     header: '',
     message: '',
   });
-  // useEffect(() => {
-  //   if (carId) {
-  //     dispatch(getCarDetails(carId));
-  //     dispatch(getBookedDays(carId));
-  //   }
-  // }, [carId, dispatch]);
+  useEffect(() => {
+    if (carId) {
+      dispatch(getCarDetails(carId));
+      dispatch(getBookedDays(carId));
+    }
+  }, [carId, dispatch]);
 
   useEffect(() => {
     if (bookedDays.length > 0) {

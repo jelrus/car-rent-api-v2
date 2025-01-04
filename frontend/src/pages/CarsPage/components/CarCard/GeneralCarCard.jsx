@@ -2,28 +2,54 @@ import PropTypes from 'prop-types';
 import CarLocation from '../CarLocation/CarLocation.jsx';
 import Rating from '../Rating/Rating.jsx';
 import Button from '@components/atoms/Button/Button.jsx';
+import { useState } from 'react';
 
 import './GeneralCarCard.css';
 import { useNavigate } from 'react-router';
+import { useSelector } from 'react-redux';
 
-const CarCard = ({ car, onDetailsClick }) => {
+const CarCard = ({ car, onDetailsClick, onShowUnloginModal }) => {
+  const isAuth = useSelector((state) => state.auth.token !== null);
+  const [isLoggedIn, setIsLoggedIn] = useState(isAuth);
   const navigate = useNavigate();
 
   const handleBooking = () => {
-    navigate(`/booking/${car.carId}`, {
-      state: {
-        car: {
-          carId: car.carId,
-          image: car.imageUrl,
-          model: car.model,
-          location: car.location,
-          dropOffId: car.dropOffLocationId,
-          pickUpId: car.pickupLocationId,
-          deposit: car.deposit,
-          totalPrice: car.pricePerDay,
+    if (!isLoggedIn) {
+      onShowUnloginModal();
+      return;
+    } else {
+      navigate(`/booking/${car.carId}`, {
+        state: {
+          car: {
+            carId: car.carId,
+            image: car.imageUrl,
+            model: car.model,
+            location: car.location,
+            dropOffId: car.dropOffLocationId,
+            pickUpId: car.pickupLocationId,
+            deposit: car.deposit,
+            totalPrice: car.pricePerDay,
+          },
         },
-      },
-    });
+      });
+    }
+  };
+
+  CarCard.propTypes = {
+    car: PropTypes.shape({
+      carId: PropTypes.string.isRequired,
+      model: PropTypes.string.isRequired,
+      location: PropTypes.string.isRequired,
+      carRating: PropTypes.number.isRequired,
+      pricePerDay: PropTypes.number.isRequired,
+      status: PropTypes.string.isRequired,
+      imageUrl: PropTypes.string.isRequired,
+      dropOffLocationId: PropTypes.string.isRequired,
+      pickupLocationId: PropTypes.string.isRequired,
+      deposit: PropTypes.number,
+    }).isRequired,
+    onDetailsClick: PropTypes.func.isRequired,
+    onShowUnloginModal: PropTypes.func.isRequired,
   };
 
   const handleDetails = (e) => {

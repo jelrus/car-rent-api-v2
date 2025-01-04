@@ -12,6 +12,7 @@ import { useState, useEffect, useRef } from 'react';
 import CustomCalendar from '../CustomCalendar/CustomCalendar.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBookedDays } from '@/redux/slices/carsSlice';
+import { getCarDetails } from '@/redux/slices/carSlice';
 
 import './CarDetailsModal.css';
 import { useNavigate } from 'react-router';
@@ -48,7 +49,8 @@ const CarDetailsModal = ({ car, onClose }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.auth.token !== null);
-  console.log(isAuth);
+  const { carDetails } = useSelector((state) => state.carBooked);
+
   const calendarRef = useRef(null);
   const [mainImage, setMainImage] = useState(
     car.imageUrl || '/placeholder.jpg',
@@ -61,15 +63,14 @@ const CarDetailsModal = ({ car, onClose }) => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(isAuth);
   const [showUnloginDialog, setShowUnloginDialog] = useState(false);
-  console.log(useSelector((state) => state.auth));
+
   const [selectedDates, setSelectedDates] = useState({
     pickup: { date: null, time: '07:00AM' },
     dropOff: { date: null, time: '10:00AM' },
   });
 
-  const bookedDays = useSelector(
-    (state) => state.cars.bookedDays[car.carId] || [],
-  );
+  const bookedDays = useSelector((state) => state.carBooked.bookedDays || []);
+  console.log(bookedDays);
   useEffect(() => {
     !isLoggedIn && setShowUnloginDialog(true);
   }, [isLoggedIn]);
@@ -220,30 +221,36 @@ const CarDetailsModal = ({ car, onClose }) => {
             <div className="details-grid">
               <div className="detail-item">
                 <img src={Gearbox} alt="Gearbox" className="icon" />
-                <span>{capitalizeFirstLetter(car.gearBoxType || 'N/A')}</span>
+                <span>
+                  {capitalizeFirstLetter(carDetails.gearBoxType || 'N/A')}
+                </span>
               </div>
               <div className="detail-item">
                 <img src={Engine} alt="Engine" className="icon" />
-                <span>{car.engineCapacity || 'N/A'}</span>
+                <span>{carDetails.engineCapacity || 'N/A'}</span>
               </div>
               <div className="detail-item">
                 <img src={GasStation} alt="Fuel" className="icon" />
-                <span>{capitalizeFirstLetter(car.fuelType || 'N/A')}</span>
+                <span>
+                  {capitalizeFirstLetter(carDetails.fuelType || 'N/A')}
+                </span>
               </div>
               <div className="detail-item">
                 <img src={IconMan} alt="Seats" className="icon" />
-                <span>{car.passengerCapacity || 'N/A'}</span>
+                <span>{carDetails.passengerCapacity || 'N/A'}</span>
               </div>
               <div className="detail-item">
                 <img src={Speedtest} alt="Consumption" className="icon" />
                 <span>
-                  {capitalizeFirstLetter(car.fuelConsumption || 'N/A')}
+                  {capitalizeFirstLetter(carDetails.fuelConsumption || 'N/A')}
                 </span>
               </div>
               <div className="detail-item">
                 <img src={CarFan} alt="Climate control" className="icon" />
                 <span>
-                  {capitalizeFirstLetter(car.climateControlOption || 'N/A')}
+                  {capitalizeFirstLetter(
+                    carDetails.climateControlOption || 'N/A',
+                  )}
                 </span>
               </div>
             </div>
@@ -316,7 +323,7 @@ const CarDetailsModal = ({ car, onClose }) => {
               text={`Book - ${car.pricePerDay || 'N/A'}/day`}
               type="submit"
               ButtonType="primary"
-              onClick={handleBooking}
+              onClick={() => handleBooking(car)}
               disabled={!isLoggedIn}
             />
           </div>
@@ -388,6 +395,8 @@ CarDetailsModal.propTypes = {
     status: PropTypes.string.isRequired,
     imageUrl: PropTypes.string,
     deposit: PropTypes.number,
+    dropOffLocationId: PropTypes.string,
+    pickupLocationId: PropTypes.string,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
 };
