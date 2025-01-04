@@ -10,12 +10,12 @@ import { useParams, useNavigate, useLocation, Link } from 'react-router';
 import image from '@public/imgCars/audi-a6-quattro-2023.jpg';
 import ModalMessageCard from '@/components/atoms/MessageCard/MessageCard';
 import checkAuthRole from '@/containers/CheckAuthHoc/CheckAuthHoc';
+import getLocationName from '@/utils/getLocationName';
 
 const CarBookPage = () => {
   const { paramCarId } = useParams();
-  const { filters } = useSelector((state) => state.cars);
-  console.log(filters);
-
+  const state = useSelector((state) => state);
+  console.log(state);
   const carId = paramCarId;
 
   const location = useLocation();
@@ -47,14 +47,14 @@ const CarBookPage = () => {
 
   const [bookingInfo, setBookingInfo] = useState({
     pickUp: {
-      location: car?.pickUpLocation || 'Kyiv Hyatt Hotel',
-      date: '',
-      time: '10:00 AM',
+      id: car?.pickUpId || '9b903ebf-2b18-4946-bc58-045d86a2632e',
+      location: (car.pickUpId?getLocationName(car?.dropOffId):getLocationName('9b903ebf-2b18-4946-bc58-045d86a2632e')) || 'Kyiv Hyatt Hotel' ,
+      dateTime:'2025-01-17T22:00:00'||car?.pickUpDateTime,
     },
     dropOff: {
-      location: car?.dropOffLocation || 'Kyiv Hyatt Hotel',
-      date: '',
-      time: '10:00 AM',
+      id: car?.dropOffId || '6f1g2h3i-7h8i-8i2j-2h3i-7h8i8i2j2h3i',
+      location: (car.dropOffId?getLocationName(car?.dropOffId):getLocationName('6f1g2h3i-7h8i-8i2j-2h3i-7h8i8i2j2h3i'))  || 'Kyiv Hyatt Hotel',
+      dateTime:'2025-05-19T09:00:00'||car?.dropOffDateTime,
     },
     car: {
       id: carId,
@@ -92,10 +92,10 @@ const CarBookPage = () => {
     const bookingData = {
       carId: bookingInfo.car.id,
       clientId: user?.id || 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
-      dropOffDateTime: `${bookingInfo.dropOff.date} ${bookingInfo.dropOff.time}`,
-      dropOffLocationId: '9b903ebf-2b18-4946-bc58-045d86a2632e',
-      pickupDateTime: `${bookingInfo.pickUp.date} ${bookingInfo.pickUp.time}`,
-      pickupLocationId: '9b903ebf-2b18-4946-bc58-045d86a2632e',
+      dropOffDateTime: bookingInfo.dropOff.dateTime,
+      pickupDateTime: bookingInfo.pickUp.dateTime,
+      pickupLocationId: bookingInfo.pickUp.id,
+      dropOffLocationId: bookingInfo.dropOff.id,
     };
     try {
       const actionResult = await dispatch(createBooking(bookingData));
