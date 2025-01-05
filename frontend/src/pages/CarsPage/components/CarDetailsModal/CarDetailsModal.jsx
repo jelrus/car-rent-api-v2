@@ -69,7 +69,9 @@ const CarDetailsModal = ({ car, onClose }) => {
     dropOff: { date: null, time: '10:00AM' },
   });
 
-  const bookedDays = useSelector((state) => state.cars.bookedDays[car.carId] || []);
+  const bookedDays = useSelector(
+    (state) => state.cars.bookedDays[car.carId] || [],
+  );
   console.log(bookedDays);
   useEffect(() => {
     !isLoggedIn && setShowUnloginDialog(true);
@@ -181,11 +183,11 @@ const CarDetailsModal = ({ car, onClose }) => {
     setCurrentSort(value);
     setCurrentPage(1);
   };
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
+  // const handleOverlayClick = (e) => {
+  //   if (e.target === e.currentTarget) {
+  //     onClose();
+  //   }
+  // };
   // const handlePageChange = (page) => setCurrentPage(page);
 
   return (

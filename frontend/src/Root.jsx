@@ -8,7 +8,6 @@ import App from './App.jsx';
 import CarsPage from '@pages/CarsPage/CarsPage';
 import BookingsPage from './pages/BookingsPage/BookingsPage.jsx';
 import CarBookPage from '@pages/CarBookPage/CarBookPage.jsx';
-import SuccessSignUpPage from '@pages/SuccessSignUpPage/SuccessSignUpPage.jsx';
 
 export const Root = () => (
   <HashRouter>
@@ -26,7 +25,6 @@ export const Root = () => (
         </Route>
         <Route path="/login" element={<LogInPage />} />
         <Route path="/signup" element={<RegistrationPage />} />
-        <Route path="/success_signup" element={<SuccessSignUpPage />} />
         <Route path="*" element={<p>Not Found</p>} />
       </Routes>
     </Provider>

@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import './FiltersSection.css';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -14,74 +13,74 @@ const data = {
     {
       id: 1,
       value: 'ac1a3a1d-3fb2-4eb6-b27a-1c034929aee4',
-      name: 'Location 1',
+      name: 'Kyiv, Hayatt Hotel',
     },
     {
       id: 2,
       value: '26979fed-8e9a-429f-810f-2fce633ad01e',
-      name: 'Location 2',
+      name: 'Kyiv, Opera Hotel',
     },
     {
       id: 3,
       value: '2aacd5df-b679-49f4-9c20-ecbead6e6ff9',
-      name: 'Location 3',
+      name: 'Kyiv, Premier Palace Hotel',
     },
     {
       id: 4,
       value: '4f4b5e1d-841f-4006-b29c-5b0e8724ad74',
-      name: 'Location 4',
+      name: 'Kyiv, Hilton Hotel',
     },
     {
       id: 5,
       value: '28b2926a-7d91-45ec-9957-4c910d30dced',
-      name: 'Location 5',
+      name: 'Kyiv, Radisson Blu Hotel',
     },
     {
       id: 6,
       value: 'f5445579-8c1d-4962-8b55-f27d49922da9',
-      name: 'Location 6',
+      name: 'Kyiv, InterContinental Hotel',
     },
     {
       id: 7,
       value: '2c9b6f42-a3f3-4508-9e1a-d3753cf36292',
-      name: 'Location 7',
+      name: 'Kyiv, Fairmont Grand Hotel',
     },
   ],
   dropOffLocations: [
     {
       id: 1,
       value: 'ac1a3a1d-3fb2-4eb6-b27a-1c034929aee4',
-      name: 'Location 1',
+      name: 'Kyiv, Hayatt Hotel',
     },
     {
       id: 2,
       value: '26979fed-8e9a-429f-810f-2fce633ad01e',
-      name: 'Location 2',
+      name: 'Kyiv, Opera Hotel',
     },
     {
       id: 3,
       value: '2aacd5df-b679-49f4-9c20-ecbead6e6ff9',
-      name: 'Location 3',
+      name: 'Kyiv, Premier Palace Hotel',
     },
     {
       id: 4,
       value: '4f4b5e1d-841f-4006-b29c-5b0e8724ad74',
-      name: 'Location 4',
+      name: 'Kyiv, Hilton Hotel',
     },
     {
       id: 5,
       value: '28b2926a-7d91-45ec-9957-4c910d30dced',
-      name: 'Location 5',
+      name: 'Kyiv, Radisson Blu Hotel',
     },
     {
       id: 6,
       value: 'f5445579-8c1d-4962-8b55-f27d49922da9',
-      name: 'Location 6',
+      name: 'Kyiv, InterContinental Hotel',
     },
     {
       id: 7,
       value: '2c9b6f42-a3f3-4508-9e1a-d3753cf36292',
-      name: 'Location 7',
+      name: 'Kyiv, Fairmont Grand Hotel',
     },
   ],
   categories: [
@@ -126,14 +125,6 @@ const FiltersSection = () => {
 
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [activeField, setActiveField] = useState(null);
-
-  // useEffect(() => {
-  //   setLocalFilters((prevFilters) => ({
-  //     ...prevFilters,
-  //     minPrice,
-  //     maxPrice,
-  //   }));
-  // }, [minPrice, maxPrice]);
 
   const toggleCalendar = (field) => {
     if (activeField === field && isCalendarVisible) {
@@ -325,10 +316,13 @@ const FiltersSection = () => {
                 onClick={() => toggleCalendar('dropOff')}
               >
                 {localFilters.dropOffDateTime
-                  ? `${localFilters.dropOffDateTime.toLocaleDateString('en-US', {
+                  ? `${localFilters.dropOffDateTime.toLocaleDateString(
+                      'en-US',
+                      {
                         month: 'short',
                         day: 'numeric',
-                      })} ${localFilters.dropOffTime || '10:00AM'}`
+                      },
+                    )} ${localFilters.dropOffTime || '10:00AM'}`
                   : 'Drop-off date'}
                 <span className="filters-form__dropdown-arrow">&#9662;</span>
               </div>

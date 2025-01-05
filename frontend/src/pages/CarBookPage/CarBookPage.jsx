@@ -48,13 +48,21 @@ const CarBookPage = () => {
   const [bookingInfo, setBookingInfo] = useState({
     pickUp: {
       id: car?.pickUpId || '9b903ebf-2b18-4946-bc58-045d86a2632e',
-      location: (car.pickUpId?getLocationName(car?.dropOffId):getLocationName('9b903ebf-2b18-4946-bc58-045d86a2632e')) || 'Kyiv Hyatt Hotel' ,
-      dateTime:'2025-01-17T22:00:00'||car?.pickUpDateTime,
+      location:
+        (car.pickUpId
+          ? getLocationName(car?.dropOffId)
+          : getLocationName('9b903ebf-2b18-4946-bc58-045d86a2632e')) ||
+        'Kyiv Hyatt Hotel',
+      dateTime: '2025-01-17T22:00:00' || car?.pickUpDateTime,
     },
     dropOff: {
       id: car?.dropOffId || '6f1g2h3i-7h8i-8i2j-2h3i-7h8i8i2j2h3i',
-      location: (car.dropOffId?getLocationName(car?.dropOffId):getLocationName('6f1g2h3i-7h8i-8i2j-2h3i-7h8i8i2j2h3i'))  || 'Kyiv Hyatt Hotel',
-      dateTime:'2025-05-19T09:00:00'||car?.dropOffDateTime,
+      location:
+        (car.dropOffId
+          ? getLocationName(car?.dropOffId)
+          : getLocationName('6f1g2h3i-7h8i-8i2j-2h3i-7h8i8i2j2h3i')) ||
+        'Kyiv Hyatt Hotel',
+      dateTime: '2025-05-19T09:00:00' || car?.dropOffDateTime,
     },
     car: {
       id: carId,
