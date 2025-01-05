@@ -18,31 +18,6 @@ export const fetchCars = createAsyncThunk(
   },
 );
 
-// export const fetchBookedDays = createAsyncThunk(
-//   'cars/fetchBookedDays',
-//   async (carId, thunkAPI) => {
-//     try {
-//       const response = await axiosInstance.get(`/cars/${carId}/booked-days`);
-//       return { carId, bookedDays: response.data.content };
-//     } catch (error) {
-//       return thunkAPI.rejectWithValue(error.response?.data || error.message);
-//     }
-//   },
-// );
-
-// export const fetchBookedDays = createAsyncThunk(
-//   'cars/fetchBookedDays',
-//   async (carId, thunkAPI) => {
-//     try {
-//       const response = await axios.get('/cars.json');
-//       const car = response.data.find((car) => car.carId === carId);
-//       if (!car) throw new Error('Car not found');
-//       return { carId, bookedDays: car.bookedDays || [] };
-//     } catch (error) {
-//       return thunkAPI.rejectWithValue(error.message);
-//     }
-//   },
-// );
 export const fetchBookedDays = createAsyncThunk(
   'cars/fetchBookedDays',
   async (carId, thunkAPI) => {

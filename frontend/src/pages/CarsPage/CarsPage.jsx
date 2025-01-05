@@ -17,8 +17,6 @@ const CarsPage = () => {
   const { carsData, totalPages, currentPage, loading, error, filters } =
     useSelector((state) => state.cars);
 
-  const isAuth = useSelector((state) => state.auth.token !== null);
-
   const [selectedCar, setSelectedCar] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showUnloginDialog, setShowUnloginDialog] = useState(false);
@@ -26,19 +24,6 @@ const CarsPage = () => {
   useEffect(() => {
     dispatch(fetchCars({ filters }));
   }, []);
-
-  // useEffect(() => {
-  //   const params = Object.fromEntries([...searchParams]);
-  //   const parsedFilters = {
-  //     ...params,
-  //     priceRange: params.priceRange
-  //       ? params.priceRange.split(',').map(Number)
-  //       : [minPrice, maxPrice],
-  //   };
-
-  //   dispatch(fetchCars(parsedFilters));
-  //   dispatch(setFilters(parsedFilters));
-  // }, [dispatch, searchParams, minPrice, maxPrice]);
 
   useEffect(() => {
     const params = Object.fromEntries([...searchParams]);
@@ -56,7 +41,7 @@ const CarsPage = () => {
 
   const handlePageChange = (page) => {
     dispatch(setCurrentPage(page));
-    dispatch(fetchCars({ filters, page }));
+    dispatch(fetchCars({ ...filters, page }));
   };
 
   const handleOpenModal = async (car) => {
