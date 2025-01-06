@@ -28,7 +28,7 @@ const CarCard = ({ car, onDetailsClick, onShowUnloginModal }) => {
             dropOffId: car.dropOffLocationId,
             pickUpId: car.pickupLocationId,
             deposit: car.deposit,
-            totalPrice: car.pricePerDay,
+            pricePerDay: car.pricePerDay,
           },
         },
       });
@@ -41,6 +41,7 @@ const CarCard = ({ car, onDetailsClick, onShowUnloginModal }) => {
       model: PropTypes.string.isRequired,
       location: PropTypes.string.isRequired,
       carRating: PropTypes.number.isRequired,
+      rentalExperience: PropTypes.string.isRequired,
       pricePerDay: PropTypes.number.isRequired,
       status: PropTypes.string.isRequired,
       imageUrl: PropTypes.string.isRequired,
@@ -69,7 +70,7 @@ const CarCard = ({ car, onDetailsClick, onShowUnloginModal }) => {
       </div>
       <div className="car-card__info">
         <CarLocation model={car.model} location={car.location} />
-        <Rating rating={car.carRating} />
+        <Rating rating={car.rentalExperience} />
       </div>
       <Button
         text={`Book the car - $${car.pricePerDay}/day`}

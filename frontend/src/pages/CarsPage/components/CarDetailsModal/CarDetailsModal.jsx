@@ -50,6 +50,7 @@ const CarDetailsModal = ({ car, onClose }) => {
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.auth.token !== null);
   const { carDetails } = useSelector((state) => state.carBooked);
+  const { filters } = useSelector((state) => state.cars);
 
   const calendarRef = useRef(null);
   const [mainImage, setMainImage] = useState(
@@ -117,7 +118,58 @@ const CarDetailsModal = ({ car, onClose }) => {
   };
 
   const handleBooking = (car) => {
-    const countDays = selectedDates.pickup - selectedDates.dropOff || 1;
+    const formatDateTime = (date, time) => {
+      if (!date || !time) return null;
+
+      // Розділення часу на години, хвилини та період (AM/PM)
+      const [hours, minutes, period] = time
+        .match(/(\d+):(\d+)(AM|PM)/)
+        .slice(1);
+      const adjustedHours =
+        period === 'PM' && hours !== '12'
+          ? parseInt(hours) + 12
+          : parseInt(hours);
+
+      // Комбінування дати й часу
+      const fullDate = new Date(date);
+      fullDate.setHours(adjustedHours);
+      fullDate.setMinutes(minutes);
+      fullDate.setSeconds(0);
+
+      // Форматування у потрібний формат: YYYY-MM-DDTHH:mm:ss
+      const year = fullDate.getFullYear();
+      const month = String(fullDate.getMonth() + 1).padStart(2, '0'); // Додаємо 0 перед місяцями < 10
+      const day = String(fullDate.getDate()).padStart(2, '0');
+      const hoursFormatted = String(fullDate.getHours()).padStart(2, '0');
+      const minutesFormatted = String(fullDate.getMinutes()).padStart(2, '0');
+      const seconds = String(fullDate.getSeconds()).padStart(2, '0');
+
+      return `${year}-${month}-${day}T${hoursFormatted}:${minutesFormatted}:${seconds}`;
+    };
+
+    // Форматування обраних дат
+    const formattedPickup = formatDateTime(
+      selectedDates.pickup.date,
+      selectedDates.pickup.time,
+    );
+    const formattedDropOff = formatDateTime(
+      selectedDates.dropOff.date,
+      selectedDates.dropOff.time,
+    );
+
+    // Обчислення кількості днів
+    const countDays =
+      formattedPickup && formattedDropOff
+        ? Math.max(
+            1,
+            Math.ceil(
+              (new Date(formattedDropOff) - new Date(formattedPickup)) /
+                (1000 * 60 * 60 * 24),
+            ),
+          )
+        : 1;
+
+    // Навігація до сторінки бронювання
     navigate(`/booking/${car.carId}`, {
       state: {
         car: {
@@ -125,10 +177,12 @@ const CarDetailsModal = ({ car, onClose }) => {
           image: mainImage,
           model: car.model,
           location: car.location,
-          dropOffId: car.dropOffLocationId,
-          pickUpId: car.pickupLocationId,
-          deposit: car.deposit ? car.deposit : 0,
+          dropOffId: filters.dropOffLocationId,
+          pickUpId: filters.pickupLocationId,
+          deposit: car.deposit || 0,
           totalPrice: car.pricePerDay * countDays,
+          pickupDateTime: formattedPickup,
+          dropOffDateTime: formattedDropOff,
         },
       },
     });

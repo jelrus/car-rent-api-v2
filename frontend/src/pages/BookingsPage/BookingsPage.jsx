@@ -8,25 +8,7 @@ import chatIcon from '@/assets/chat-icon.png';
 import classNames from 'classnames';
 import checkAuthRole from '@/containers/CheckAuthHoc/CheckAuthHoc';
 import SuccessInfoMessage from '@/components/molecules/SuccessInfoMessage/SuccessInfoMessage';
-
-const tabs = [
-  { id: 'tab-1', path: 'all', status: 'ALL', title: 'All bookings' },
-  { id: 'tab-2', path: 'reserved', status: 'RESERVED', title: 'Reserved' },
-  { id: 'tab-3', path: 'started', status: 'STARTED', title: 'Service started' },
-  {
-    id: 'tab-4',
-    path: 'provided',
-    status: 'PROVIDED',
-    title: 'Service provided',
-  },
-  {
-    id: 'tab-5',
-    path: 'finished',
-    status: 'FINISHED',
-    title: 'Booking finished',
-  },
-  { id: 'tab-6', path: 'cancelled', status: 'CANCELLED', title: 'Cancelled' },
-];
+import { BOOKINGS } from '@/constants/bookings';
 
 const BookingsPage = () => {
   const { tabId } = useParams();
@@ -52,7 +34,7 @@ const BookingsPage = () => {
   }, [dispatch, userId]);
 
   useEffect(() => {
-    const currentTab = tabs.find((tab) => tab.path === tabId);
+    const currentTab = BOOKINGS.find((tab) => tab.path === tabId);
 
     if (currentTab) {
       setStatusFilter(currentTab.status);
@@ -78,7 +60,7 @@ const BookingsPage = () => {
   }, [message]);
 
   const handleFilterChange = (filter) => {
-    const tab = tabs.find((tab) => tab.status === filter);
+    const tab = BOOKINGS.find((tab) => tab.status === filter);
     if (tab) {
       navigate(`/bookings/${tab.path}`);
     }
@@ -88,14 +70,13 @@ const BookingsPage = () => {
     setSuccessMessage('');
   };
 
-  if (loading) return <p>Loading bookings...</p>;
-  if (error) return <p>something went wrong</p>;
-
   return (
     <div className="bookings-page">
       <div className="bookings-title">
         <h2>My bookings</h2>
       </div>
+      {error && <p>Error: {error}</p>}
+      {loading && <p>Loading bookings...</p>}
       {successMessage && (
         <div className="bookings-info-message">
           <SuccessInfoMessage
@@ -114,7 +95,7 @@ const BookingsPage = () => {
 
       <div className="bookings-filter">
         <ul className="bookings-navbar">
-          {tabs.map(({ id, path, status, title }) => (
+          {BOOKINGS.map(({ id, path, status, title }) => (
             <li
               key={id}
               className={classNames('bookings-navitem', {
@@ -129,14 +110,14 @@ const BookingsPage = () => {
           ))}
         </ul>
       </div>
-
       <div className="bookings-list">
         {filteredBookings.length === 0 ? (
           <div>You have not placed an order yet</div>
         ) : (
           filteredBookings.map((booking) => {
             const { title } =
-              tabs.find((tab) => tab.status === booking.bookingStatus) || '';
+              BOOKINGS.find((tab) => tab.status === booking.bookingStatus) ||
+              '';
 
             return (
               <div key={booking.bookingId} className="bookings-card">

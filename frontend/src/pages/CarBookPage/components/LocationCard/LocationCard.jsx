@@ -4,7 +4,10 @@ import PropTypes from 'prop-types';
 
 // Date formatting utility
 const formatToCustomDateTime = (dateTime) => {
+  console.log(dateTime);
+
   const date = new Date(dateTime);
+  console.log(date);
 
   const day = date.getDate().toString().padStart(2, '0');
   const month = (date.getMonth() + 1).toString().padStart(2, '0');

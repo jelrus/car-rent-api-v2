@@ -16,16 +16,26 @@ const CustomCalendar = ({
   const [range, setRange] = useState({ start: null, end: null });
 
   const generateDays = (month) => {
-    const start = new Date(month.getFullYear(), month.getMonth(), 1);
-    const end = new Date(month.getFullYear(), month.getMonth() + 1, 0);
+    const start = new Date(month.getFullYear(), month.getMonth(), 1); // Перший день місяця
+    const startDay = start.getDay(); // День тижня для першого дня місяця
+
     const days = [];
+
+    // Додаємо порожні дні для вирівнювання початку місяця з правильним днем тижня
+    for (let i = 0; i < startDay; i++) {
+      days.push(null); // Порожні елементи для попередніх днів
+    }
+
+    // Генеруємо всі дні місяця
+    const end = new Date(month.getFullYear(), month.getMonth() + 1, 0); // Останній день місяця
     for (
       let day = new Date(start);
       day <= end;
       day.setDate(day.getDate() + 1)
     ) {
-      days.push(new Date(day.getTime()));
+      days.push(new Date(day.getTime())); // Додаємо кожен день
     }
+
     return days;
   };
 
@@ -40,11 +50,15 @@ const CustomCalendar = ({
   };
 
   const isDateBooked = (day) => {
+    // Перевіряємо, чи day не є null перед тим, як виконувати операції з датою
+    if (!day) return false;
+
     const formattedDate = new Date(
       day.getTime() - day.getTimezoneOffset() * 60000,
     )
       .toISOString()
       .split('T')[0];
+
     return bookedDays.some((bookedDay) => bookedDay.startsWith(formattedDate));
   };
 
@@ -192,16 +206,17 @@ const CustomCalendar = ({
                 key={index}
                 onClick={() => handleDayClick(day)}
                 className={`calendar-day ${
-                  isSameDay(day, range.start) ? 'start' : ''
-                } ${isSameDay(day, range.end) ? 'end' : ''} ${
+                  day && isSameDay(day, range.start) ? 'start' : ''
+                } ${day && isSameDay(day, range.end) ? 'end' : ''} ${
+                  day &&
                   !isSameDay(day, range.start) &&
                   !isSameDay(day, range.end) &&
                   isInRange(day)
                     ? 'in-range'
                     : ''
-                } ${isDateBooked(day) ? 'booked' : ''}`}
+                } ${day && isDateBooked(day) ? 'booked' : ''}`}
               >
-                {day.getDate()}
+                {day ? day.getDate() : ''}
               </div>
             ))}
           </div>
@@ -225,16 +240,17 @@ const CustomCalendar = ({
                 key={index}
                 onClick={() => handleDayClick(day)}
                 className={`calendar-day ${
-                  isSameDay(day, range.start) ? 'start' : ''
-                } ${isSameDay(day, range.end) ? 'end' : ''} ${
+                  day && isSameDay(day, range.start) ? 'start' : ''
+                } ${day && isSameDay(day, range.end) ? 'end' : ''} ${
+                  day &&
                   !isSameDay(day, range.start) &&
                   !isSameDay(day, range.end) &&
                   isInRange(day)
                     ? 'in-range'
                     : ''
-                } ${isDateBooked(day) ? 'booked' : ''}`}
+                } ${day && isDateBooked(day) ? 'booked' : ''}`}
               >
-                {day.getDate()}
+                {day ? day.getDate() : ''}
               </div>
             ))}
           </div>

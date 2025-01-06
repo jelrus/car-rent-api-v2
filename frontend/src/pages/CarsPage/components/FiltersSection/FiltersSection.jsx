@@ -7,102 +7,8 @@ import SelectField from '@components/atoms/SelectField/SelectField.jsx';
 import Button from '@components/atoms/Button/Button.jsx';
 import PriceRange from './PriceRange.jsx';
 import CustomCalendar from '../CustomCalendar/CustomCalendar.jsx';
-
-const data = {
-  pickupLocations: [
-    {
-      id: 1,
-      value: 'ac1a3a1d-3fb2-4eb6-b27a-1c034929aee4',
-      name: 'Kyiv, Hayatt Hotel',
-    },
-    {
-      id: 2,
-      value: '26979fed-8e9a-429f-810f-2fce633ad01e',
-      name: 'Kyiv, Opera Hotel',
-    },
-    {
-      id: 3,
-      value: '2aacd5df-b679-49f4-9c20-ecbead6e6ff9',
-      name: 'Kyiv, Premier Palace Hotel',
-    },
-    {
-      id: 4,
-      value: '4f4b5e1d-841f-4006-b29c-5b0e8724ad74',
-      name: 'Kyiv, Hilton Hotel',
-    },
-    {
-      id: 5,
-      value: '28b2926a-7d91-45ec-9957-4c910d30dced',
-      name: 'Kyiv, Radisson Blu Hotel',
-    },
-    {
-      id: 6,
-      value: 'f5445579-8c1d-4962-8b55-f27d49922da9',
-      name: 'Kyiv, InterContinental Hotel',
-    },
-    {
-      id: 7,
-      value: '2c9b6f42-a3f3-4508-9e1a-d3753cf36292',
-      name: 'Kyiv, Fairmont Grand Hotel',
-    },
-  ],
-  dropOffLocations: [
-    {
-      id: 1,
-      value: 'ac1a3a1d-3fb2-4eb6-b27a-1c034929aee4',
-      name: 'Kyiv, Hayatt Hotel',
-    },
-    {
-      id: 2,
-      value: '26979fed-8e9a-429f-810f-2fce633ad01e',
-      name: 'Kyiv, Opera Hotel',
-    },
-    {
-      id: 3,
-      value: '2aacd5df-b679-49f4-9c20-ecbead6e6ff9',
-      name: 'Kyiv, Premier Palace Hotel',
-    },
-    {
-      id: 4,
-      value: '4f4b5e1d-841f-4006-b29c-5b0e8724ad74',
-      name: 'Kyiv, Hilton Hotel',
-    },
-    {
-      id: 5,
-      value: '28b2926a-7d91-45ec-9957-4c910d30dced',
-      name: 'Kyiv, Radisson Blu Hotel',
-    },
-    {
-      id: 6,
-      value: 'f5445579-8c1d-4962-8b55-f27d49922da9',
-      name: 'Kyiv, InterContinental Hotel',
-    },
-    {
-      id: 7,
-      value: '2c9b6f42-a3f3-4508-9e1a-d3753cf36292',
-      name: 'Kyiv, Fairmont Grand Hotel',
-    },
-  ],
-  categories: [
-    { id: 8, value: 'ECONOMY', name: 'Economy' },
-    { id: 9, value: 'COMFORT', name: 'Comfort' },
-    { id: 10, value: 'BUSINESS', name: 'Business' },
-    { id: 11, value: 'PREMIUM', name: 'Premium' },
-    { id: 12, value: 'CROSSOVER', name: 'Crossover' },
-    { id: 13, value: 'MINIVAN', name: 'Minivan' },
-    { id: 14, value: 'ELECTRIC', name: 'Electric' },
-  ],
-  gearBoxType: [
-    { id: 15, value: 'MANUAL', name: 'Manual' },
-    { id: 16, value: 'AUTOMATIC', name: 'Automatic' },
-  ],
-  fuelType: [
-    { id: 17, value: 'PETROL', name: 'Petrol' },
-    { id: 18, value: 'DIESEL', name: 'Diesel' },
-    { id: 19, value: 'ELECTRIC', name: 'Electric' },
-    { id: 20, value: 'HYBRID', name: 'Hybrid' },
-  ],
-};
+import { CATEGORIES, GEAR_BOX_TYPE, FUEL_TYPE } from '@/constants/filter';
+import LOCATIONS from '@/constants/locations';
 
 const FiltersSection = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -114,13 +20,16 @@ const FiltersSection = () => {
     dropOffLocationId: null,
     pickupDateTime: null,
     dropOffDateTime: null,
-    pickupTime: null,
-    dropOffTime: null,
     category: null,
     gearBoxType: null,
     fuelType: null,
     minPrice: 0,
     maxPrice: 1000,
+  });
+
+  const [selectedDates, setSelectedDates] = useState({
+    pickup: { date: null, time: '07:00AM' },
+    dropOff: { date: null, time: '10:00AM' },
   });
 
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
@@ -150,17 +59,102 @@ const FiltersSection = () => {
     };
   }, []);
 
+  const formatDateTime = (date) => {
+    if (!date) return null;
+
+    let dateObj;
+
+    // Перевірка чи є об'єкт дійсним типом Date або рядком, який можна перетворити в Date
+    if (
+      Object.prototype.toString.call(date) === '[object Date]' &&
+      !isNaN(date.getTime())
+    ) {
+      dateObj = date; // Якщо це вже об'єкт Date
+    } else if (typeof date === 'string') {
+      dateObj = new Date(date); // Якщо це рядок, намагаємося створити Date
+    } else {
+      console.error('Invalid date:', date);
+      return null;
+    }
+
+    // Перевірка на валідність Date
+    if (isNaN(dateObj.getTime())) {
+      console.error('Invalid date object:', dateObj);
+      return null;
+    }
+
+    // Форматуємо в локальному часі
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const hours = String(dateObj.getHours()).padStart(2, '0');
+    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+    const seconds = String(dateObj.getSeconds()).padStart(2, '0');
+
+    // Повертаємо відформатовану дату в форматі ISO (без мілісекунд)
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+  };
+
   const handleDateSelect = (field, date) => {
+    const time = selectedDates[field]?.time || '07:00AM';
+
+    // Перетворюємо час у 24-годинний формат
+    const [hours, minutes] = time.match(/(\d+):(\d+)(AM|PM)/).slice(1, 3);
+    const isPM = time.includes('PM');
+    const hours24 = isPM
+      ? (parseInt(hours, 10) % 12) + 12
+      : parseInt(hours, 10) % 12; // Якщо PM, додаємо 12 годин
+
+    // Форматуємо час у формат 'HH:mm:ss'
+    const formattedTime = `${String(hours24).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`;
+
+    // Перетворюємо обрану дату на ISO рядок
+    const newDateTime = new Date(date);
+
+    // Коригуємо дату в залежності від локального часового поясу
+    const offset = newDateTime.getTimezoneOffset(); // Відстань в хвилинах від UTC
+    newDateTime.setMinutes(newDateTime.getMinutes() - offset); // Виправляємо відставання
+
+    // Форматуємо дату та час
+    const formattedDateTime = `${newDateTime.toISOString().split('T')[0]}T${formattedTime}`;
+
+    // Оновлюємо localFilters з новим значенням для pickupDateTime або dropOffDateTime
     setLocalFilters((prevFilters) => ({
       ...prevFilters,
-      [`${field}DateTime`]: date,
+      [`${field}DateTime`]: formattedDateTime,
     }));
   };
 
   const handleTimeSelect = (field, time) => {
+    setSelectedDates((prev) => ({
+      ...prev,
+      [field]: { ...prev[field], time },
+    }));
+
+    // Беремо поточну дату для обраного поля, або використовуємо поточну дату, якщо її немає
+    const date = selectedDates[field]?.date || new Date();
+    const newDateTime = new Date(date);
+
+    // Перетворюємо час у 24-годинний формат
+    const [hours, minutes] = time.match(/(\d+):(\d+)(AM|PM)/).slice(1, 3);
+    const isPM = time.includes('PM');
+    const hours24 = isPM
+      ? (parseInt(hours, 10) % 12) + 12
+      : parseInt(hours, 10) % 12; // Якщо PM, додаємо 12 годин
+
+    // Форматуємо час у формат 'HH:mm:ss'
+    const formattedTime = `${String(hours24).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`;
+
+    // Коригуємо дату в залежності від локального часового поясу
+    const offset = newDateTime.getTimezoneOffset(); // Відстань в хвилинах від UTC
+    newDateTime.setMinutes(newDateTime.getMinutes() - offset); // Виправляємо відставання
+
+    // Форматуємо дату та час
+    const formattedDateTime = `${newDateTime.toISOString().split('T')[0]}T${formattedTime}`;
+
     setLocalFilters((prevFilters) => ({
       ...prevFilters,
-      [`${field}Time`]: time,
+      [`${field}DateTime`]: formattedDateTime,
     }));
   };
 
@@ -174,23 +168,20 @@ const FiltersSection = () => {
   };
 
   const handleApplyFilters = (newFilters) => {
-    const formatDateTime = (date) => {
-      if (!date) return null;
-      return date.toISOString().split('.')[0];
-    };
-
+    // Форматуємо дати перед застосуванням фільтрів
     const formattedFilters = {
       ...newFilters,
       pickupDateTime: newFilters.pickupDateTime
-        ? formatDateTime(newFilters.pickupDateTime)
+        ? formatDateTime(newFilters.pickupDateTime) // Виклик функції форматування для pickupDateTime
         : null,
       dropOffDateTime: newFilters.dropOffDateTime
-        ? formatDateTime(newFilters.dropOffDateTime)
+        ? formatDateTime(newFilters.dropOffDateTime) // Виклик функції форматування для dropOffDateTime
         : null,
     };
 
     console.log('Formatted Filters', formattedFilters);
 
+    // Застосовуємо відформатовані фільтри
     dispatch(setFilters(formattedFilters));
     dispatch(fetchCars(formattedFilters));
   };
@@ -227,7 +218,20 @@ const FiltersSection = () => {
 
     const formatDateTime = (date) => {
       if (!date) return null;
-      return date.toISOString().split('.')[0];
+
+      // Створюємо нову дату, щоб уникнути змін оригіналу
+      const localDate = new Date(date);
+
+      // Коригуємо дату в залежності від локального часового поясу
+      const offset = localDate.getTimezoneOffset(); // Відстань в хвилинах від UTC
+      localDate.setMinutes(localDate.getMinutes() - offset); // Виправляємо відставання
+
+      // Форматуємо дату в форматі 'yyyy-MM-ddTHH:mm:ss'
+      const formattedDate = localDate
+        .toISOString() // Отримуємо ISO строку, що містить дату і час в UTC
+        .split('.')[0]; // Видаляємо мілісекунди
+
+      return formattedDate;
     };
 
     Object.keys(localFilters).forEach((key) => {
@@ -244,7 +248,7 @@ const FiltersSection = () => {
         if (Array.isArray(value)) {
           params.append(key, value.join(','));
         } else if (value instanceof Date) {
-          params.append(key, formatDateTime(value));
+          params.append(key, formatDateTime(value)); // Форматуємо дату і час тут
         } else {
           params.append(key, value);
         }
@@ -278,7 +282,7 @@ const FiltersSection = () => {
             name="pickupLocationId"
             value={localFilters.pickupLocationId || ''}
             onChange={handleInputChange}
-            options={data.pickupLocations}
+            options={LOCATIONS}
           />
           <SelectField
             className="filters-form__select-location"
@@ -287,7 +291,7 @@ const FiltersSection = () => {
             name="dropOffLocationId"
             value={localFilters.dropOffLocationId || ''}
             onChange={handleInputChange}
-            options={data.dropOffLocations}
+            options={LOCATIONS}
           />
           <div className="filters-form__date-picker-fields" ref={calendarRef}>
             <div>
@@ -299,10 +303,7 @@ const FiltersSection = () => {
                 onClick={() => toggleCalendar('pickup')}
               >
                 {localFilters.pickupDateTime
-                  ? `${localFilters.pickupDateTime.toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                    })} ${localFilters.pickupTime || '07:00AM'}`
+                  ? `${localFilters.pickupDateTime.split('T')[0]} ${localFilters.pickupTime || '07:00AM'}`
                   : 'Pick-up date'}
                 <span className="filters-form__dropdown-arrow">&#9662;</span>
               </div>
@@ -316,13 +317,7 @@ const FiltersSection = () => {
                 onClick={() => toggleCalendar('dropOff')}
               >
                 {localFilters.dropOffDateTime
-                  ? `${localFilters.dropOffDateTime.toLocaleDateString(
-                      'en-US',
-                      {
-                        month: 'short',
-                        day: 'numeric',
-                      },
-                    )} ${localFilters.dropOffTime || '10:00AM'}`
+                  ? `${localFilters.dropOffDateTime.split('T')[0]} ${localFilters.dropOffTime || '10:00AM'}`
                   : 'Drop-off date'}
                 <span className="filters-form__dropdown-arrow">&#9662;</span>
               </div>
@@ -331,16 +326,7 @@ const FiltersSection = () => {
               <div className="filters-form__calendar-wrapper">
                 <CustomCalendar
                   bookedDays={[]}
-                  selectedDates={{
-                    pickup: {
-                      date: localFilters.pickupDateTime,
-                      time: localFilters.pickupTime || '07:00AM',
-                    },
-                    dropOff: {
-                      date: localFilters.dropOffDateTime,
-                      time: localFilters.dropOffTime || '10:00AM',
-                    },
-                  }}
+                  selectedDates={selectedDates}
                   onDateSelect={(field, date) => handleDateSelect(field, date)}
                   onTimeSelect={(field, time) => handleTimeSelect(field, time)}
                 />
@@ -356,7 +342,7 @@ const FiltersSection = () => {
             name="category"
             value={localFilters.category || ''}
             onChange={handleInputChange}
-            options={data.categories}
+            options={CATEGORIES}
           />
           <SelectField
             className="filters-form__select-infoOfCar"
@@ -365,7 +351,7 @@ const FiltersSection = () => {
             name="gearBoxType"
             value={localFilters.gearBoxType || ''}
             onChange={handleInputChange}
-            options={data.gearBoxType}
+            options={GEAR_BOX_TYPE}
           />
           <SelectField
             className="filters-form__select-infoOfCar"
@@ -374,7 +360,7 @@ const FiltersSection = () => {
             name="fuelType"
             value={localFilters.fuelType || ''}
             onChange={handleInputChange}
-            options={data.fuelType}
+            options={FUEL_TYPE}
           />
           <div className="filters-form__input-range">
             <div className="filters-form__input-range_label">

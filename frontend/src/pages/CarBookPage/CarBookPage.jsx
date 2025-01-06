@@ -16,7 +16,9 @@ const CarBookPage = () => {
   const { paramCarId } = useParams();
   const state = useSelector((state) => state);
   console.log(state);
+  const { filters } = useSelector((state) => state.cars);
   const carId = paramCarId;
+  console.log(filters);
 
   const location = useLocation();
   const dispatch = useDispatch();
@@ -45,31 +47,65 @@ const CarBookPage = () => {
     phone: user?.phone || '+38 111 111 11 11',
   });
 
+  const getTodayDate = () => {
+    const now = new Date();
+
+    // Форматування до локального часу
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    };
+
+    const localeDate = now.toLocaleString('en-GB', options); // en-GB для формату DD/MM/YYYY
+    const [datePart, timePart] = localeDate.split(', '); // Розділяємо дату і час
+
+    // Перетворення формату DD/MM/YYYY на YYYY-MM-DD
+    const [day, month, year] = datePart.split('/');
+    const formattedDate = `${year}-${month}-${day}T${timePart}`;
+    return formattedDate;
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+
+    // Дістаємо компоненти дати
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Місяці починаються з 0
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    // Збираємо у формат "YYYY-MM-DD HH:mm"
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  };
+
   const [bookingInfo, setBookingInfo] = useState({
     pickUp: {
-      id: car?.pickUpId || '9b903ebf-2b18-4946-bc58-045d86a2632e',
-      location:
-        (car.pickUpId
-          ? getLocationName(car?.dropOffId)
-          : getLocationName('9b903ebf-2b18-4946-bc58-045d86a2632e')) ||
-        'Kyiv Hyatt Hotel',
-      dateTime: '2025-01-17T22:00:00' || car?.pickUpDateTime,
+      id: filters.pickupLocationId || '9b903ebf-2b18-4946-bc58-045d86a2632e',
+      location: filters.pickupLocationId
+        ? getLocationName(filters.pickupLocationId)
+        : getLocationName('ac1a3a1d-3fb2-4eb6-b27a-1c034929aee4'),
+      dateTime: car.pickupDateTime || filters.pickupDateTime || getTodayDate(),
     },
     dropOff: {
-      id: car?.dropOffId || '6f1g2h3i-7h8i-8i2j-2h3i-7h8i8i2j2h3i',
-      location:
-        (car.dropOffId
-          ? getLocationName(car?.dropOffId)
-          : getLocationName('6f1g2h3i-7h8i-8i2j-2h3i-7h8i8i2j2h3i')) ||
-        'Kyiv Hyatt Hotel',
-      dateTime: '2025-05-19T09:00:00' || car?.dropOffDateTime,
+      id: filters.dropOffLocationId || 'ac1a3a1d-3fb2-4eb6-b27a-1c034929aee4',
+      location: filters.dropOffLocationId
+        ? getLocationName(filters.dropOffLocationId)
+        : getLocationName('ac1a3a1d-3fb2-4eb6-b27a-1c034929aee4'),
+      dateTime:
+        car.dropOffDateTime || filters.dropOffDateTime || getTodayDate(),
     },
     car: {
       id: carId,
       name: car?.model || carDetails?.model || 'Car Name',
       location: car?.location || carDetails?.location || 'Car Location',
       image: car.image || carDetails?.images?.[0] || image,
-      price: car?.totalPrice || carDetails?.pricePerDay || 0,
+      price: car?.totalPrice || car.pricePerDay || 0,
       deposit: car?.deposit || carDetails?.deposit || 0,
     },
   });
@@ -99,9 +135,9 @@ const CarBookPage = () => {
   const handleConfirmReservation = async () => {
     const bookingData = {
       carId: bookingInfo.car.id,
-      clientId: user?.id || 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
-      dropOffDateTime: bookingInfo.dropOff.dateTime,
-      pickupDateTime: bookingInfo.pickUp.dateTime,
+      clientId: user.userId,
+      dropOffDateTime: formatDate(bookingInfo.dropOff.dateTime),
+      pickupDateTime: formatDate(bookingInfo.pickUp.dateTime),
       pickupLocationId: bookingInfo.pickUp.id,
       dropOffLocationId: bookingInfo.dropOff.id,
     };

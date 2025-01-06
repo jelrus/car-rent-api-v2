@@ -6,9 +6,10 @@ export const getBookings = createAsyncThunk(
   async (clientId, thunkAPI) => {
     try {
       const response = await axiosInstance.get(`/bookings/${clientId}`);
+
       return response.data.content;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
   },
 );
@@ -30,7 +31,7 @@ const bookingSlice = createSlice({
         state.loading = false;
       })
       .addCase(getBookings.rejected, (state, action) => {
-        state.error = action.payload?.message || 'Something went wrong';
+        state.error = action.payload || 'Failed to fetch bookings';
         state.loading = false;
       });
   },

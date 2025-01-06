@@ -22,7 +22,7 @@ const CarsPage = () => {
   const [showUnloginDialog, setShowUnloginDialog] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchCars({ filters }));
+    dispatch(fetchCars({ ...filters }));
   }, []);
 
   useEffect(() => {
