@@ -1,0 +1,270 @@
+package com.api.service.components.impl;
+
+import com.api.config.TableKeys;
+import com.api.exception.DateTimeException;
+import com.api.exception.ExistenceException;
+import com.api.exception.OperationFailedException;
+import com.api.persistence.dao.components.AuthDao;
+import com.api.persistence.dao.components.BookingDao;
+import com.api.persistence.dao.components.CarDao;
+import com.api.persistence.dao.components.UserDao;
+import com.api.persistence.models.dto.booking.BookCarRequest;
+import com.api.persistence.models.dto.booking.BookCarResponse;
+import com.api.persistence.models.dto.booking.BookingInfo;
+import com.api.persistence.models.dto.booking.BookingsResponse;
+import com.api.persistence.models.entity.Booking;
+import com.api.persistence.models.entity.Car;
+import com.api.persistence.models.entity.User;
+import com.api.persistence.models.entity.types.BookingStatus;
+import com.api.persistence.models.entity.types.CarStatus;
+import com.api.persistence.models.entity.types.UserRole;
+import com.api.persistence.specification.CarPageRequest;
+import com.api.service.components.BookingService;
+import com.api.utils.components.LogPrinter;
+import com.api.utils.components.StringDateConverter;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Function;
+
+public class BookingServiceImpl implements BookingService {
+
+    private final BookingDao bookingDao;
+    private final AuthDao authDao;
+    private final UserDao userDao;
+    private final CarDao carDao;
+
+    public BookingServiceImpl(BookingDao bookingDao, AuthDao authDao, UserDao userDao, CarDao carDao) {
+        this.bookingDao = bookingDao;
+        this.authDao = authDao;
+        this.userDao = userDao;
+        this.carDao = carDao;
+    }
+
+    @Override
+    public BookCarResponse create(String accessToken, BookCarRequest bookCarRequest) {
+        LogPrinter.warn("[BookingService | Create] Creating booking...");
+        LogPrinter.warn("[BookingService | Create] Checking car existence...");
+        checkCarExistence(bookCarRequest.getCarId());
+
+        LogPrinter.warn("[BookingService | Create] Checking dates format...");
+        String pickupDateTime = bookCarRequest.getPickupDateTime().replace(" ", "T");
+        String dropOffDateTime = bookCarRequest.getDropOffDateTime().replace(" ", "T");
+        checkDates(pickupDateTime, dropOffDateTime);
+        checkBookedDatesAreISO8601Format(pickupDateTime, dropOffDateTime);
+
+        LogPrinter.warn("[BookingService | Create] Checking for overlapping dates...");
+        Map<String, String> filterParams = Map.of(
+                "id", bookCarRequest.getCarId(),
+                "pickupLocationId", bookCarRequest.getPickupLocationId(),
+                "dropOffLocationId", bookCarRequest.getDropOffLocationId(),
+                "pickupDateTime", pickupDateTime,
+                "dropOffDateTime", dropOffDateTime
+        );
+        checkDatesAreBooked(filterParams);
+
+        LogPrinter.warn("[BookingService | Create] Checking token...");
+        checkAccessToken(accessToken);
+        String subId = authDao.getSubFromJwt(accessToken);
+
+        LogPrinter.warn("[BookingService | Create] Getting user from token sub id...");
+        User user = userDao.findById(subId);
+
+        LogPrinter.warn("[BookingService | Create] Checking client...");
+        String clientId = bookCarRequest.getClientId();
+        checkUserExistence(clientId);
+
+        LogPrinter.warn("[BookingService | Create] Checking user permissions and generating booking status...");
+        BookingStatus bookingStatus = getBookingStatus(user, clientId);
+
+        LogPrinter.warn("[BookingService | Create] Generating booking...");
+        Booking booking = toBooking(bookCarRequest, bookingStatus);
+
+        LogPrinter.warn("[BookingService | Create] Commencing booking creation...");
+        waitAndCheckDateTimes(filterParams);
+        bookingDao.put(booking);
+
+        LogPrinter.warn("[BookingService | Create] Updating book dates for car with id {}", booking.getCarId());
+        updateCarBookedDays(bookCarRequest);
+
+        LogPrinter.warn("[BookingService | Create] Booking {} was successfully created", booking.getSkId());
+
+        return BookCarResponse.builder()
+                .constructMessage(
+                        carDao.findById(booking.getCarId()).getModel(),
+                        booking.getPickupDateTime(),
+                        booking.getDropOffDateTime(),
+                        booking.getLockedFrom(),
+                        booking.getOrderDetails()
+                )
+                .build();
+    }
+
+    @Override
+    public BookingsResponse findAllByClientId(String accessToken, String clientId) {
+        checkAccessToken(accessToken);
+        checkUserExistence(clientId);
+        String subId = authDao.getSubFromJwt(accessToken);
+        User user = userDao.findById(subId);
+        checkUserExistence(clientId);
+        boolean isSelfId = user.getSkId().replace(TableKeys.USER_SK_PREFIX, "").equals(clientId);
+        UserRole userRole = user.getRole();
+
+        if (userRole == UserRole.ADMIN) {
+            LogPrinter.warn("[BookingService | Create] Admin attempted to book car for himself");
+            throw new OperationFailedException("Prohibited by role");
+        }
+
+        if ((userRole == UserRole.SUPPORT_AGENT && !isSelfId) || (userRole == UserRole.CLIENT && isSelfId)) {
+            return BookingsResponse.builder()
+                    .content(bookingDao.findAllByClientIdSortedByCreatedAt(clientId)
+                            .stream()
+                            .map(toBookingInfo())
+                            .toList())
+                    .build();
+        } else {
+            LogPrinter.warn("[BookingService | Create] User with role {} attempted to book car, but lacked on " +
+                    "permissions", userRole.getName());
+            throw new OperationFailedException("Prohibited by role");
+        }
+    }
+
+    private Function<Booking, BookingInfo> toBookingInfo() {
+        return b -> BookingInfo.builder()
+                .bookingId(b.getSkId().replace(TableKeys.BOOKING_SK_PREFIX, ""))
+                .bookingStatus(b.getStatus().getName())
+                .carModel(carDao.findById(b.getCarId()).getModel())
+                .carImageUrl(carDao.findById(b.getCarId()).getImageUrl())
+                .orderDetails(b.getOrderDetails())
+                .build();
+    }
+
+    private void updateCarBookedDays(BookCarRequest bookCarRequest) {
+        Car car = carDao.findById(bookCarRequest.getCarId())
+                .toBuilder()
+                .bookedDays(StringDateConverter.generateGermanDatesRange(
+                        bookCarRequest.getPickupDateTime().replace(" ", "T"),
+                        bookCarRequest.getDropOffDateTime().replace(" ", "T")))
+                .build();
+        carDao.put(car);
+    }
+
+    private void waitAndCheckDateTimes(Map<String, String> filterParams) {
+        try {
+            Thread.sleep(10 * 1000);
+            checkDatesAreBooked(filterParams);
+        } catch (InterruptedException e) {
+            LogPrinter.error("[BookingService | Create] Booking on this time is already exists");
+            throw new OperationFailedException("Booking on this time is already exists");
+        }
+    }
+
+    private Booking toBooking(BookCarRequest bookCarRequest, BookingStatus bookingStatus) {
+        DateTimeFormatter createdAtFormatter = DateTimeFormatter.ofPattern("dd.MM.yy");
+        String createdAt = LocalDateTime.now().format(createdAtFormatter);
+        LogPrinter.info("[BookingService | Create] Created at date {}", createdAt);
+
+        String lockedFrom = StringDateConverter.toISO8601DateTime(
+                LocalDateTime.parse(bookCarRequest.getPickupDateTime().replace(" ", "T")).minusHours(12)
+        );
+        LogPrinter.info("[BookingService | Create] Locked from date {}", lockedFrom);
+
+        return Booking.builder()
+                .pkId()
+                .skId(UUID.randomUUID().toString())
+                .orderDetails("#" + (bookingDao.getTotalCount() + 1) + " (" + createdAt + ")")
+                .status(bookingStatus)
+                .clientId(bookCarRequest.getClientId())
+                .carId(bookCarRequest.getCarId())
+                .createdAt(createdAt)
+                .lockedFrom(lockedFrom)
+                .pickupDateTime(bookCarRequest.getPickupDateTime())
+                .dropOffDateTime(bookCarRequest.getDropOffDateTime())
+                .pickupLocationId(bookCarRequest.getPickupLocationId())
+                .dropOffLocationId(bookCarRequest.getDropOffLocationId())
+                .build();
+    }
+
+    private void checkCarExistence(String carId) {
+        if (carId == null || !carDao.isExistsById(carId) ||
+                carDao.findById(carId).getStatus() == CarStatus.UNAVAILABLE) {
+            LogPrinter.error("Car with id {}", TableKeys.CAR_SK_PREFIX + carId + " does not exist");
+            throw new ExistenceException("Car wasn't found or unavailable");
+        }
+    }
+
+    private void checkDates(String pickupDateTime, String dropOffDateTime) {
+        checkBookedDatesIsNull(pickupDateTime, dropOffDateTime);
+        pickupDateTime = pickupDateTime.replace(" ", "T");
+        dropOffDateTime = dropOffDateTime.replace(" ", "T");
+        checkBookedDatesIsNull(pickupDateTime, dropOffDateTime);
+    }
+
+    private void checkDatesAreBooked(Map<String, String> params) {
+        CarPageRequest carPageRequest = CarPageRequest.builder()
+                .init(params)
+                .pickupLocationIdEquals()
+                .dropOffLocationIdInRangeDropOffLocationsIds()
+                .pickupAndDropOffDatesRangeNotOverlappingBookedDays()
+                .build();
+
+        if (!carDao.isBookedDatesAreFree(carPageRequest)) {
+            LogPrinter.error("Requested book dates are overlapping existing ones");
+            throw new OperationFailedException("No locations found or dates are unavailable");
+        }
+    }
+
+    private void checkAccessToken(String accessToken) {
+        if (accessToken == null || authDao.getSubFromJwt(accessToken) == null) {
+            LogPrinter.error("Access Token {} is invalid", accessToken);
+            throw new ExistenceException("Access Token is invalid");
+        }
+    }
+
+    private void checkUserExistence(String clientId) {
+        if (clientId == null || !userDao.isExistsById(clientId)) {
+            LogPrinter.error("User with id {} does not exist", TableKeys.USER_SK_PREFIX + clientId);
+            throw new ExistenceException("User wasn't found");
+        }
+    }
+
+    private void checkBookedDatesIsNull(String pickupDateTime, String dropOffDateTime) {
+        if (pickupDateTime == null || dropOffDateTime == null) {
+            LogPrinter.error("One of the dates is null pickupDateTime {}, dropOffDateTime {}",
+                    pickupDateTime, dropOffDateTime);
+            throw new DateTimeException("Dates are in incorrect format, try [yyyy-MM-dd HH:mm]");
+        }
+    }
+
+    //TODO: Method isClientIdBelongsToSupportAgent(){}
+
+    private BookingStatus getBookingStatus(User user, String clientId) {
+        boolean isSelfId = user.getSkId().replace(TableKeys.USER_SK_PREFIX, "").equals(clientId);
+        UserRole userRole = user.getRole();
+
+        if (userRole == UserRole.ADMIN) {
+            LogPrinter.warn("[BookingService | Create] Admin attempted to book car for himself");
+            throw new OperationFailedException("You can't book at this time");
+        }
+
+        if ((userRole == UserRole.SUPPORT_AGENT && !isSelfId) || (userRole == UserRole.CLIENT && isSelfId)) {
+            return userRole == UserRole.SUPPORT_AGENT ?
+                    BookingStatus.RESERVED_BY_SUPPORT_AGENT : BookingStatus.RESERVED;
+        } else {
+            LogPrinter.warn("[BookingService | Create] User with role {} attempted to book car, but lacked on " +
+                            "permissions", userRole.getName());
+            throw new OperationFailedException("Prohibited by role");
+        }
+    }
+
+    private void checkBookedDatesAreISO8601Format(String pickupDateTime, String dropOffDateTime) {
+        if (!StringDateConverter.isISO8601DateTime(pickupDateTime) ||
+                !StringDateConverter.isISO8601DateTime(dropOffDateTime)) {
+            LogPrinter.error("One of the dates is in incorrect format pickupDateTime {}, dropOffDateTime {}",
+                    pickupDateTime, dropOffDateTime);
+            throw new DateTimeException("Dates are in incorrect format, try [yyyy-MM-dd HH:mm]");
+        }
+    }
+}

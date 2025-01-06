@@ -1,0 +1,1238 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "description": "User stories: US-1 User profile registration, US-3 Automatic Role Assignment",
+      "name": "1. SignUp"
+    },
+    {
+      "description": "User story: US-2 User Login",
+      "name": "2. Login"
+    },
+    {
+      "description": "User story: US-4 Main page view",
+      "name": "3. Main page"
+    },
+    {
+      "description": "User story: US-5 Car selection",
+      "name": "4. Cars"
+    },
+    {
+      "description": "User story: US-6 Car booking",
+      "name": "5. Bookings"
+    }
+  ],
+  "paths": {
+    "/api/v1/bookings/": {
+      "post": {
+        "operationId": "bookCar",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookCarRequestBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookCarResponseBody"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Book a car",
+        "tags": [
+          "5. Bookings"
+        ]
+      }
+    },
+    "/api/v1/bookings/{clientId}": {
+      "get": {
+        "operationId": "getBookedCar",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "clientId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingsResponseBody"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get client's bookings",
+        "tags": [
+          "5. Bookings"
+        ]
+      }
+    },
+    "/api/v1/cars/": {
+      "get": {
+        "operationId": "getCars",
+        "parameters": [
+          {
+            "description": "Pickup location ID",
+            "example": "8bda2022-792c-4b67-b6b3-d1cfddc8f40a",
+            "in": "query",
+            "name": "pickupLocationId",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Pickup location ID",
+              "example": "8bda2022-792c-4b67-b6b3-d1cfddc8f40a"
+            }
+          },
+          {
+            "description": "Drop-off location ID",
+            "example": "8bda2022-792c-4b67-b6b3-d1cfddc8f40a",
+            "in": "query",
+            "name": "dropOffLocationId",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Drop-off location ID",
+              "example": "8bda2022-792c-4b67-b6b3-d1cfddc8f40a"
+            }
+          },
+          {
+            "description": "Pickup date and time",
+            "example": "2024-10-29T10:30:00",
+            "in": "query",
+            "name": "pickupDateTime",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Pickup date and time",
+              "example": "2024-10-29T10:30:00"
+            }
+          },
+          {
+            "description": "Drop-off date and time",
+            "example": "2024-10-30T10:30:00",
+            "in": "query",
+            "name": "dropOffDateTime",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Drop-off date and time",
+              "example": "2024-10-30T10:30:00"
+            }
+          },
+          {
+            "description": "Car category",
+            "example": "CROSSOVER",
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Car category",
+              "example": "CROSSOVER"
+            }
+          },
+          {
+            "description": "Car brand",
+            "example": "AUTOMATIC",
+            "in": "query",
+            "name": "gearBoxType",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Car brand",
+              "example": "AUTOMATIC"
+            }
+          },
+          {
+            "description": "Car fuel type",
+            "example": "PETROL",
+            "in": "query",
+            "name": "fuelType",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Car fuel type",
+              "example": "PETROL"
+            }
+          },
+          {
+            "description": "Minimum price",
+            "example": 52,
+            "in": "query",
+            "name": "minPrice",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Minimum price",
+              "example": 52
+            }
+          },
+          {
+            "description": "Maximum price",
+            "example": 400,
+            "in": "query",
+            "name": "maxPrice",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Maximum price",
+              "example": 400
+            }
+          },
+          {
+            "description": "Page number",
+            "example": 1,
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Page number",
+              "example": 1
+            }
+          },
+          {
+            "description": "Page size",
+            "example": 8,
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Page size",
+              "example": 8
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterCarsPageableResponseBody"
+                }
+              }
+            },
+            "description": "Successful operation"
+          }
+        },
+        "summary": "Get cars list",
+        "tags": [
+          "4. Cars"
+        ]
+      }
+    },
+    "/api/v1/cars/{carId}": {
+      "get": {
+        "operationId": "getCar",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "carId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CarDetailsResponseBody"
+                }
+              }
+            },
+            "description": "Successful operation"
+          }
+        },
+        "summary": "Get car by id",
+        "tags": [
+          "4. Cars"
+        ]
+      }
+    },
+    "/api/v1/cars/{carId}/booked-days": {
+      "get": {
+        "operationId": "getCarBookedDates",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "carId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CarBookedDatesResponseBody"
+                }
+              }
+            },
+            "description": "Successful operation"
+          }
+        },
+        "summary": "Get car booked datess",
+        "tags": [
+          "4. Cars"
+        ]
+      }
+    },
+    "/api/v1/cars/{carId}/client-review": {
+      "get": {
+        "operationId": "getFeedbacks_1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "carId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "description": "Sort type",
+            "example": "DATE",
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Sort type",
+              "example": "DATE"
+            }
+          },
+          {
+            "description": "Sort direction",
+            "example": "DESC",
+            "in": "query",
+            "name": "direction",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Sort direction",
+              "example": "DESC"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientReviewSortedPageableResponseBody"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get sorted pageable client reviews",
+        "tags": [
+          "4. Cars"
+        ]
+      }
+    },
+    "/api/v1/home/about-us": {
+      "get": {
+        "operationId": "getAboutUs",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AboutUsResponseBody"
+                }
+              }
+            },
+            "description": "Successful operation"
+          }
+        },
+        "summary": "Gets 'About Us' stories",
+        "tags": [
+          "3. Main page"
+        ]
+      }
+    },
+    "/api/v1/home/faq": {
+      "get": {
+        "operationId": "getFAQ",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FAQResponseBody"
+                }
+              }
+            },
+            "description": "Successful operation"
+          }
+        },
+        "summary": "Gets F&Q stories",
+        "tags": [
+          "3. Main page"
+        ]
+      }
+    },
+    "/api/v1/home/feedbacks": {
+      "get": {
+        "operationId": "getFeedbacks",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbacksResponseBody"
+                }
+              }
+            },
+            "description": "Successful operation"
+          }
+        },
+        "summary": "Gets recent feedbacks from users",
+        "tags": [
+          "3. Main page"
+        ]
+      }
+    },
+    "/api/v1/home/locations": {
+      "get": {
+        "operationId": "getLocations",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationsResponseBody"
+                }
+              }
+            },
+            "description": "Successful operation"
+          }
+        },
+        "summary": "Gets locations",
+        "tags": [
+          "3. Main page"
+        ]
+      }
+    },
+    "/api/v1/home/popular-cars": {
+      "get": {
+        "operationId": "getPopularCars",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ECONOMY",
+                "COMFORT",
+                "BUSINESS",
+                "PREMIUM",
+                "CROSSOVER",
+                "MINIVAN",
+                "ELECTRIC"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PopularCarsResponseBody"
+                }
+              }
+            },
+            "description": "Successful operation"
+          }
+        },
+        "summary": "Gets most popular cars",
+        "tags": [
+          "3. Main page"
+        ]
+      }
+    },
+    "/api/v1/users/": {
+      "post": {
+        "operationId": "createUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignUpRequestBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignUpResponseBody"
+                }
+              }
+            },
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid username/password supplied"
+          }
+        },
+        "summary": "Creates a new user",
+        "tags": [
+          "1. SignUp"
+        ]
+      }
+    },
+    "/api/v1/users/login": {
+      "post": {
+        "operationId": "loginUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequestBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseBody"
+                }
+              }
+            },
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid username/password supplied"
+          }
+        },
+        "summary": "Logs user into the system",
+        "tags": [
+          "2. Login"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AboutUsResponseBody": {
+        "type": "object",
+        "description": "Response body for about us block",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AboutUsStoryInfo"
+            }
+          }
+        }
+      },
+      "AboutUsStoryInfo": {
+        "type": "object",
+        "description": "About us story info",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "About us story description",
+            "example": "in car rentals highlights a steadfast commitment to excellence, marked by a track record of trust and satisfaction among thousands of clients worldwide"
+          },
+          "numericValue": {
+            "type": "string",
+            "description": "About us story numeric numericValue",
+            "example": "15"
+          },
+          "title": {
+            "type": "string",
+            "description": "About us story title",
+            "example": "years"
+          }
+        }
+      },
+      "BookCarRequestBody": {
+        "type": "object",
+        "description": "Request to book a car",
+        "properties": {
+          "carId": {
+            "type": "string",
+            "description": "Car ID",
+            "example": "92c87432-3383-4328-85f8-7d20ba8715ec"
+          },
+          "clientId": {
+            "type": "string",
+            "description": "User ID",
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+          },
+          "dropOffDateTime": {
+            "type": "string",
+            "description": "Drop off date and time",
+            "example": "2024-06-10 10:00"
+          },
+          "dropOffLocationId": {
+            "type": "string",
+            "description": "Drop off location ID",
+            "example": "9b903ebf-2b18-4946-bc58-045d86a2632e"
+          },
+          "pickupDateTime": {
+            "type": "string",
+            "description": "Pick up date and time",
+            "example": "2024-06-08 10:00"
+          },
+          "pickupLocationId": {
+            "type": "string",
+            "description": "Pick up location ID",
+            "example": "9b903ebf-2b18-4946-bc58-045d86a2632e"
+          }
+        }
+      },
+      "BookCarResponseBody": {
+        "type": "object",
+        "description": "Response object for booking a car",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Success message",
+            "example": "New booking was successfully created. \nAudi A6 Quattro 2023 is booked for Nov 11 - Nov 16 \nYou can change booking details until 10:30 PM 10 Nov.\nYour order: #2437 (08.06.24) "
+          }
+        }
+      },
+      "BookingInfo": {
+        "type": "object",
+        "description": "Booking information",
+        "properties": {
+          "bookingId": {
+            "type": "string",
+            "description": "Booking ID",
+            "example": "ce3d9306-ec01-48a9-9d1a-f9818063c734"
+          },
+          "bookingStatus": {
+            "type": "string",
+            "description": "Booking status",
+            "example": "RESERVED",
+            "enum": [
+              "RESERVED",
+              "RESERVED_BY_SUPPORT_AGENT",
+              "SERVICE_STARTED",
+              "SERVICE_PROVIDED",
+              "BOOKING_FINISHED",
+              "CANCELLED"
+            ]
+          },
+          "carImageUrl": {
+            "type": "string",
+            "description": "Car image URL",
+            "example": "https://application.s3.eu-central-1.amazonaws.com/img/cars/audi-A6-quattro-2023.jpg"
+          },
+          "carModel": {
+            "type": "string",
+            "description": "Car model",
+            "example": "Audi A6 Quattro 2023"
+          },
+          "orderDetails": {
+            "type": "string",
+            "description": "Order details",
+            "example": "#2437 (05.10.2024)"
+          }
+        }
+      },
+      "BookingsResponseBody": {
+        "type": "object",
+        "description": "Payload for get bookings request",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookingInfo"
+            }
+          }
+        }
+      },
+      "CarBookedDatesResponseBody": {
+        "type": "object",
+        "description": "Payload for booked date response",
+        "properties": {
+          "content": {
+            "type": "array",
+            "description": "List of booked dates",
+            "example": [
+              "2024-06-08",
+              "2024-06-09"
+            ],
+            "items": {
+              "type": "string",
+              "description": "List of booked dates",
+              "example": "[\"2024-06-08\",\"2024-06-09\"]"
+            }
+          }
+        }
+      },
+      "CarBriefInfo": {
+        "type": "object",
+        "description": "Car brief information",
+        "properties": {
+          "carId": {
+            "type": "string",
+            "description": "Car ID",
+            "example": "92c87432-3383-4328-85f8-7d20ba8715ec"
+          },
+          "carRating": {
+            "type": "string",
+            "description": "Car rating",
+            "example": "4.5"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "Car image URL",
+            "example": "https://application.s3.eu-central-1.amazonaws.com/img/cars/audi-A6-quattro-2023.jpg"
+          },
+          "location": {
+            "type": "string",
+            "description": "Car location",
+            "example": "Ukraine, Kyiv"
+          },
+          "model": {
+            "type": "string",
+            "description": "Car brand, model, year",
+            "example": "Audi A6 Quattro 2023"
+          },
+          "pricePerDay": {
+            "type": "string",
+            "description": "Car price per day",
+            "example": "180"
+          },
+          "serviceRating": {
+            "type": "string",
+            "description": "Service rating",
+            "example": "4.8"
+          },
+          "status": {
+            "type": "string",
+            "description": "Car status",
+            "example": "AVAILABLE",
+            "enum": [
+              "AVAILABLE",
+              "BOOKED",
+              "UNAVAILABLE"
+            ]
+          }
+        }
+      },
+      "CarDetailsResponseBody": {
+        "type": "object",
+        "description": "Car details response body",
+        "properties": {
+          "carId": {
+            "type": "string",
+            "description": "Car ID",
+            "example": "92c87432-3383-4328-85f8-7d20ba8715ec"
+          },
+          "carRating": {
+            "type": "string",
+            "description": "Car rating",
+            "example": "4.5"
+          },
+          "climateControlOption": {
+            "type": "string",
+            "description": "Car climate control option",
+            "example": "CLIMATE_CONTROL",
+            "enum": [
+              "NONE",
+              "AIR_CONDITIONER",
+              "CLIMATE_CONTROL",
+              "TWO_ZONE_CLIMATE_CONTROL"
+            ]
+          },
+          "engineCapacity": {
+            "type": "string",
+            "description": "Car engine capacity",
+            "example": "3.0 turbo"
+          },
+          "fuelConsumption": {
+            "type": "string",
+            "description": "Car fuel consumption",
+            "example": "10.0 Liter/100km"
+          },
+          "fuelType": {
+            "type": "string",
+            "description": "Car fuel type",
+            "example": "PETROL",
+            "enum": [
+              "PETROL",
+              "DIESEL",
+              "ELECTRIC",
+              "HYBRID"
+            ]
+          },
+          "gearBoxType": {
+            "type": "string",
+            "description": "Car gear box type",
+            "example": "AUTOMATIC",
+            "enum": [
+              "MANUAL",
+              "AUTOMATIC"
+            ]
+          },
+          "images": {
+            "type": "array",
+            "description": "List of images",
+            "example": [
+              "https://carrent.s3.eu-central-1.amazonaws.com/img/cars/ff7863bf-63eb-4f2e-8041-75a81507acff.jpg"
+            ],
+            "items": {
+              "type": "string",
+              "description": "List of images",
+              "example": "[\"https://carrent.s3.eu-central-1.amazonaws.com/img/cars/ff7863bf-63eb-4f2e-8041-75a81507acff.jpg\"]"
+            }
+          },
+          "location": {
+            "type": "string",
+            "description": "Car location",
+            "example": "Ukraine, Kyiv"
+          },
+          "model": {
+            "type": "string",
+            "description": "Car brand, model, year",
+            "example": "Audi A6 Quattro 2023"
+          },
+          "passengerCapacity": {
+            "type": "string",
+            "description": "Car passenger capacity",
+            "example": "3.0 turbo"
+          },
+          "pricePerDay": {
+            "type": "string",
+            "description": "Car price per day",
+            "example": "180"
+          },
+          "serviceRating": {
+            "type": "string",
+            "description": "Service rating",
+            "example": "4.8"
+          },
+          "status": {
+            "type": "string",
+            "description": "Car status",
+            "example": "AVAILABLE",
+            "enum": [
+              "AVAILABLE",
+              "BOOKED",
+              "UNAVAILABLE"
+            ]
+          }
+        }
+      },
+      "ClientReview": {
+        "type": "object",
+        "description": "Client review",
+        "properties": {
+          "author": {
+            "type": "string",
+            "description": "Author name",
+            "example": "Sarah L."
+          },
+          "authorImageUrl": {
+            "type": "string",
+            "description": "Author image URL",
+            "example": "https://application.s3.eu-central-1.amazonaws.com/img/users/f47ac10b-58cc-4372-a567-0e02b2c3d479.png"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date of review",
+            "example": "01.11.2024"
+          },
+          "rentalExperience": {
+            "type": "string",
+            "description": "Car model",
+            "example": "4.5"
+          },
+          "text": {
+            "type": "string",
+            "description": "Review text",
+            "example": "I rented a car for a week. The car was in good condition, the service was excellent. I am very satisfied with the service!"
+          }
+        }
+      },
+      "ClientReviewSortedPageableResponseBody": {
+        "type": "object",
+        "description": "Payload for response with sorted pageable list of client reviews",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClientReview"
+            }
+          },
+          "currentPage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "FAQResponseBody": {
+        "type": "object",
+        "description": "Payload for FAQ response",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FAQStory"
+            }
+          }
+        }
+      },
+      "FAQStory": {
+        "type": "object",
+        "description": "FAQ story",
+        "properties": {
+          "answer": {
+            "type": "string",
+            "description": "F&Q story answer",
+            "example": "To rent a car, you will need a valid driver's license, a credit card in your name, and a government-issued photo ID (such as a passport or national ID). International renters may also need to present an International Driving Permit (IDP) in addition to their home country driver’s license."
+          },
+          "question": {
+            "type": "string",
+            "description": "F&Q story question",
+            "example": "What documents do I need to rent a car?"
+          }
+        }
+      },
+      "FeedbackInfo": {
+        "type": "object",
+        "description": "Feedback information",
+        "properties": {
+          "author": {
+            "type": "string",
+            "description": "Feedback author",
+            "example": "John S., New York, USA"
+          },
+          "carImageUrl": {
+            "type": "string",
+            "description": "Car image URL",
+            "example": "https://application.s3.eu-central-1.amazonaws.com/img/cars/audi-A6-quattro-2023.jpg"
+          },
+          "carModel": {
+            "type": "string",
+            "description": "Car model",
+            "example": "Audi A6 Quattro 2023"
+          },
+          "carRating": {
+            "type": "string",
+            "description": "Car rating",
+            "example": "4.5"
+          },
+          "date": {
+            "type": "string",
+            "description": "Feedback date",
+            "example": "05.10.2024"
+          },
+          "feedbackId": {
+            "type": "string",
+            "description": "Feedback ID",
+            "example": "71ddc0d2-320b-41e0-9c57-8b6290de7a27"
+          },
+          "feedbackText": {
+            "type": "string",
+            "description": "Feedback text",
+            "example": "I am very satisfied with the service!"
+          },
+          "orderHistory": {
+            "type": "string",
+            "description": "Order history",
+            "example": "#2437 (05.10.2024)"
+          },
+          "serviceRating": {
+            "type": "string",
+            "description": "Service rating",
+            "example": "4.8"
+          }
+        }
+      },
+      "FeedbacksResponseBody": {
+        "type": "object",
+        "description": "Payload for feedbacks response",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FeedbackInfo"
+            }
+          }
+        }
+      },
+      "FilterCarsPageableResponseBody": {
+        "type": "object",
+        "description": "Payload for car filter pageable response",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CarBriefInfo"
+            }
+          },
+          "currentPage": {
+            "type": "integer",
+            "description": "Current page",
+            "format": "int32",
+            "example": 1
+          },
+          "totalElements": {
+            "type": "integer",
+            "description": "Total elements",
+            "format": "int64",
+            "example": 16
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Total pages",
+            "format": "int32",
+            "example": 2
+          }
+        }
+      },
+      "LocationInfo": {
+        "type": "object",
+        "description": "Location information",
+        "properties": {
+          "locationAddress": {
+            "type": "string",
+            "description": "Location address",
+            "example": "Alla Tarasova Street 5, Kyiv 01001"
+          },
+          "locationId": {
+            "type": "string",
+            "description": "Location ID",
+            "example": "9b903ebf-2b18-4946-bc58-045d86a2632e"
+          },
+          "locationImageUrl": {
+            "type": "string",
+            "description": "Location image URL",
+            "example": "https://application.s3.eu-central-1.amazonaws.com/img/locations/9b903ebf-2b18-4946-bc58-045d86a2632e.jpg"
+          },
+          "locationName": {
+            "type": "string",
+            "description": "Location name",
+            "example": "Kyiv Hayatt Hotel"
+          }
+        }
+      },
+      "LocationsResponseBody": {
+        "type": "object",
+        "description": "Payload for locations response",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LocationInfo"
+            }
+          }
+        }
+      },
+      "LoginRequestBody": {
+        "type": "object",
+        "description": "Payload for user login request",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "example": "john_smith@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password",
+            "example": "&Q5m#9bX^d8!FwZ2"
+          }
+        }
+      },
+      "LoginResponseBody": {
+        "type": "object",
+        "description": "Login response payload",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "User access token (jwt)",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDdhYzEwYi01OGNjLTQzNzItYTU2Ny0wZTAyYjJjM2Q0NzkiLCJuYW1lIjoiSm9obiBTbWl0aCIsImlhdCI6MTUxNjIzOTAyMn0.uDZewMhPPSmImx1e6g4Vf0zsJXyOJlAT8AKcerZitiw"
+          },
+          "role": {
+            "type": "string",
+            "description": "User role",
+            "example": "Client"
+          },
+          "userId": {
+            "type": "string",
+            "description": "User id",
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+          },
+          "userImageUrl": {
+            "type": "string",
+            "description": "User image url",
+            "example": "https://application.s3.eu-central-1.amazonaws.com/img/users/f47ac10b-58cc-4372-a567-0e02b2c3d479.png"
+          },
+          "username": {
+            "type": "string",
+            "description": "User name",
+            "example": "John Smith"
+          }
+        }
+      },
+      "PopularCarsResponseBody": {
+        "type": "object",
+        "description": "Payload for popular cars response",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CarBriefInfo"
+            }
+          }
+        }
+      },
+      "SignUpRequestBody": {
+        "type": "object",
+        "description": "Payload for user registration request",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "example": "john_smith@example.com"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User first name",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User last name",
+            "example": "Smith"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password",
+            "example": "&Q5m#9bX^d8!FwZ2"
+          }
+        }
+      },
+      "SignUpResponseBody": {
+        "type": "object",
+        "description": "Sign up response payload",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "User access token (jwt)",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDdhYzEwYi01OGNjLTQzNzItYTU2Ny0wZTAyYjJjM2Q0NzkiLCJuYW1lIjoiSm9obiBTbWl0aCIsImlhdCI6MTUxNjIzOTAyMn0.uDZewMhPPSmImx1e6g4Vf0zsJXyOJlAT8AKcerZitiw"
+          },
+          "role": {
+            "type": "string",
+            "description": "User role",
+            "example": "Client"
+          },
+          "userId": {
+            "type": "string",
+            "description": "User id",
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+          },
+          "userImageUrl": {
+            "type": "string",
+            "description": "User image url",
+            "example": "https://application.s3.eu-central-1.amazonaws.com/img/users/default_user.png"
+          },
+          "username": {
+            "type": "string",
+            "description": "User name",
+            "example": "John Smith"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "bearerFormat": "JWT",
+        "in": "header",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  }
+}

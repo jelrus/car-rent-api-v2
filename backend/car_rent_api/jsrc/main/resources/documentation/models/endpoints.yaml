@@ -1,0 +1,143 @@
+US_1:
+  +create_user:
+    resource: "/api/v1/users/"
+    method: "post"
+    operationId: "createUser"
+    request:
+      body: "SignUpRequestBody"
+    response:
+      body: "SignUpResponseBody"
+    secured: "false"
+
+US_2:
+  +login_user:
+    resource: "/api/v1/users/login"
+    method: "post"
+    operationId: "loginUser"
+    request:
+      body: "LoginRequestBody"
+    response:
+      body: "LoginResponseBody"
+    secured: "false"
+
+US_3:
+  +get_about_us:
+    resource: "/api/v1/home/about-us"
+    method: "get"
+    operationId: "getAboutUs"
+    response:
+      body: "AboutUsResponseBody"
+    secured: "false"
+
+  +get_faq:
+    resource: "/api/v1/home/faq"
+    method: "get"
+    operationId: "getFAQ"
+    response:
+      body: "FAQResponseBody"
+    secured: "false"
+
+  +get_locations:
+    resource: "/api/v1/home/locations"
+    method: "get"
+    operationId: "getLocations"
+    response:
+      body: "LocationsResponseBody"
+    secured: "false"
+
+  +get_feedbacks:
+    resource: "/api/v1/home/feedbacks"
+    method: "get"
+    operationId: "getFeedbacks"
+    response:
+      body: "FeedbacksResponseBody"
+    secured: "false"
+
+  +get_popular_cars:
+    resource: "/api/v1/home/popular-cars"
+    method: "get"
+    operationId: "getPopularCars"
+    request:
+      query:
+        - "category"
+    response:
+      body: "PopularCarsResponseBody"
+    secured: "false"
+
+US_4:
+  +get_cars:
+    resource: "/api/v1/cars/"
+    method: "get"
+    operationId: "getCars"
+    request:
+      query:
+        - "pickupLocationId"
+        - "dropOffLocationId"
+        - "pickupDateTime"
+        - "dropOffDateTime"
+        - "category"
+        - "gearBoxType"
+        - "fuelType"
+        - "minPrice"
+        - "maxPrice"
+        - "page"
+        - "size"
+    response:
+      body: "FilterCarsPageableResponseBody"
+    secured: "false"
+
+  +get_car:
+    resource: "/api/v1/cars/{carId}"
+    method: "get"
+    operationId: "getCar"
+    request:
+      path: "{carId}"
+    response:
+      body: "CarDetailsResponseBody"
+    secured: "false"
+
+  +get_car_booked_days:
+    resource: "/api/v1/cars/{carId}/booked-days"
+    method: "get"
+    operationId: "getCarBookedDates"
+    request:
+      path: "{carId}"
+    response:
+      body: "CarBookedDatesResponseBody"
+    secured: "false"
+
+  +get_feedback_1:
+    resource: "/api/v1/cars/{carId}/client-review"
+    method: "get"
+    operationId: "getFeedbacks_1"
+    request:
+      path: "{carId}"
+      query:
+        - "page"
+        - "size"
+        - "sort"
+        - "direction"
+    response:
+      body: "ClientReviewSortedPageableResponseBody"
+    secured: "false"
+
+US_5:
+  book_car:
+    resource: "/api/v1/bookings/"
+    method: "post"
+    operationId: "bookCar"
+    request:
+      body: "BookCarRequestBody"
+    response:
+      body: "BookCarResponseBody"
+    secured: "true"
+
+  get_booked_car:
+    resource: "/api/v1/bookings/{clientId}"
+    method: "get"
+    operationId: "getBookedCar"
+    request:
+      path: "{clientId}"
+    response:
+      body: "BookingsResponseBody"
+    secured: "true"

@@ -1,0 +1,4 @@
+!!! feedback leaves on booking !!!
+
+/api/v1/bookings/
+/api/v1/bookings/{clientId}

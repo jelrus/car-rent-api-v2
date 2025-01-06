@@ -1,0 +1,275 @@
+{
+  "car-rent-lambda-execution": {
+    "policy_content": {
+      "Statement": [
+        {
+          "Action": [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents",
+            "cognito-idp:AdminCreateUser",
+            "cognito-idp:AdminConfirmSignUp",
+            "cognito-idp:AdminInitiateAuth",
+            "cognito-idp:AdminGetUser",
+            "cognito-idp:AdminRespondToAuthChallenge",
+            "cognito-idp:AdminSetUserPassword",
+            "cognito-idp:CreateUserPool",
+            "cognito-idp:DescribeUserPool",
+            "cognito-idp:UpdateUserPool",
+            "cognito-idp:GetUser",
+            "cognito-idp:ListUsers",
+            "cognito-idp:GetIdentityProviderByIdentifier",
+            "cognito-idp:ListUserPools",
+            "cognito-idp:ListUserPoolClients",
+            "dynamodb:GetItem",
+            "dynamodb:DescribeStream",
+            "dynamodb:GetShardIterator",
+            "dynamodb:ListStreams",
+            "dynamodb:ListTables",
+            "dynamodb:PutItem",
+            "dynamodb:Query",
+            "dynamodb:Scan",
+            "dynamodb:DeleteItem",
+            "iam:GetPolicyVersion",
+            "ssm:PutParameter",
+            "ssm:GetParameter",
+            "kms:Decrypt"
+          ],
+          "Effect": "Allow",
+          "Resource": "*"
+        }
+      ],
+      "Version": "2012-10-17"
+    },
+    "resource_type": "iam_policy"
+  },
+  "api_handler-role": {
+    "predefined_policies": [],
+    "principal_service": "lambda",
+    "custom_policies": [
+      "car-rent-lambda-execution"
+    ],
+    "resource_type": "iam_role"
+  },
+  "${cognito_user_pool}": {
+    "resource_type": "cognito_idp",
+    "username_attributes": [
+      "email"
+    ],
+    "client": {
+      "client_name": "car-rent-app",
+      "generate_secret": false,
+      "explicit_auth_flows": [
+        "ALLOW_ADMIN_USER_PASSWORD_AUTH",
+        "ALLOW_CUSTOM_AUTH",
+        "ALLOW_USER_SRP_AUTH",
+        "ALLOW_REFRESH_TOKEN_AUTH",
+        "ALLOW_USER_PASSWORD_AUTH"
+      ]
+    }
+  },
+  "${car_rent_app_volume}": {
+    "resource_type": "dynamodb_table",
+    "hash_key_name": "PK_ID",
+    "hash_key_type": "S",
+    "sort_key_name": "SK_ID",
+    "sort_key_type": "S",
+    "read_capacity": 10,
+    "write_capacity": 10,
+    "global_indexes": [
+      {
+        "name": "CAR_STATUS_IDX",
+        "index_key_name": "PK_ID",
+        "index_key_type": "S",
+        "index_sort_key_name": "CAR#STATUS",
+        "index_sort_key_type": "S"
+      },
+      {
+        "name": "CAR_RENTAL_EXPERIENCE_IDX",
+        "index_key_name": "PK_ID",
+        "index_key_type": "S",
+        "index_sort_key_name": "CAR#RENTAL_EXPERIENCE",
+        "index_sort_key_type": "S"
+      },
+      {
+        "name": "FEEDBACK_DATE_IDX",
+        "index_key_name": "PK_ID",
+        "index_key_type": "S",
+        "index_sort_key_name": "FEEDBACK#DATE",
+        "index_sort_key_type": "S"
+      },
+      {
+        "name": "FEEDBACK_RENTAL_EXPERIENCE_IDX",
+        "index_key_name": "PK_ID",
+        "index_key_type": "S",
+        "index_sort_key_name": "FEEDBACK#RENTAL_EXPERIENCE",
+        "index_sort_key_type": "S"
+      },
+      {
+        "name": "BOOKING_CREATED_AT_IDX",
+        "index_key_name": "PK_ID",
+        "index_key_type": "S",
+        "index_sort_key_name": "BOOKING#CREATED_AT",
+        "index_sort_key_type": "S"
+      }
+    ]
+  },
+  "car_rent_api_gateway": {
+    "resource_type": "api_gateway",
+    "deploy_stage": "api",
+    "minimum_compression_size": 0,
+    "authorizers": {
+      "authorizer": {
+        "type": "COGNITO_USER_POOLS",
+        "identity_source": "method.request.header.Authorization",
+        "user_pools": [
+          "${cognito_user_pool}"
+        ],
+        "ttl": 300
+      }
+    },
+    "resources": {
+      "/v1/users": {
+        "enable_cors": true,
+        "POST": {
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true
+        }
+      },
+      "/v1/users/login": {
+        "enable_cors": true,
+        "POST": {
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true
+        }
+      },
+      "/v1/home/about-us": {
+        "enable_cors": true,
+        "GET": {
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true
+        }
+      },
+      "/v1/home/faq": {
+        "enable_cors": true,
+        "GET": {
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true
+        }
+      },
+      "/v1/home/locations": {
+        "enable_cors": true,
+        "GET": {
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true
+        }
+      },
+      "/v1/home/popular-cars": {
+        "enable_cors": true,
+        "GET": {
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true
+        }
+      },
+      "/v1/home/feedbacks": {
+        "enable_cors": true,
+        "GET": {
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true
+        }
+      },
+      "/v1/cars": {
+        "enable_cors": true,
+        "GET": {
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true
+        }
+      },
+      "/v1/cars/{carId}": {
+        "enable_cors": true,
+        "GET": {
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true,
+          "method_request_parameters": {
+            "method.request.path.carId": true
+          },
+          "integration_request_parameters": {
+            "integration.request.path.carId": "method.request.path.carId"
+          }
+        }
+      },
+      "/v1/cars/{carId}/booked-days": {
+        "enable_cors": true,
+        "GET": {
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true,
+          "method_request_parameters": {
+            "method.request.path.carId": true
+          },
+          "integration_request_parameters": {
+            "integration.request.path.carId": "method.request.path.carId"
+          }
+        }
+      },
+      "/v1/cars/{carId}/client-review": {
+        "enable_cors": true,
+        "GET": {
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true,
+          "method_request_parameters": {
+            "method.request.path.carId": true
+          },
+          "integration_request_parameters": {
+            "integration.request.path.carId": "method.request.path.carId"
+          }
+        }
+      },
+      "/v1/bookings": {
+        "enable_cors": true,
+        "POST": {
+          "authorization_type": "authorizer",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true
+        }
+      },
+      "/v1/bookings/{clientId}": {
+        "enable_cors": true,
+        "GET": {
+          "authorization_type": "authorizer",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true,
+          "method_request_parameters": {
+            "method.request.path.clientId": true
+          },
+          "integration_request_parameters": {
+            "integration.request.path.clientId": "method.request.path.clientId"
+          }
+        }
+      }
+    }
+  }
+}
