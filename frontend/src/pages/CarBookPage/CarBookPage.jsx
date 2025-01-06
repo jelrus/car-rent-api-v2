@@ -144,7 +144,8 @@ const CarBookPage = () => {
     try {
       const actionResult = await dispatch(createBooking(bookingData));
       const data = actionResult.payload;
-      if (data.booked_block) {
+      console.log('data', data);
+      if (data.message === 'No locations found or dates are unavailable') {
         setModalMessage({
           header: `Sorry ${userInfo.name}`,
           message: (
