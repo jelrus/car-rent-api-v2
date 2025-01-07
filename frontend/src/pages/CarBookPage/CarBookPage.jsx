@@ -86,26 +86,22 @@ const CarBookPage = () => {
 
   const [bookingInfo, setBookingInfo] = useState({
     pickUp: {
-      id: filters.pickupLocationId || '9b903ebf-2b18-4946-bc58-045d86a2632e',
-      location: filters.pickupLocationId
-        ? getLocationName(filters.pickupLocationId)
-        : getLocationName('ac1a3a1d-3fb2-4eb6-b27a-1c034929aee4'),
-      dateTime: car.pickupDateTime || filters.pickupDateTime || getTodayDate(),
+      id: filters?.pickupLocationId,
+      location: getLocationName(filters.pickupLocationId),
+      dateTime: car?.pickupDateTime || filters?.pickupDateTime || getTodayDate(),
     },
     dropOff: {
-      id: filters.dropOffLocationId || 'ac1a3a1d-3fb2-4eb6-b27a-1c034929aee4',
-      location: filters.dropOffLocationId
-        ? getLocationName(filters.dropOffLocationId)
-        : getLocationName('ac1a3a1d-3fb2-4eb6-b27a-1c034929aee4'),
+      id: filters.dropOffLocationId,
+      location: getLocationName(filters.dropOffLocationId),
       dateTime:
-        car.dropOffDateTime || filters.dropOffDateTime || getTodayDate(),
+        car?.dropOffDateTime || filters.dropOffDateTime || getTodayDate(),
     },
     car: {
       id: carId,
       name: car?.model || carDetails?.model || 'Car Name',
       location: car?.location || carDetails?.location || 'Car Location',
       image: car.image || carDetails?.images?.[0] || image,
-      price: car?.totalPrice || car.pricePerDay || 0,
+      price: car?.totalPrice || car?.pricePerDay || 0,
       deposit: car?.deposit || carDetails?.deposit || 0,
     },
   });
