@@ -116,7 +116,7 @@ const BookingsPage = () => {
         ) : (
           filteredBookings.map((booking) => {
             const { title } =
-              BOOKINGS.find((tab) => tab.status === booking.bookingStatus) ||
+              BOOKINGS.find((tab) => tab.title === booking.bookingStatus) ||
               '';
 
             return (
@@ -145,7 +145,7 @@ const BookingsPage = () => {
                     </div>
                   )}
                 </div>
-                {(booking.bookingStatus === 'RESERVED' ||
+                {(booking.bookingStatus === 'Reserved' ||
                   booking.bookingStatus === 'STARTED' ||
                   booking.bookingStatus === 'CANCELLED') && (
                   <span>
