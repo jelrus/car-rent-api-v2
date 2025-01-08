@@ -20,13 +20,17 @@ const CarBookPage = () => {
   const location = useLocation();
 
   const { filters } = useSelector((state) => state.cars);
-  const { carDetails, bookedDays = [], loading: carLoading, error: carError } =
-    useSelector((state) => state.carBooked);
+  const {
+    carDetails,
+    bookedDays = [],
+    loading: carLoading,
+    error: carError,
+  } = useSelector((state) => state.carBooked);
   const user = useSelector((state) => state.auth.user);
 
   const carId = paramCarId;
   const { car } = location.state || {};
-  const isLoading = carLoading ;
+  const isLoading = carLoading;
   const errorMessage = carError;
 
   const [userInfo] = useState({
@@ -38,12 +42,14 @@ const CarBookPage = () => {
     pickUp: {
       id: filters?.pickupLocationId,
       location: getLocationName(filters?.pickupLocationId),
-      dateTime: car?.pickupDateTime || filters?.pickupDateTime || getTodayDate(),
+      dateTime:
+        car?.pickupDateTime || filters?.pickupDateTime || getTodayDate(),
     },
     dropOff: {
       id: filters?.dropOffLocationId,
       location: getLocationName(filters?.dropOffLocationId),
-      dateTime: car?.dropOffDateTime || filters?.dropOffDateTime || getTodayDate(),
+      dateTime:
+        car?.dropOffDateTime || filters?.dropOffDateTime || getTodayDate(),
     },
     car: {
       id: carId,
@@ -92,7 +98,7 @@ const CarBookPage = () => {
       }
     }
     return true;
-  }
+  };
   const handleConfirmReservation = async () => {
     const bookingData = {
       carId: bookingInfo.car.id,
@@ -102,7 +108,7 @@ const CarBookPage = () => {
       pickupLocationId: bookingInfo.pickUp.id,
       dropOffLocationId: bookingInfo.dropOff.id,
     };
-    if(!checkBookingData(bookingData)){
+    if (!checkBookingData(bookingData)) {
       setModalMessage({
         header: 'Booking Error',
         message: 'Please fill in all the fields.',
@@ -120,23 +126,17 @@ const CarBookPage = () => {
           message: (
             <div>
               It seems like someone has already reserved this car. You can find
-              similar cars{' '}
-              <Link to="/cars">
-                here
-              </Link>
-              .
+              similar cars <Link to="/cars">here</Link>.
             </div>
           ),
         });
         setShowModal(true);
         return;
       }
-      if(actionResult.error.message === 'Rejected') {
+      if (actionResult.error.message === 'Rejected') {
         setModalMessage({
           header: `Sorry ${user?.username || 'User'}`,
-          message: (
-            <div>{data.message}.</div>
-          ),
+          message: <div>{data.message}.</div>,
         });
         setShowModal(true);
         return;

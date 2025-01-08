@@ -116,8 +116,7 @@ const BookingsPage = () => {
         ) : (
           filteredBookings.map((booking) => {
             const { title } =
-              BOOKINGS.find((tab) => tab.title === booking.bookingStatus) ||
-              '';
+              BOOKINGS.find((tab) => tab.title === booking.bookingStatus) || '';
 
             return (
               <div key={booking.bookingId} className="bookings-card">

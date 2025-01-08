@@ -6,22 +6,6 @@
   margin-bottom: 10px;
 }
 
-.select-field select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-sizing: border-box;
-  font-size: 16px;
-  line-height: 1.5;
-  background-color: #fffbf3;
-}
-
-.select-field select:focus {
-  outline: none;
-  border: 1px solid #000000;
-}
-
 .select-field label {
   line-height: 16px;
   font-size: 12px;
