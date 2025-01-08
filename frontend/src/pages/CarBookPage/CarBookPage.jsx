@@ -12,6 +12,7 @@ import ModalMessageCard from '@/components/atoms/MessageCard/MessageCard';
 import checkAuthRole from '@/containers/CheckAuthHoc/CheckAuthHoc';
 import getLocationName from '@/utils/getLocationName';
 import getTodayDate from '@utils/getTodayDate';
+import getTodayDatePlusOneDay from '@utils/getTodayDatePlusOneDay';
 
 const CarBookPage = () => {
   const { paramCarId } = useParams();
@@ -38,6 +39,8 @@ const CarBookPage = () => {
     email: user?.email || 'dobrota@gmail.com',
     phone: user?.phone || '+38 111 111 11 11',
   });
+
+  console.log(car?.pickupDateTime, car?.dropOffDateTime);
   const [bookingInfo, setBookingInfo] = useState({
     pickUp: {
       id: filters?.pickupLocationId,
@@ -49,7 +52,9 @@ const CarBookPage = () => {
       id: filters?.dropOffLocationId,
       location: getLocationName(filters?.dropOffLocationId),
       dateTime:
-        car?.dropOffDateTime || filters?.dropOffDateTime || getTodayDate(),
+        car?.dropOffDateTime ||
+        filters?.dropOffDateTime ||
+        getTodayDatePlusOneDay(),
     },
     car: {
       id: carId,
@@ -69,6 +74,37 @@ const CarBookPage = () => {
       dispatch(getCarDetails(carId));
     }
   }, [carId, dispatch]);
+
+  useEffect(() => {
+    console.log(filters, carDetails, car)
+    setBookingInfo((prevState) => ({
+      ...prevState,
+      pickUp: {
+        ...prevState.pickUp,
+        id: filters?.pickupLocationId,
+        location: getLocationName(filters?.pickupLocationId),
+        dateTime:
+          car?.pickupDateTime || filters?.pickupDateTime || getTodayDate(),
+      },
+      dropOff: {
+        ...prevState.dropOff,
+        id: filters?.dropOffLocationId,
+        location: getLocationName(filters?.dropOffLocationId),
+        dateTime:
+          car?.dropOffDateTime ||
+          filters?.dropOffDateTime ||
+          getTodayDatePlusOneDay(),
+      },
+      car: {
+        ...prevState.car,
+        name: car?.model || carDetails?.model || 'Car Name',
+        location: car?.location || carDetails?.location || 'Car Location',
+        image: car?.image || carDetails?.images?.[0] || image,
+        price: car?.totalPrice || car?.pricePerDay || 0,
+        deposit: car?.deposit || carDetails?.deposit || 0,
+      },
+    }));
+  }, [filters, carDetails, car, image]);
 
   useEffect(() => {
     if (bookedDays.length > 0) {
@@ -113,41 +149,31 @@ const CarBookPage = () => {
         header: 'Booking Error',
         message: 'Please fill in all the fields.',
       });
+      setShowModal(true);
       return;
     }
     try {
-      console.log('bookingData:', bookingData);
+      console.log('Sending booking data:', bookingData);
       const actionResult = await dispatch(createBooking(bookingData));
-      const data = actionResult.payload;
-      console.log('actionResult:', actionResult);
-      if (data.message === 'No locations found or dates are unavailable') {
+
+      if (createBooking.fulfilled.match(actionResult)) {
+        navigate('/bookings', {
+          state: { message: actionResult.payload.message },
+        });
+      } else {
+        // Помилка у відповіді
+        console.error('Booking failed:', actionResult.error);
         setModalMessage({
-          header: `Sorry ${user?.username || 'User'}`,
-          message: (
-            <div>
-              It seems like someone has already reserved this car. You can find
-              similar cars <Link to="/cars">here</Link>.
-            </div>
-          ),
+          header: 'Booking Error',
+          message: actionResult.payload.message || 'An error occurred during booking.',
         });
         setShowModal(true);
-        return;
       }
-      if (actionResult.error.message === 'Rejected') {
-        setModalMessage({
-          header: `Sorry ${user?.username || 'User'}`,
-          message: <div>{data.message}.</div>,
-        });
-        setShowModal(true);
-        return;
-      }
-      navigate('/bookings', { state: { message: data.message } });
     } catch (error) {
-      console.error('Error during booking:', error);
+      console.error('Unexpected error during booking:', error);
       setModalMessage({
-        header: 'Booking Error',
-        message:
-          'An error occurred while confirming your booking. Please try again.',
+        header: 'Unexpected Error',
+        message: 'An unexpected error occurred. Please try again later.',
       });
       setShowModal(true);
     }
