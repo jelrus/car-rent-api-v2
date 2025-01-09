@@ -12,7 +12,9 @@ const ModalMessageCard = ({ header, message, onClose }) => {
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
       <div className={styles.modalMessageCard}>
-        <div className={styles.modalMessageCardHeader}>{header}</div>
+        {header && (
+          <div className={styles.modalMessageCardHeader}>{header}</div>
+        )}
         <div className={styles.modalMessageCardContent}>
           <div className={styles.modalMessageCardMessage}>{message}</div>
           <Button text="Close" ButtonType="primary" onClick={onClose} />
@@ -23,7 +25,7 @@ const ModalMessageCard = ({ header, message, onClose }) => {
 };
 
 ModalMessageCard.propTypes = {
-  header: PropTypes.string.isRequired,
+  header: PropTypes.string,
   message: PropTypes.node.isRequired,
   onClose: PropTypes.func.isRequired,
 };

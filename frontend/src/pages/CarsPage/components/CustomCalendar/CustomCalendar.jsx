@@ -7,6 +7,7 @@ const CustomCalendar = ({
   onDateSelect,
   onTimeSelect,
   selectedDates,
+  onShowModalMessage,
 }) => {
   const [currentMonthLeft, setCurrentMonthLeft] = useState(new Date());
   const [currentMonthRight, setCurrentMonthRight] = useState(
@@ -107,7 +108,7 @@ const CustomCalendar = ({
         );
 
         if (hasConflict) {
-          alert(
+          onShowModalMessage(
             'The selected range includes already booked dates. Please choose another range.',
           );
           return;
@@ -116,7 +117,9 @@ const CustomCalendar = ({
         setRange({ ...range, end: day });
         onDateSelect('dropOff', day);
       } else {
-        alert('Drop-off date cannot be earlier than the pick-up date.');
+        onShowModalMessage(
+          'Drop-off date cannot be earlier than the pick-up date.',
+        );
       }
     }
   };
@@ -324,6 +327,7 @@ CustomCalendar.propTypes = {
       times: PropTypes.arrayOf(PropTypes.string),
     }),
   ),
+  onShowModalMessage: PropTypes.func.isRequired,
 };
 
 export default CustomCalendar;
