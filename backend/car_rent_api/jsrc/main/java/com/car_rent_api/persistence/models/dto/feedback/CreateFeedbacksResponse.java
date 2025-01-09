@@ -28,12 +28,12 @@ public class CreateFeedbacksResponse {
 
         private Builder() {}
 
-        public CreateFeedbacksResponse.Builder setFeedbackId(String feedbackId) {
+        public CreateFeedbacksResponse.Builder feedbackId(String feedbackId) {
             CreateFeedbacksResponse.this.feedbackId = feedbackId;
             return this;
         }
 
-        public CreateFeedbacksResponse.Builder setSystemMessage(String systemMessage) {
+        public CreateFeedbacksResponse.Builder systemMessage(String systemMessage) {
             CreateFeedbacksResponse.this.systemMessage = systemMessage;
             return this;
         }
