@@ -27,7 +27,9 @@ public class GetCarClientReviewsHandler implements EndpointHandler {
     public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent event, Context context) {
         TransactionContext.setTransactionId(UUID.randomUUID().toString());
         LogPrinter.warn("[GetCarClientReviewsHandler] Entering 'GET @ /cars/{carId}/client-review' method");
+
         Map<String, String> queryParams = event.getQueryStringParameters();
+        queryParams = queryParams == null ? Map.of() : queryParams;
         LogPrinter.warn("[GetCarClientReviewsHandler] Query params acquired {}", gsonPrinter.print().toJson(queryParams));
         String carId = event.getPathParameters().get("carId");
         LogPrinter.warn("[GetCarClientReviewsHandler] Path param acquired {}", gsonPrinter.print().toJson(carId));
@@ -36,7 +38,7 @@ public class GetCarClientReviewsHandler implements EndpointHandler {
             LogPrinter.info("[GetCarClientReviewsHandler] Request accepted");
 
             ClientReviewSortedPageableResponse response =
-                    feedbackService.findFeedbacksFilteredByCarIdAndSorted(queryParams, carId);
+                    feedbackService.findAllByCarIdDateSortedDesc(queryParams, carId);
             String jsonResponse = gsonPrinter.print().toJson(response);
             LogPrinter.info("[GetCarClientReviewsHandler] Exiting 'GET @ /cars/{carId}/client-review' ({})",
                     jsonResponse);

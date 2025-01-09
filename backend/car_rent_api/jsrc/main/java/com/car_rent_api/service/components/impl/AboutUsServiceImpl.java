@@ -5,7 +5,6 @@ import com.car_rent_api.persistence.models.dto.about_us.AboutUsResponse;
 import com.car_rent_api.persistence.models.dto.about_us.AboutUsStoryInfo;
 import com.car_rent_api.persistence.models.entity.AboutUsStory;
 import com.car_rent_api.service.components.AboutUsService;
-import com.car_rent_api.utils.components.LogPrinter;
 
 import java.util.List;
 import java.util.function.Function;
@@ -20,11 +19,7 @@ public class AboutUsServiceImpl implements AboutUsService {
 
     @Override
     public AboutUsResponse findAll() {
-        LogPrinter.warn("[AboutUsService | Find All] Entering 'findAll @ AboutUsService' method");
-        AboutUsResponse aboutUsResponse = toAboutUsResponse(aboutUsDao.findAll());
-        Integer quantity = aboutUsResponse.getContent().size();
-        LogPrinter.warn("[AboutUsService | Find All] {} About Us Story(ies) were found", quantity);
-        return aboutUsResponse;
+        return toAboutUsResponse(aboutUsDao.findAll());
     }
 
     private AboutUsResponse toAboutUsResponse(List<AboutUsStory> aboutUsStories) {

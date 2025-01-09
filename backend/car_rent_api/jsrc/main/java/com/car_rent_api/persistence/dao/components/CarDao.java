@@ -1,8 +1,8 @@
 package com.car_rent_api.persistence.dao.components;
 
 import com.car_rent_api.persistence.models.entity.Car;
-import com.car_rent_api.persistence.specification.CarPageRequest;
-import com.car_rent_api.persistence.specification.CarPageResponse;
+import com.car_rent_api.persistence.pagination.api.TableRequest;
+import com.car_rent_api.persistence.pagination.api.TableResponse;
 
 public interface CarDao {
 
@@ -12,9 +12,9 @@ public interface CarDao {
 
     Boolean isExistsById(String id);
 
-    Boolean isBookedDatesAreFree(CarPageRequest pageRequest);
+    Boolean isBookedDatesAreFree(String id, TableRequest carTableRequest);
 
-    CarPageResponse findCarsByCategorySortedByRentalExperience(CarPageRequest carPageRequest);
+    TableResponse<Car> findByTableRequestIndexed(TableRequest tableRequest);
 
-    CarPageResponse findCarsFiltered(CarPageRequest carPageRequest);
+    TableResponse<Car> findByTableRequestIndexedPaginated(TableRequest tableRequest);
 }

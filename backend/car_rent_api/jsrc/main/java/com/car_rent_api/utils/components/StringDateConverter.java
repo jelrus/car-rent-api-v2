@@ -35,6 +35,10 @@ public class StringDateConverter {
         return fromStringToISO8601DateTime(start).isBefore(fromStringToISO8601DateTime(end));
     }
 
+    public static boolean isISO8601DateTimeStartEqualsEnd(String start, String end) {
+        return fromStringToISO8601DateTime(start).isEqual(fromStringToISO8601DateTime(end));
+    }
+
     public static LocalDateTime fromStringToISO8601DateTime(String dateTime) {
         String convertDate = LocalDateTime.parse(dateTime).format(DateTimeFormatter.ofPattern(ISO8601_DATE_TIME));
         return LocalDateTime.parse(convertDate);
@@ -48,22 +52,37 @@ public class StringDateConverter {
         return iso8601Date.format(DateTimeFormatter.ofPattern(GERMAN_DATE));
     }
 
-    public static List<String> generateGermanDatesRange(String pickupDate, String dropOffDate) {
-        LocalDate dateA = fromISO8601DateTimeToDate(pickupDate);
-        LogPrinter.info("date A {}", dateA.toString());
-        LocalDate dateB = fromISO8601DateTimeToDate(dropOffDate);
-        LogPrinter.info("date B {}", dateB.toString());
-        List<String> datesRange = new ArrayList<>();
+    public static List<String> generateGermanDatesRange(String pickupDateTime, String dropOffDateTime) {
+        if (isRangeCandidates(pickupDateTime, dropOffDateTime)) {
+            List<String> datesRange = new ArrayList<>();
+            LocalDate dateA = fromISO8601DateTimeToDate(pickupDateTime);
+            LogPrinter.info("Start Date {}", dateA.toString());
+            LocalDate dateB = fromISO8601DateTimeToDate(dropOffDateTime);
+            LogPrinter.info("End Date {}", dateB.toString());
 
-        while (dateA.isBefore(dateB)) {
-            datesRange.add(fromISO8601ToGermanDateString(dateA));
-            dateA = dateA.plusDays(1);
-            LogPrinter.info("date A {}, date B {}", dateA.toString(), dateB.toString());
+            if (isISO8601DateTimeStartEqualsEnd(pickupDateTime, dropOffDateTime)) {
+                datesRange.add(fromISO8601ToGermanDateString(dateA));
+            }
+
+            if (isISO8601DateTimeStartBeforeEnd(pickupDateTime, dropOffDateTime)) {
+                while (dateA.isBefore(dateB)) {
+                    datesRange.add(fromISO8601ToGermanDateString(dateA));
+                    dateA = dateA.plusDays(1);
+                    LogPrinter.info("Start Date {}, End Date {}", dateA.toString(), dateB.toString());
+                }
+
+                datesRange.add(fromISO8601ToGermanDateString(dateB));
+                LogPrinter.info("Dates range {}", datesRange.toString());
+            }
+
+            return datesRange;
+        } else {
+            return List.of();
         }
+    }
 
-        datesRange.add(fromISO8601ToGermanDateString(dateB));
-        LogPrinter.info("Dates range {}", datesRange.toString());
-
-        return datesRange;
+    private static boolean isRangeCandidates(String pickupDateTime, String dropOffDateTime) {
+        return pickupDateTime != null && dropOffDateTime != null &&
+                isISO8601DateTime(pickupDateTime) && isISO8601DateTime(dropOffDateTime);
     }
 }

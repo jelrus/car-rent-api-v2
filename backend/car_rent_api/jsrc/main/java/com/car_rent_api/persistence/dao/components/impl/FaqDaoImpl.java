@@ -27,7 +27,9 @@ public class FaqDaoImpl implements FaqDao {
                 .partitionValue(TableKeys.FAQ_PK)
                 .sortValue(TableKeys.FAQ_SK_PREFIX)
                 .build();
+
         QueryConditional faqCondition = QueryConditional.sortBeginsWith(faqStoryKey);
+
         return faqVolume.query(faqCondition).stream().map(Page::items).flatMap(List::stream).toList();
     }
 }

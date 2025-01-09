@@ -8,5 +8,5 @@ public interface BookingService {
 
     BookCarResponse create(String accessToken, BookCarRequest bookCarRequest);
 
-    BookingsResponse findAllByClientId(String accessToken, String clientId);
+    BookingsResponse findByAccessTokenAndClientId(String accessToken, String clientId);
 }

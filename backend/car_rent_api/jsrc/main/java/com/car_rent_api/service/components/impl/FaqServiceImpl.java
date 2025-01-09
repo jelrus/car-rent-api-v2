@@ -5,7 +5,6 @@ import com.car_rent_api.persistence.models.dto.faq.FaqResponse;
 import com.car_rent_api.persistence.models.dto.faq.FaqStoryInfo;
 import com.car_rent_api.persistence.models.entity.FaqStory;
 import com.car_rent_api.service.components.FaqService;
-import com.car_rent_api.utils.components.LogPrinter;
 
 import java.util.List;
 import java.util.function.Function;
@@ -20,11 +19,7 @@ public class FaqServiceImpl implements FaqService {
 
     @Override
     public FaqResponse findAll() {
-        LogPrinter.warn("[FaqService | Find All] Entering 'findAll @ FaqService' method");
-        FaqResponse faqResponse = toFaqResponse(faqDao.findAll());
-        Integer quantity = faqResponse.getContent().size();
-        LogPrinter.warn("[FaqService | Find All] {} Faq Story(ies) were found", quantity);
-        return faqResponse;
+        return toFaqResponse(faqDao.findAll());
     }
 
     private FaqResponse toFaqResponse(List<FaqStory> faqStories) {

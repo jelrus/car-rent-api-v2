@@ -35,7 +35,7 @@ public class GetBookingsClientHandler implements EndpointHandler {
         try {
             LogPrinter.info("[GetBookingsClientHandler] Request accepted");
 
-            BookingsResponse response = bookingService.findAllByClientId(accessToken, clientId);
+            BookingsResponse response = bookingService.findByAccessTokenAndClientId(accessToken, clientId);
             String jsonResponse = gsonPrinter.print().toJson(response);
             LogPrinter.info("[GetBookingsClientHandler] Exiting 'GET @ /bookings/{clientId}' ({})",
                     jsonResponse);

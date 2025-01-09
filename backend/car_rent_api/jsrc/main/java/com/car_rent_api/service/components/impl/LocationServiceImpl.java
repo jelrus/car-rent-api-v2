@@ -5,7 +5,6 @@ import com.car_rent_api.persistence.models.dto.location.LocationInfo;
 import com.car_rent_api.persistence.models.dto.location.LocationsResponse;
 import com.car_rent_api.persistence.models.entity.Location;
 import com.car_rent_api.service.components.LocationService;
-import com.car_rent_api.utils.components.LogPrinter;
 
 import java.util.List;
 import java.util.function.Function;
@@ -20,11 +19,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public LocationsResponse findAll() {
-        LogPrinter.warn("[LocationService | Find All] Entering 'findAll @ LocationService' method");
-        LocationsResponse locationsResponse = toLocationsResponse(locationDao.findAll());
-        Integer quantity = locationsResponse.getContent().size();
-        LogPrinter.warn("[LocationService | Find All] {} Faq Story(ies) were found", quantity);
-        return locationsResponse;
+        return toLocationsResponse(locationDao.findAll());
     }
 
     private LocationsResponse toLocationsResponse(List<Location> locations) {

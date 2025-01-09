@@ -18,13 +18,18 @@ import com.car_rent_api.persistence.models.entity.User;
 import com.car_rent_api.persistence.models.entity.types.BookingStatus;
 import com.car_rent_api.persistence.models.entity.types.CarStatus;
 import com.car_rent_api.persistence.models.entity.types.UserRole;
-import com.car_rent_api.persistence.specification.CarPageRequest;
+import com.car_rent_api.persistence.pagination.api.PaginationRequest;
+import com.car_rent_api.persistence.pagination.api.TableRequest;
+import com.car_rent_api.persistence.pagination.api.SpecificationRequest;
+import com.car_rent_api.persistence.pagination.type.JoinType;
+import com.car_rent_api.persistence.pagination.type.ValueType;
 import com.car_rent_api.service.components.BookingService;
 import com.car_rent_api.utils.components.LogPrinter;
 import com.car_rent_api.utils.components.StringDateConverter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
@@ -55,7 +60,7 @@ public class BookingServiceImpl implements BookingService {
         checkDates(pickupDateTime, dropOffDateTime);
         checkBookedDatesAreISO8601Format(pickupDateTime, dropOffDateTime);
 
-        LogPrinter.warn("[BookingService | Create] Checking for overlapping dates...");
+        LogPrinter.warn("[BookingService | Create] Checking for locations and overlapping dates...");
         Map<String, String> filterParams = Map.of(
                 "id", bookCarRequest.getCarId(),
                 "pickupLocationId", bookCarRequest.getPickupLocationId(),
@@ -63,7 +68,7 @@ public class BookingServiceImpl implements BookingService {
                 "pickupDateTime", pickupDateTime,
                 "dropOffDateTime", dropOffDateTime
         );
-        checkDatesAreBooked(filterParams);
+        areLocationsAndDatesInRange(filterParams);
 
         LogPrinter.warn("[BookingService | Create] Checking token...");
         checkAccessToken(accessToken);
@@ -103,7 +108,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingsResponse findAllByClientId(String accessToken, String clientId) {
+    public BookingsResponse findByAccessTokenAndClientId(String accessToken, String clientId) {
         checkAccessToken(accessToken);
         checkUserExistence(clientId);
         String subId = authDao.getSubFromJwt(accessToken);
@@ -118,12 +123,19 @@ public class BookingServiceImpl implements BookingService {
         }
 
         if ((userRole == UserRole.SUPPORT_AGENT && !isSelfId) || (userRole == UserRole.CLIENT && isSelfId)) {
-            return BookingsResponse.builder()
-                    .content(bookingDao.findAllByClientIdSortedByCreatedAt(clientId)
-                            .stream()
-                            .map(toBookingInfo())
-                            .toList())
+            TableRequest tableRequest = TableRequest.builder()
+                    .pagination( PaginationRequest.builder()
+                            .defaultSort(TableKeys.BOOKING_CREATED_AT_IDX)
+                            .defaultDirection(false)
+                            .build())
+                    .specification(SpecificationRequest.builder()
+                            .equalTo(ValueType.STRING, "BOOKING#CLIENT_ID", clientId)
+                            .build(JoinType.AND))
                     .build();
+
+            List<Booking> bookingInfos = bookingDao.findByTableRequestIndexed(tableRequest).getItems();
+
+            return BookingsResponse.builder().content(bookingInfos.stream().map(toBookingInfo()).toList()).build();
         } else {
             LogPrinter.warn("[BookingService | Create] User with role {} attempted to book car, but lacked on " +
                     "permissions", userRole.getName());
@@ -153,8 +165,8 @@ public class BookingServiceImpl implements BookingService {
 
     private void waitAndCheckDateTimes(Map<String, String> filterParams) {
         try {
-            Thread.sleep(10 * 1000);
-            checkDatesAreBooked(filterParams);
+            Thread.sleep(3 * 1000);
+            areLocationsAndDatesInRange(filterParams);
         } catch (InterruptedException e) {
             LogPrinter.error("[BookingService | Create] Booking on this time is already exists");
             throw new OperationFailedException("Booking on this time is already exists");
@@ -202,15 +214,20 @@ public class BookingServiceImpl implements BookingService {
         checkBookedDatesIsNull(pickupDateTime, dropOffDateTime);
     }
 
-    private void checkDatesAreBooked(Map<String, String> params) {
-        CarPageRequest carPageRequest = CarPageRequest.builder()
-                .init(params)
-                .pickupLocationIdEquals()
-                .dropOffLocationIdInRangeDropOffLocationsIds()
-                .pickupAndDropOffDatesRangeNotOverlappingBookedDays()
+    private void areLocationsAndDatesInRange(Map<String, String> params) {
+        params = params == null ? Map.of() : params;
+        List<String> datesRange = StringDateConverter.generateGermanDatesRange(params.get("pickupDateTime"),
+                params.get("dropOffDateTime"));
+
+        TableRequest carTableRequest = TableRequest.builder()
+                .specification(SpecificationRequest.builder()
+                        .equalTo(ValueType.STRING, "CAR#PICKUP_LOCATION_ID", params.get("locationId"))
+                        .equalTo(ValueType.STRING, "CAR#DROPOFF_LOCATIONS_IDS", params.get("dropOffLocationId"))
+                        .notInRange(ValueType.STRING, "CAR#BOOKED_DAYS", datesRange)
+                        .build(JoinType.AND))
                 .build();
 
-        if (!carDao.isBookedDatesAreFree(carPageRequest)) {
+        if (!carDao.isBookedDatesAreFree(params.get("id"), carTableRequest)) {
             LogPrinter.error("Requested book dates are overlapping existing ones");
             throw new OperationFailedException("No locations found or dates are unavailable");
         }

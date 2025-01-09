@@ -1,15 +1,22 @@
 package com.car_rent_api.service.components.impl;
 
+import com.car_rent_api.config.TableKeys;
 import com.car_rent_api.exception.ExistenceException;
 import com.car_rent_api.persistence.dao.components.CarDao;
 import com.car_rent_api.persistence.dao.components.LocationDao;
 import com.car_rent_api.persistence.models.dto.cars.*;
 import com.car_rent_api.persistence.models.entity.Car;
-import com.car_rent_api.persistence.specification.CarPageRequest;
-import com.car_rent_api.persistence.specification.CarPageResponse;
+import com.car_rent_api.persistence.pagination.api.TableRequest;
+import com.car_rent_api.persistence.pagination.api.TableResponse;
+import com.car_rent_api.persistence.pagination.api.PaginationRequest;
+import com.car_rent_api.persistence.pagination.api.SpecificationRequest;
+import com.car_rent_api.persistence.pagination.type.JoinType;
+import com.car_rent_api.persistence.pagination.type.ValueType;
 import com.car_rent_api.service.components.CarService;
 import com.car_rent_api.utils.components.LogPrinter;
+import com.car_rent_api.utils.components.StringDateConverter;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -25,81 +32,82 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public CarDetailsResponse findById(String id) {
-        LogPrinter.info("[CarService] Looking for the car with id {}", id);
-
-        if (carDao.isExistsById(id)) {
-            return toCarDetailsResponse(carDao.findById(id));
-        } else {
-            LogPrinter.error("[CarService] Car does not exist in database");
-            throw new ExistenceException("Car does not exist");
-        }
+        checkCarExistence(id);
+        return toCarDetailsResponse(carDao.findById(id));
     }
 
     @Override
     public CarBookedDatesResponse getBookedDays(String id) {
-        LogPrinter.info("[CarService] Looking for the car with id {}", id);
+        checkCarExistence(id);
+        return CarBookedDatesResponse.builder().content(carDao.findById(id).getBookedDays()).build();
+    }
 
-        if (carDao.isExistsById(id)) {
-            return CarBookedDatesResponse.builder().content(carDao.findById(id).getBookedDays()).build();
-        } else {
+    @Override
+    public PopularCarsResponse findByCategorySortedByRating(Map<String, String> params) {
+        TableRequest tableRequest = TableRequest.builder()
+                .pagination(PaginationRequest.builder()
+                        .defaultSort(TableKeys.CAR_RENTAL_EXPERIENCE_IDX)
+                        .defaultDirection(false)
+                        .build())
+                .specification(SpecificationRequest.builder()
+                        .equalTo(ValueType.STRING_UPPERCASE, "CAR#CATEGORY", params.get("category"))
+                        .build(JoinType.AND))
+                .build();
+
+        return toPopularCarsResponse(carDao.findByTableRequestIndexed(tableRequest));
+    }
+
+    @Override
+    public FilterCarsPageableResponse findCarsByHomeSearchFilter(Map<String, String> params) {
+        List<String> datesRange = StringDateConverter.generateGermanDatesRange(params.get("pickupDateTime"),
+                params.get("dropOffDateTime"));
+
+        TableRequest tableRequest = TableRequest.builder()
+                .pagination(PaginationRequest.builder()
+                        .page(params.get("page"), 1)
+                        .size(params.get("size"), 16)
+                        .defaultSort(TableKeys.CAR_STATUS_IDX)
+                        .defaultDirection(true)
+                        .build())
+                .specification(SpecificationRequest.builder()
+                        .equalTo(ValueType.STRING, "CAR#PICKUP_LOCATION_ID", params.get("pickupLocationId"))
+                        .contains(ValueType.STRING, "CAR#DROPOFF_LOCATIONS_IDS", params.get("dropOffLocationId"))
+                        .notInRange(ValueType.STRING, "CAR#BOOKED_DAYS", datesRange)
+                        .equalTo(ValueType.STRING_UPPERCASE, "CAR#CATEGORY", params.get("category"))
+                        .equalTo(ValueType.STRING_UPPERCASE, "CAR#GEAR_BOX_TYPE", params.get("gearBoxType"))
+                        .equalTo(ValueType.STRING_UPPERCASE, "CAR#FUEL_TYPE", params.get("fuelType"))
+                        .between(ValueType.NUMBER, "CAR#PRICE_PER_DAY", params.get("minPrice"), params.get("maxPrice"))
+                        .build(JoinType.AND))
+                .build();
+
+        return toFilterCarsPageableResponse(carDao.findByTableRequestIndexedPaginated(tableRequest));
+    }
+
+    private void checkCarExistence(String id) {
+        if (!carDao.isExistsById(id)) {
             LogPrinter.error("[CarService] Car does not exist in database");
             throw new ExistenceException("Car does not exist");
         }
     }
 
-    @Override
-    public PopularCarsResponse findCarsByCategorySortedByRentalExperience(Map<String, String> params) {
-        LogPrinter.info("[CarService] Entering findCarsByCategorySortedByRentalExperience");
-        CarPageRequest carPageRequest = CarPageRequest.builder()
-                .init(params)
-                .categoryEquals()
-                .build();
-
-        LogPrinter.info("[CarService] Page request {}", carPageRequest.getFilter());
-        return toPopularCarsResponse(carDao.findCarsByCategorySortedByRentalExperience(carPageRequest));
-    }
-
-    @Override
-    public FilterCarsPageableResponse findCarsFiltered(Map<String, String> params) {
-        LogPrinter.info("[CarService] Entering findCarsFiltered");
-        CarPageRequest carPageRequest = CarPageRequest.builder()
-                .init(params)
-                .pickupLocationIdEquals()
-                .dropOffLocationIdInRangeDropOffLocationsIds()
-                .pickupAndDropOffDatesRangeNotOverlappingBookedDays()
-                .categoryEquals()
-                .gearBoxTypeEquals()
-                .fuelTypeEquals()
-                .priceInBetweenMinAndMaxPrices()
-                .toPage()
-                .forSize()
-                .build();
-
-        LogPrinter.info("[CarService] Page request {}", carPageRequest.getFilter());
-        return toFilterCarsPageableResponse(carDao.findCarsFiltered(carPageRequest));
-    }
-
-    private FilterCarsPageableResponse toFilterCarsPageableResponse(CarPageResponse carPageResponse) {
-        LogPrinter.info("[CarService] Converting PageResponse");
+    private FilterCarsPageableResponse toFilterCarsPageableResponse(TableResponse<Car> tableResponse) {
         return FilterCarsPageableResponse.builder()
-                .content(carPageResponse.getCars().stream().map(toCarBriefInfo()).toList())
-                .elementsOnPage(carPageResponse.getElementsOnPage())
-                .totalElements(carPageResponse.getTotalElements())
-                .currentPage(carPageResponse.getCurrentPage())
-                .totalPages(carPageResponse.getTotalPages())
+                .content(tableResponse.getItems().stream().map(toCarBriefInfo()).toList())
+                .elementsOnPage(tableResponse.getElementsOnPage())
+                .totalElements(tableResponse.getTotalElements())
+                .currentPage(tableResponse.getPage())
+                .totalPages(tableResponse.getTotalPages())
                 .build();
     }
 
-    private PopularCarsResponse toPopularCarsResponse(CarPageResponse carPageResponse) {
-        LogPrinter.info("[CarService] Converting PageResponse");
+    private PopularCarsResponse toPopularCarsResponse(TableResponse<Car> carTableResponse) {
         return PopularCarsResponse.builder()
-                .content(carPageResponse.getCars().stream().map(toCarBriefInfo()).toList())
+                .content(carTableResponse.getItems().stream().map(toCarBriefInfo()).toList())
                 .build();
     }
 
     private Function<Car, CarBriefInfo> toCarBriefInfo() {
-        LogPrinter.info("[CarService] Converting Car to CarBriefInfo");
-        return s ->  CarBriefInfo.builder()
+        return s -> CarBriefInfo.builder()
                 .carId(s.getSkId())
                 .imageUrl(s.getImageUrl())
                 .location(locationDao.findById(s.getPickupLocationId()).getName())

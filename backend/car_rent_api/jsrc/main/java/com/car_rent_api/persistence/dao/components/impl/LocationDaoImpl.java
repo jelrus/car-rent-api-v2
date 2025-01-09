@@ -28,7 +28,9 @@ public class LocationDaoImpl implements LocationDao {
                 .partitionValue(TableKeys.LOCATION_PK)
                 .sortValue(TableKeys.LOCATION_SK_PREFIX + id)
                 .build();
+
         GetItemEnhancedRequest locationRequest = GetItemEnhancedRequest.builder().key(locationKey).build();
+
         return locationVolume.getItem(locationRequest);
     }
 
@@ -38,7 +40,9 @@ public class LocationDaoImpl implements LocationDao {
                 .partitionValue(TableKeys.LOCATION_PK)
                 .sortValue(TableKeys.LOCATION_SK_PREFIX + id)
                 .build();
+
         GetItemEnhancedRequest locationRequest = GetItemEnhancedRequest.builder().key(locationKey).build();
+
         return locationVolume.getItem(locationRequest) != null;
     }
 
@@ -48,7 +52,9 @@ public class LocationDaoImpl implements LocationDao {
                 .partitionValue(TableKeys.LOCATION_PK)
                 .sortValue(TableKeys.LOCATION_SK_PREFIX)
                 .build();
+
         QueryConditional locationCondition = QueryConditional.sortBeginsWith(locationKey);
+
         return locationVolume.query(locationCondition).stream().map(Page::items).flatMap(List::stream).toList();
     }
 }

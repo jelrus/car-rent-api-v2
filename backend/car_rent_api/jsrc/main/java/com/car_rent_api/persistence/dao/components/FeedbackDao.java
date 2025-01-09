@@ -1,14 +1,12 @@
 package com.car_rent_api.persistence.dao.components;
 
 import com.car_rent_api.persistence.models.entity.Feedback;
-import com.car_rent_api.persistence.specification.FeedbackPageRequest;
-import com.car_rent_api.persistence.specification.FeedbackPageResponse;
-
-import java.util.List;
+import com.car_rent_api.persistence.pagination.api.TableRequest;
+import com.car_rent_api.persistence.pagination.api.TableResponse;
 
 public interface FeedbackDao {
 
-    List<Feedback> findFeedbacksSortedByRentalExperience();
+    TableResponse<Feedback> findByTableRequestIndexed(TableRequest tableRequest);
 
-    FeedbackPageResponse findFeedbacksPaginatedAndFiltered(FeedbackPageRequest feedbackPageRequest);
+    TableResponse<Feedback> findByTableRequestIndexedPaginated(TableRequest feedbackTableRequest);
 }

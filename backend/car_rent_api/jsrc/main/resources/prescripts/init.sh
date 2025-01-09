@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TABLE_NAME="r5tm1-CarRentAppVolume-dev2"
-AWS_PROFILE="t1-dev"
+AWS_PROFILE="t1-dev2"
 REGION="eu-west-1"
 
 #Users

@@ -27,13 +27,15 @@ public class GetCarsHandler implements EndpointHandler {
     public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent event, Context context) {
         TransactionContext.setTransactionId(UUID.randomUUID().toString());
         LogPrinter.warn("[GetCarsHandler] Entering 'GET @ /cars' method");
+
         Map<String, String> queryParams = event.getQueryStringParameters();
+        queryParams = queryParams == null ? Map.of() : queryParams;
         LogPrinter.warn("[GetCarsHandler] Query params acquired {}", gsonPrinter.print().toJson(queryParams));
 
         try {
             LogPrinter.info("[GetCarsHandler] Request accepted");
 
-            FilterCarsPageableResponse response = carService.findCarsFiltered(queryParams);
+            FilterCarsPageableResponse response = carService.findCarsByHomeSearchFilter(queryParams);
             String jsonResponse = gsonPrinter.print().toJson(response);
             LogPrinter.info("[GetCarsHandler] Exiting 'GET @ /cars' ({})", jsonResponse);
 
