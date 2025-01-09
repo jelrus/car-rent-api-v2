@@ -1,4 +1,4 @@
-.car-card {
+.car-general-card {
   display: flex;
   flex-direction: column;
   background-color: #f0f0f0;
@@ -9,27 +9,27 @@
   box-sizing: border-box;
 }
 
-.car-card:hover {
+.car-general-card:hover {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.car-card__img-container {
+.car-general-card__img-container {
   width: 300px;
   height: 200px;
   position: relative;
 }
 
-.car-card__imageCar {
+.car-general-card__imageCar {
   max-width: 100%;
   height: auto;
   border-radius: 6px;
 }
 
-.car-card button {
+.car-general-card button {
   font-size: 18px;
 }
 
-.car-card .car-card__status {
+.car-general-card .car-general-card__status {
   position: absolute;
   top: 0;
   left: 0;
@@ -42,13 +42,13 @@
   width: 90px;
 }
 
-.car-card__info {
+.car-general-card__info {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
 
-.car-card a {
+.car-general-card a {
   text-decoration: underline;
   text-underline-offset: 4px;
   color: #000000;
@@ -57,11 +57,11 @@
   line-height: 14px;
 }
 
-.car-card button {
+.car-general-card button {
   margin-top: 16px;
   margin-bottom: 16px;
 }
 
-.car-card a:hover {
+.car-general-card a:hover {
   color: #cc1d1d;
 }

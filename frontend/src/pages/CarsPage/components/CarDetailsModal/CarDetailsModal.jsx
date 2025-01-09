@@ -13,6 +13,7 @@ import CustomCalendar from '../CustomCalendar/CustomCalendar.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBookedDays } from '@/redux/slices/carsSlice';
 // import { getCarDetails } from '@/redux/slices/carSlice';
+import ModalMessageCard from '@/components/atoms/MessageCard/MessageCard';
 
 import './CarDetailsModal.css';
 import { useNavigate } from 'react-router';
@@ -77,6 +78,11 @@ const CarDetailsModal = ({ car, onClose }) => {
   useEffect(() => {
     !isLoggedIn && setShowUnloginDialog(true);
   }, [isLoggedIn]);
+
+  const [showModalMessage, setShowModalMessage] = useState({
+    isVisible: false,
+    message: '',
+  });
 
   useEffect(() => {
     if (car?.carId) {
@@ -375,6 +381,12 @@ const CarDetailsModal = ({ car, onClose }) => {
                         [field]: { ...prev[field], time },
                       }));
                     }}
+                    onShowModalMessage={(message) => {
+                      setShowModalMessage({
+                        isVisible: true,
+                        message,
+                      });
+                    }}
                   />
                 </div>
               )}
@@ -433,6 +445,17 @@ const CarDetailsModal = ({ car, onClose }) => {
         </div>
         {showUnloginDialog && (
           <UnloginDialog onClose={() => setShowUnloginDialog(false)} />
+        )}
+        {showModalMessage.isVisible && (
+          <ModalMessageCard
+            message={showModalMessage.message}
+            onClose={() =>
+              setShowModalMessage({
+                isVisible: false,
+                message: '',
+              })
+            }
+          />
         )}
       </div>
     </div>

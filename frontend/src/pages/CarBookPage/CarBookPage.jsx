@@ -76,7 +76,7 @@ const CarBookPage = () => {
   }, [carId, dispatch]);
 
   useEffect(() => {
-    console.log(filters, carDetails, car)
+    console.log(filters, carDetails, car);
     setBookingInfo((prevState) => ({
       ...prevState,
       pickUp: {
@@ -165,7 +165,8 @@ const CarBookPage = () => {
         console.error('Booking failed:', actionResult.error);
         setModalMessage({
           header: 'Booking Error',
-          message: actionResult.payload.message || 'An error occurred during booking.',
+          message:
+            actionResult.payload.message || 'An error occurred during booking.',
         });
         setShowModal(true);
       }

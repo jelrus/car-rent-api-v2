@@ -8,7 +8,12 @@ import './GeneralCarCard.css';
 import { useNavigate } from 'react-router';
 import { useSelector } from 'react-redux';
 
-const CarCard = ({ car, onDetailsClick, onShowUnloginModal }) => {
+const CarCard = ({
+  car,
+  onDetailsClick,
+  onShowUnloginModal,
+  onShowModalMessage,
+}) => {
   const isAuth = useSelector((state) => state.auth.token !== null);
   const [isLoggedIn, setIsLoggedIn] = useState(isAuth);
   const [countDays, setCountDays] = useState(0);
@@ -28,7 +33,7 @@ const CarCard = ({ car, onDetailsClick, onShowUnloginModal }) => {
         )
       : 1;
 
-    console.log('newCountDays', newCountDays);
+  console.log('newCountDays', newCountDays);
 
   useEffect(() => {
     setCountDays(newCountDays);
@@ -39,23 +44,30 @@ const CarCard = ({ car, onDetailsClick, onShowUnloginModal }) => {
     if (!isLoggedIn) {
       onShowUnloginModal();
       return;
-    } else {
-      navigate(`/booking/${car.carId}`, {
-        state: {
-          car: {
-            carId: car.carId,
-            image: car.imageUrl,
-            model: car.model,
-            location: car.location,
-            dropOffId: car.dropOffLocationId,
-            pickUpId: car.pickupLocationId,
-            deposit: car.deposit,
-            pricePerDay: car.pricePerDay,
-            totalPrice: car.pricePerDay * countDays,
-          },
-        },
-      });
     }
+
+    if (!filters.pickupLocationId || !filters.dropOffLocationId) {
+      onShowModalMessage(
+        'Please select both Pick-up and Drop-off locations before booking.',
+      );
+      return;
+    }
+
+    navigate(`/booking/${car.carId}`, {
+      state: {
+        car: {
+          carId: car.carId,
+          image: car.imageUrl,
+          model: car.model,
+          location: car.location,
+          dropOffId: car.dropOffLocationId,
+          pickUpId: car.pickupLocationId,
+          deposit: car.deposit,
+          pricePerDay: car.pricePerDay,
+          totalPrice: car.pricePerDay * countDays,
+        },
+      },
+    });
   };
 
   CarCard.propTypes = {
@@ -74,6 +86,7 @@ const CarCard = ({ car, onDetailsClick, onShowUnloginModal }) => {
     }).isRequired,
     onDetailsClick: PropTypes.func.isRequired,
     onShowUnloginModal: PropTypes.func.isRequired,
+    onShowModalMessage: PropTypes.func.isRequired,
   };
 
   const handleDetails = (e) => {
@@ -82,22 +95,22 @@ const CarCard = ({ car, onDetailsClick, onShowUnloginModal }) => {
   };
 
   return (
-    <div className="car-card">
-      <div className="car-card__img-container">
+    <div className="car-general-card">
+      <div className="car-general-card__img-container">
         <img
           src={car.imageUrl}
           alt={car.model}
-          className="car-card__imageCar"
+          className="car-general-card__imageCar"
         />
-        <div className="car-card__status">{car.status}</div>
+        <div className="car-general-card__status">{car.status}</div>
       </div>
-      <div className="car-card__info">
+      <div className="car-general-card__info">
         <CarLocation model={car.model} location={car.location} />
         <Rating rating={car.rentalExperience} />
       </div>
       <Button
         text={`Book the car - $${car.pricePerDay}/day`}
-        ButtonType="primary"
+        ButtonType="secondary"
         type="button"
         onClick={handleBooking}
       />

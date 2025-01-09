@@ -8,6 +8,7 @@ import CarDetailsModal from './components/CarDetailsModal/CarDetailsModal.jsx';
 import { useSearchParams } from 'react-router-dom';
 import { getCarDetails, getBookedDays } from '@/redux/slices/carSlice';
 import UnloginDialog from '@/components/molecules/UnloginDialog/UnloginDialog.jsx';
+import ModalMessageCard from '@/components/atoms/MessageCard/MessageCard';
 
 import './CarsPage.css';
 
@@ -20,6 +21,10 @@ const CarsPage = () => {
   const [selectedCar, setSelectedCar] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showUnloginDialog, setShowUnloginDialog] = useState(false);
+  const [showModalMessage, setShowModalMessage] = useState({
+    isVisible: false,
+    message: '',
+  });
 
   useEffect(() => {
     dispatch(fetchCars({ ...filters }));
@@ -92,6 +97,12 @@ const CarsPage = () => {
                     key={car.carId}
                     car={car}
                     onShowUnloginModal={() => setShowUnloginDialog(true)}
+                    onShowModalMessage={(message) =>
+                      setShowModalMessage({
+                        isVisible: true,
+                        message,
+                      })
+                    }
                     onDetailsClick={() => handleOpenModal(car)}
                   />
                 ) : null,
@@ -111,6 +122,17 @@ const CarsPage = () => {
       )}
       {showUnloginDialog && (
         <UnloginDialog onClose={() => setShowUnloginDialog(false)} />
+      )}
+      {showModalMessage.isVisible && (
+        <ModalMessageCard
+          message={showModalMessage.message}
+          onClose={() =>
+            setShowModalMessage({
+              isVisible: false,
+              message: '',
+            })
+          }
+        />
       )}
     </div>
   );
