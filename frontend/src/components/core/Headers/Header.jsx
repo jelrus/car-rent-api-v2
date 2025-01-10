@@ -53,17 +53,15 @@ const Header = () => {
       </nav>
       {role && (
         <div className="auth-header">
-          <div>
+          <Link to="/profile" className="auth-header__link">
             <img
               className="userlogo"
               src={userImageUrl ? userImageUrl : profileIcon}
             />
-          </div>
-          <div className="client-information">
-            <span>
+            <span className="auth-header__username">
               Hello, {username} ({role})
             </span>
-          </div>
+          </Link>
           <div>
             <img className="notification" src={Notification} />
           </div>

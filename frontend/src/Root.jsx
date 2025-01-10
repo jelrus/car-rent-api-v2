@@ -8,6 +8,7 @@ import App from './App.jsx';
 import CarsPage from '@pages/CarsPage/CarsPage';
 import BookingsPage from './pages/BookingsPage/BookingsPage.jsx';
 import CarBookPage from '@pages/CarBookPage/CarBookPage.jsx';
+import ProfilePage from './pages/ProfilePage/ProfilePage.jsx';
 
 export const Root = () => (
   <HashRouter>
@@ -22,6 +23,7 @@ export const Root = () => (
             <Route path=":tabId?" element={<BookingsPage />} />
           </Route>
           <Route path="/booking/:paramCarId" element={<CarBookPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Route>
         <Route path="/login" element={<LogInPage />} />
         <Route path="/signup" element={<RegistrationPage />} />
