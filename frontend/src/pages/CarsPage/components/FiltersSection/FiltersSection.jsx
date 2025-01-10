@@ -303,7 +303,9 @@ const FiltersSection = () => {
                 onClick={() => toggleCalendar('pickup')}
               >
                 {localFilters.pickupDateTime
-                  ? `${localFilters.pickupDateTime.split('T')[0]} ${localFilters.pickupTime || '07:00AM'}`
+                  ? `${localFilters.pickupDateTime.split('T')[0]} ${
+                      selectedDates.pickup.time || '07:00AM'
+                    }`
                   : 'Pick-up date'}
                 <span className="filters-form__dropdown-arrow">&#9662;</span>
               </div>
@@ -317,7 +319,9 @@ const FiltersSection = () => {
                 onClick={() => toggleCalendar('dropOff')}
               >
                 {localFilters.dropOffDateTime
-                  ? `${localFilters.dropOffDateTime.split('T')[0]} ${localFilters.dropOffTime || '10:00AM'}`
+                  ? `${localFilters.dropOffDateTime.split('T')[0]} ${
+                      selectedDates.dropOff.time || '10:00AM'
+                    }`
                   : 'Drop-off date'}
                 <span className="filters-form__dropdown-arrow">&#9662;</span>
               </div>

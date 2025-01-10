@@ -135,6 +135,18 @@
   align-items: center;
   justify-content: space-between;
 }
+.auth-header__link {
+  font-size: 18px;
+  color: black;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.auth-header__username {
+}
 
 .userlogo {
   border-radius: 50%;

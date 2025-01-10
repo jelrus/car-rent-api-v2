@@ -1,0 +1,11 @@
+/* .profile__page {
+
+} */
+
+.profile__title h2 {
+  line-height: 64px;
+  font-size: 56px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  padding: 56px 0px 50px 8px;
+}
