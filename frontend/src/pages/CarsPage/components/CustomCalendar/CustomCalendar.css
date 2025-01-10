@@ -107,3 +107,8 @@
   pointer-events: none;
   cursor: not-allowed;
 }
+
+.calendar-day.disabled {
+  pointer-events: none;
+  color: #666;
+}
