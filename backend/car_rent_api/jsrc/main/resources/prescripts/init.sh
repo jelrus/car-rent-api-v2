@@ -213,7 +213,7 @@ echo "User Items inserted successfully into table $TABLE_NAME."
 aws dynamodb put-item --profile "$AWS_PROFILE" --region "$REGION" --table-name "$TABLE_NAME" --item '{
     "PK_ID": {"S": "SUPPORT_AGENTS"},
     "SK_ID": {"S": "SUPPORT_AGENTS_LIST"},
-    "SUPPORT_AGENTS#EMAILS": {"L": [{"S": "example_user0@gmail.com"},{"S": "example_user1@gmail.com"},{"S": "example_user2@gmail.com"},{"S": "example_user3@gmail.com"}]}
+    "SUPPORT_AGENTS#EMAILS": {"L": [{"S": "example_user1@gmail.com"},{"S": "example_user2@gmail.com"},{"S": "example_user3@gmail.com"},{"S": "example_user4@gmail.com"},{"S": "example_user5@gmail.com"},{"S": "example_user6@gmail.com"},{"S": "example_user7@gmail.com"}]}
 }'
 
 echo "Support Agents List Item inserted successfully into table $TABLE_NAME."

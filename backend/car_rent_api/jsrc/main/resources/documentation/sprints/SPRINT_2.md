@@ -16,12 +16,13 @@ US_11 |       |                                       |        |
 
 POST /api/v1/feedbacks/ +-
 GET /api/v1/reports/
-POST /api/v1/reports/{extension} ???query-params???
+GET /api/v1/users/agents
+GET /api/v1/users/clients
+
+POST /api/v1/reports/{extension}
 PUT /api/v1/users/{id}/change-password
 GET /api/v1/users/{id}/personal-info
 PUT /api/v1/users/{id}/personal-info
-GET /api/v1/users/agents
-GET /api/v1/users/clients
 
 US_7_Support agent booking management (R05) (Optional)
 

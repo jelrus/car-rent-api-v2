@@ -16,4 +16,6 @@ public interface BookingService {
                                       BookCarServiceProvidedRequest serviceProvidedRequest);
 
     BookingsResponse findByClientId(String clientId);
+
+    void onBookingFinished(String bookingId);
 }
