@@ -6,6 +6,10 @@ import com.car_rent_api.persistence.dao.components.CarDao;
 import com.car_rent_api.persistence.dao.components.LocationDao;
 import com.car_rent_api.persistence.models.dto.cars.*;
 import com.car_rent_api.persistence.models.entity.Car;
+import com.car_rent_api.persistence.models.entity.Location;
+import com.car_rent_api.persistence.models.entity.types.CarCategory;
+import com.car_rent_api.persistence.models.entity.types.CarFuelType;
+import com.car_rent_api.persistence.models.entity.types.CarGearBoxType;
 import com.car_rent_api.persistence.pagination.api.TableRequest;
 import com.car_rent_api.persistence.pagination.api.TableResponse;
 import com.car_rent_api.persistence.pagination.api.PaginationRequest;
@@ -16,6 +20,10 @@ import com.car_rent_api.service.components.CarService;
 import com.car_rent_api.utils.components.LogPrinter;
 import com.car_rent_api.utils.components.StringDateConverter;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -51,6 +59,7 @@ public class CarServiceImpl implements CarService {
                         .build())
                 .specification(SpecificationRequest.builder()
                         .equalTo(ValueType.STRING_UPPERCASE, "CAR#CATEGORY", params.get("category"))
+                        .notEqualTo(ValueType.STRING_UPPERCASE, "CAR#STATUS", "UNAVAILABLE")
                         .build(JoinType.AND))
                 .build();
 
@@ -58,7 +67,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public FilterCarsPageableResponse findCarsByHomeSearchFilter(Map<String, String> params) {
+    public FilterCarsPageableResponse findByHomeSearchFilter(Map<String, String> params) {
         List<String> datesRange = StringDateConverter.generateGermanDatesRange(params.get("pickupDateTime"),
                 params.get("dropOffDateTime"));
 
@@ -72,7 +81,7 @@ public class CarServiceImpl implements CarService {
                 .specification(SpecificationRequest.builder()
                         .equalTo(ValueType.STRING, "CAR#PICKUP_LOCATION_ID", params.get("pickupLocationId"))
                         .contains(ValueType.STRING, "CAR#DROPOFF_LOCATIONS_IDS", params.get("dropOffLocationId"))
-                        .notInRange(ValueType.STRING, "CAR#BOOKED_DAYS", datesRange)
+                        .allNotInListRange(ValueType.STRING, "CAR#BOOKED_DAYS", datesRange)
                         .equalTo(ValueType.STRING_UPPERCASE, "CAR#CATEGORY", params.get("category"))
                         .equalTo(ValueType.STRING_UPPERCASE, "CAR#GEAR_BOX_TYPE", params.get("gearBoxType"))
                         .equalTo(ValueType.STRING_UPPERCASE, "CAR#FUEL_TYPE", params.get("fuelType"))
@@ -80,7 +89,10 @@ public class CarServiceImpl implements CarService {
                         .build(JoinType.AND))
                 .build();
 
-        return toFilterCarsPageableResponse(carDao.findByTableRequestIndexedPaginated(tableRequest));
+        TableResponse<Car> carFilterTableResponse = carDao.findByTableRequestIndexedPaginated(tableRequest);
+        Map<String, Object> carFilterComponents = generateFilterComponents();
+
+        return toFilterCarsPageableResponse(carFilterTableResponse, carFilterComponents);
     }
 
     private void checkCarExistence(String id) {
@@ -90,13 +102,29 @@ public class CarServiceImpl implements CarService {
         }
     }
 
-    private FilterCarsPageableResponse toFilterCarsPageableResponse(TableResponse<Car> tableResponse) {
+    private Map<String, Object> generateFilterComponents() {
+        Map<String, Object> components = new LinkedHashMap<>();
+        String serverTime = StringDateConverter.toISO8601DateTimeRounded(LocalDateTime.now(ZoneId.of("Europe/Kiev")));
+        components.put("serverTime", serverTime);
+        components.put("minPrice", carDao.minPrice());
+        components.put("maxPrice", carDao.maxPrice());
+        components.put("locations", locationDao.findAll().stream().map(Location::getName).toList());
+        components.put("category", Arrays.stream(CarCategory.values()).map(c -> c.getName().toUpperCase()).toList());
+        components.put("gearBoxType", Arrays.stream(CarGearBoxType.values()).map(gb -> gb.getName().toUpperCase())
+                .toList());
+        components.put("fuelType", Arrays.stream(CarFuelType.values()).map(ft -> ft.getName().toUpperCase()).toList());
+        return components;
+    }
+
+    private FilterCarsPageableResponse toFilterCarsPageableResponse(TableResponse<Car> tableResponse,
+                                                                    Map<String, Object> components) {
         return FilterCarsPageableResponse.builder()
                 .content(tableResponse.getItems().stream().map(toCarBriefInfo()).toList())
                 .elementsOnPage(tableResponse.getElementsOnPage())
                 .totalElements(tableResponse.getTotalElements())
                 .currentPage(tableResponse.getPage())
                 .totalPages(tableResponse.getTotalPages())
+                .components(components)
                 .build();
     }
 
@@ -107,14 +135,16 @@ public class CarServiceImpl implements CarService {
     }
 
     private Function<Car, CarBriefInfo> toCarBriefInfo() {
-        return s -> CarBriefInfo.builder()
-                .carId(s.getSkId())
-                .imageUrl(s.getImageUrl())
-                .location(locationDao.findById(s.getPickupLocationId()).getName())
-                .model(s.getModel())
-                .pricePerDay(String.valueOf(s.getPricePerDay()))
-                .rentalExperience(s.getRentalExperience())
-                .status(s.getStatus().getName())
+        return c -> CarBriefInfo.builder()
+                .carId(c.getSkId())
+                .imageUrl(c.getImageUrl())
+                .location(locationDao.findById(c.getPickupLocationId()).getName())
+                .pickupLocationId(c.getPickupLocationId())
+                .dropOffLocationsIds(c.getDropOffLocationsIds())
+                .model(c.getModel())
+                .pricePerDay(String.valueOf(c.getPricePerDay()))
+                .rentalExperience(c.getRentalExperience())
+                .status(c.getStatus().getName())
                 .build();
     }
 
@@ -129,6 +159,8 @@ public class CarServiceImpl implements CarService {
                 .gearBoxType(car.getGearBoxType().getName())
                 .images(car.getImages())
                 .location(locationDao.findById(car.getPickupLocationId()).getName())
+                .pickupLocationId(car.getPickupLocationId())
+                .dropOffLocationsIds(car.getDropOffLocationsIds())
                 .model(car.getModel())
                 .passengerCapacity(car.getPassengerCapacity())
                 .pricePerDay(String.valueOf(car.getPricePerDay()))

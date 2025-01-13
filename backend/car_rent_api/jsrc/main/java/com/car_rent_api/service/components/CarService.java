@@ -15,5 +15,5 @@ public interface CarService {
 
     PopularCarsResponse findByCategorySortedByRating(Map<String, String> params);
 
-    FilterCarsPageableResponse findCarsByHomeSearchFilter(Map<String, String> params);
+    FilterCarsPageableResponse findByHomeSearchFilter(Map<String, String> params);
 }

@@ -12,7 +12,9 @@ public interface CarDao {
 
     Boolean isExistsById(String id);
 
-    Boolean isBookedDatesAreFree(String id, TableRequest carTableRequest);
+    Integer maxPrice();
+
+    Integer minPrice();
 
     TableResponse<Car> findByTableRequestIndexed(TableRequest tableRequest);
 

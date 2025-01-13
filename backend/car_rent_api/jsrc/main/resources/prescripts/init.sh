@@ -1298,7 +1298,7 @@ aws dynamodb put-item --profile "$AWS_PROFILE" --region "$REGION" --table-name "
 aws dynamodb put-item --profile "$AWS_PROFILE" --region "$REGION" --table-name "$TABLE_NAME" --item '{
     "PK_ID": {"S": "BOOKING"},
     "SK_ID": {"S": "BOOKING#323a282a-7a51-4998-bfb3-83411a2beb83"},
-    "BOOKING#NUMBER": {"S": "#13 (05.10.2024)"},
+    "BOOKING#ORDER_DETAILS": {"S": "#13 (05.10.2024)"},
     "BOOKING#STATUS": {"S": "SERVICE_STARTED"},
     "BOOKING#CUSTOMER_ID": {"S": "0264f885-b5af-4633-8742-24dd8c35c12d"},
     "BOOKING#SERVICE_ID": {"S": "6c59dd64-b30e-4fe2-ba4c-ec663a7afff0"},
@@ -1313,7 +1313,7 @@ aws dynamodb put-item --profile "$AWS_PROFILE" --region "$REGION" --table-name "
 aws dynamodb put-item --profile "$AWS_PROFILE" --region "$REGION" --table-name "$TABLE_NAME" --item '{
     "PK_ID": {"S": "BOOKING"},
     "SK_ID": {"S": "BOOKING#1dd9dd4d-f62e-4eb7-8da6-6fe6e87ef3b6"},
-    "BOOKING#NUMBER": {"S": "#14 (05.10.2024)"},
+    "BOOKING#ORDER_DETAILS": {"S": "#14 (05.10.2024)"},
     "BOOKING#STATUS": {"S": "RESERVED"},
     "BOOKING#CUSTOMER_ID": {"S": "34ea8d35-0144-41ff-a5ab-ea4e9836eaf0"},
     "BOOKING#SERVICE_ID": {"S": "321db64-1c2b-4f32-a212-8f9b2c5f1d1a"},
@@ -1328,7 +1328,7 @@ aws dynamodb put-item --profile "$AWS_PROFILE" --region "$REGION" --table-name "
 aws dynamodb put-item --profile "$AWS_PROFILE" --region "$REGION" --table-name "$TABLE_NAME" --item '{
     "PK_ID": {"S": "BOOKING"},
     "SK_ID": {"S": "BOOKING#28f8acde-be33-4027-8238-da285c4d3cc1"},
-    "BOOKING#NUMBER": {"S": "#15 (05.10.2024)"},
+    "BOOKING#ORDER_DETAILS": {"S": "#15 (05.10.2024)"},
     "BOOKING#STATUS": {"S": "RESERVED"},
     "BOOKING#CUSTOMER_ID": {"S": "66b313cb-2941-4b1b-9a35-dc6bbcb1fcb9"},
     "BOOKING#SERVICE_ID": {"S": "b43e6d90-dc7c-4d8c-9e35-91e5767bfb6c"},
@@ -1343,7 +1343,7 @@ aws dynamodb put-item --profile "$AWS_PROFILE" --region "$REGION" --table-name "
 aws dynamodb put-item --profile "$AWS_PROFILE" --region "$REGION" --table-name "$TABLE_NAME" --item '{
     "PK_ID": {"S": "BOOKING"},
     "SK_ID": {"S": "BOOKING#5e4bd44d-2dc8-4b3c-881d-9369d1094df7"},
-    "BOOKING#NUMBER": {"S": "#16 (05.10.2024)"},
+    "BOOKING#ORDER_DETAILS": {"S": "#16 (05.10.2024)"},
     "BOOKING#STATUS": {"S": "RESERVED_BY_SUPPORT_AGENT"},
     "BOOKING#CUSTOMER_ID": {"S": "cb8799fd-a94a-46a1-90ce-ba4533ffed9f"},
     "BOOKING#SERVICE_ID": {"S": "d50a1c92-f6cb-43e5-82d9-93e4c2f1a7b2"},
@@ -1358,7 +1358,7 @@ aws dynamodb put-item --profile "$AWS_PROFILE" --region "$REGION" --table-name "
 aws dynamodb put-item --profile "$AWS_PROFILE" --region "$REGION" --table-name "$TABLE_NAME" --item '{
     "PK_ID": {"S": "BOOKING"},
     "SK_ID": {"S": "BOOKING#7d9d4208-aa0a-4f59-aff0-d74c03baf085"},
-    "BOOKING#NUMBER": {"S": "#17 (05.10.2024)"},
+    "BOOKING#ORDER_DETAILS": {"S": "#17 (05.10.2024)"},
     "BOOKING#STATUS": {"S": "RESERVED"},
     "BOOKING#CUSTOMER_ID": {"S": "f6a07d92-3ea4-4a11-94f1-5982cfd23650"},
     "BOOKING#SERVICE_ID": {"S": "e78d34fc-a456-47e1-a99f-2e934f1c6d4e"},

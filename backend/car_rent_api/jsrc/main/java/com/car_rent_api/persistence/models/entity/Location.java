@@ -14,6 +14,7 @@ public class Location {
     private String name;
     private String address;
     private String imageUrl;
+    private String supportAgentId;
 
     public Location() {}
 
@@ -44,6 +45,11 @@ public class Location {
         return imageUrl;
     }
 
+    @DynamoDbAttribute("LOCATION#SUPPORT_AGENT_ID")
+    public String getSupportAgentId() {
+        return supportAgentId;
+    }
+
     public void setPkId(String pkId) {
         this.pkId = pkId;
     }
@@ -62,6 +68,10 @@ public class Location {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public void setSupportAgentId(String supportAgentId) {
+        this.supportAgentId = supportAgentId;
     }
 
     public static Builder builder() {
@@ -94,6 +104,11 @@ public class Location {
 
         public Builder imageUrl(String imageUrl) {
             Location.this.imageUrl = imageUrl;
+            return this;
+        }
+
+        public Builder supportAgentId(String id) {
+            Location.this.supportAgentId = id;
             return this;
         }
 

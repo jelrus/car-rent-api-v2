@@ -35,6 +35,12 @@ public class CarDetailsResponse {
     private String location;
 
     @Expose
+    private String pickupLocationId;
+
+    @Expose
+    private List<String> dropOffLocationsIds;
+
+    @Expose
     private String model;
 
     @Expose
@@ -82,6 +88,14 @@ public class CarDetailsResponse {
 
     public String getLocation() {
         return location;
+    }
+
+    public String getPickupLocationId() {
+        return pickupLocationId;
+    }
+
+    public List<String> getDropOffLocationsIds() {
+        return dropOffLocationsIds;
     }
 
     public String getModel() {
@@ -150,6 +164,16 @@ public class CarDetailsResponse {
 
         public Builder location(String location) {
             CarDetailsResponse.this.location = location;
+            return this;
+        }
+
+        public Builder pickupLocationId(String pickupLocationId) {
+            CarDetailsResponse.this.pickupLocationId = pickupLocationId;
+            return this;
+        }
+
+        public Builder dropOffLocationsIds(List<String> dropOffLocationsIds) {
+            CarDetailsResponse.this.dropOffLocationsIds = dropOffLocationsIds;
             return this;
         }
 

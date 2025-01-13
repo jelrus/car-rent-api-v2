@@ -35,7 +35,7 @@ public class GetCarsHandler implements EndpointHandler {
         try {
             LogPrinter.info("[GetCarsHandler] Request accepted");
 
-            FilterCarsPageableResponse response = carService.findCarsByHomeSearchFilter(queryParams);
+            FilterCarsPageableResponse response = carService.findByHomeSearchFilter(queryParams);
             String jsonResponse = gsonPrinter.print().toJson(response);
             LogPrinter.info("[GetCarsHandler] Exiting 'GET @ /cars' ({})", jsonResponse);
 

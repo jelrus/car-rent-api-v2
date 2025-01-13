@@ -50,7 +50,8 @@ public class ServiceModule {
 
     @Singleton
     @Provides
-    BookingService provideBookingService(BookingDao bookingDao, AuthDao authDao, UserDao userDao, CarDao carDao) {
-        return new BookingServiceImpl(bookingDao, authDao, userDao, carDao);
+    BookingService provideBookingService(BookingDao bookingDao, AuthDao authDao, UserDao userDao, CarDao carDao,
+                                         LocationDao locationDao) {
+        return new BookingServiceImpl(bookingDao, authDao, userDao, carDao, locationDao);
     }
 }

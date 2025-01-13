@@ -1,9 +1,13 @@
 //old tickets changes to be made
-remake paginationRequest filtering sorting
-add max value/min value to price
 change-password-credentials
 sqs lambda => report table
 
-change location => locationId
-/cars
-/cars/{carId}
+FEEDBACK (US8) Create feedback on finished booking
+/feedback/post POST
+
+Tasks
+0. POST /api/v1/bookings                        => checked
+1. PUT /api/v1/bookings/{bookingId}/cancel		=> checked
+2. PUT /api/v1/bookings/{bookingId}/edit		=> check
+3. PUT /api/v1/bookings/{bookingId}/start		=> check
+4. PUT /api/v1/bookings/{bookingId}/provide		=> check

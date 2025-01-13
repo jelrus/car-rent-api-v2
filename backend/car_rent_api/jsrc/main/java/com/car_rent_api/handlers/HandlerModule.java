@@ -3,8 +3,7 @@ package com.car_rent_api.handlers;
 import com.car_rent_api.handlers.components.EndpointHandler;
 import com.car_rent_api.handlers.components.impl.GeneralHandler;
 import com.car_rent_api.handlers.components.impl.PathNotFoundHandler;
-import com.car_rent_api.handlers.components.impl.bookings.GetBookingsClientHandler;
-import com.car_rent_api.handlers.components.impl.bookings.PostBookingsHandler;
+import com.car_rent_api.handlers.components.impl.bookings.*;
 import com.car_rent_api.handlers.components.impl.cars.GetCarBookedDaysHandler;
 import com.car_rent_api.handlers.components.impl.cars.GetCarClientReviewsHandler;
 import com.car_rent_api.handlers.components.impl.cars.GetCarHandler;
@@ -13,6 +12,7 @@ import com.car_rent_api.handlers.components.impl.home.*;
 import com.car_rent_api.handlers.components.impl.users.PostUsersHandler;
 import com.car_rent_api.handlers.components.impl.users.PostUsersLoginHandler;
 import com.car_rent_api.service.components.*;
+import com.car_rent_api.utils.components.EndpointHandlerAuthorizer;
 import com.car_rent_api.utils.components.GsonPrinter;
 import com.car_rent_api.utils.components.SchemaValidator;
 import dagger.Module;
@@ -138,16 +138,62 @@ public class HandlerModule {
     @Provides
     @IntoMap
     @StringKey("POST:/v1/bookings")
-    public EndpointHandler provideBookingsHandler(BookingService bookingService, SchemaValidator schemaValidator,
-                                                  GsonPrinter gsonPrinter) {
-        return new PostBookingsHandler(bookingService, schemaValidator, gsonPrinter);
+    public EndpointHandler provideBookingsHandler(
+            BookingService bookingService, SchemaValidator schemaValidator, GsonPrinter gsonPrinter,
+            EndpointHandlerAuthorizer authorizer
+    ) {
+        return new PostBookingsHandler(bookingService, schemaValidator, gsonPrinter, authorizer);
     }
 
     @Singleton
     @Provides
     @IntoMap
     @StringKey("GET:/v1/bookings/{clientId}")
-    public EndpointHandler provideBookingsClientHandler(BookingService bookingService, GsonPrinter gsonPrinter) {
-        return new GetBookingsClientHandler(bookingService, gsonPrinter);
+    public EndpointHandler provideBookingsClientHandler(
+            BookingService bookingService, GsonPrinter gsonPrinter, EndpointHandlerAuthorizer authorizer
+    ) {
+        return new GetBookingsClientHandler(bookingService, gsonPrinter, authorizer);
+    }
+
+    @Singleton
+    @Provides
+    @IntoMap
+    @StringKey("PUT:/v1/bookings/{clientId}/{bookingId}/edit")
+    public EndpointHandler provideBookingsEditHandler(
+            BookingService bookingService, SchemaValidator schemaValidator, GsonPrinter gsonPrinter,
+            EndpointHandlerAuthorizer authorizer
+    ) {
+        return new PutBookingsEditHandler(bookingService, schemaValidator, gsonPrinter, authorizer);
+    }
+
+    @Singleton
+    @Provides
+    @IntoMap
+    @StringKey("PUT:/v1/bookings/{clientId}/{bookingId}/cancel")
+    public EndpointHandler provideBookingsCancelHandler(
+            BookingService bookingService, GsonPrinter gsonPrinter, EndpointHandlerAuthorizer authorizer
+    ) {
+        return new PutBookingsCancelHandler(bookingService, gsonPrinter, authorizer);
+    }
+
+    @Singleton
+    @Provides
+    @IntoMap
+    @StringKey("PUT:/v1/bookings/{clientId}/{bookingId}/start")
+    public EndpointHandler provideBookingsServiceStartedHandler(
+            BookingService bookingService, GsonPrinter gsonPrinter, EndpointHandlerAuthorizer authorizer
+    ) {
+        return new PutBookingsStartHandler(bookingService, gsonPrinter, authorizer);
+    }
+
+    @Singleton
+    @Provides
+    @IntoMap
+    @StringKey("PUT:/v1/bookings/{clientId}/{bookingId}/provide")
+    public EndpointHandler provideBookingsServiceProvidedHandler(
+            BookingService bookingService, SchemaValidator schemaValidator, GsonPrinter gsonPrinter,
+            EndpointHandlerAuthorizer authorizer
+    ) {
+        return new PutBookingsProvidedHandler(bookingService, schemaValidator, gsonPrinter, authorizer);
     }
 }

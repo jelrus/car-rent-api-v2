@@ -124,8 +124,9 @@ public class SpecificationRequest {
             return this;
         }
 
-        public Builder inRange(ValueType valueType, String name, List<String> range) {
-            String expr = "NOT contains(#attribute{modCount}, :attribute{modCount})";
+        //JOIN TYPE OR
+        public Builder allInListRange(ValueType valueType, String name, List<String> range) {
+            String expr = "contains(#attribute{modCount}, :attribute{modCount})";
 
             if (range != null && !range.isEmpty()) {
                 range.forEach(s -> {
@@ -137,8 +138,9 @@ public class SpecificationRequest {
             return this;
         }
 
-        public Builder notInRange(ValueType valueType, String name, List<String> range) {
-            String expr = "contains(#attribute{modCount}, :attribute{modCount})";
+        //JOIN TYPE OR
+        public Builder allNotInListRange(ValueType valueType, String name, List<String> range) {
+            String expr = "NOT contains(#attribute{modCount}, :attribute{modCount})";
 
             if (range != null && !range.isEmpty()) {
                 range.forEach(s -> {
