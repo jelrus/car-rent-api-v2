@@ -351,6 +351,10 @@ public class BookingServiceImpl implements BookingService {
                 .carId(b.getCarId())
                 .bookingStatus(b.getStatus().getName())
                 .carModel(carDao.findById(b.getCarId()).getModel())
+                .pickupLocationId(b.getPickupLocationId())
+                .dropOffLocationId(b.getDropOffLocationId())
+                .pickupDateTime(b.getPickupDateTime())
+                .dropOffDateTime(b.getDropOffDateTime())
                 .carImageUrl(carDao.findById(b.getCarId()).getImageUrl())
                 .orderDetails(b.getOrderDetails())
                 .build();

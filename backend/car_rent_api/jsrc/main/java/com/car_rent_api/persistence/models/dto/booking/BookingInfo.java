@@ -1,6 +1,7 @@
 package com.car_rent_api.persistence.models.dto.booking;
 
 import com.car_rent_api.config.TableKeys;
+import com.car_rent_api.utils.components.StringDateConverter;
 import com.google.gson.annotations.Expose;
 
 public class BookingInfo {
@@ -13,6 +14,18 @@ public class BookingInfo {
 
     @Expose
     private String bookingStatus;
+
+    @Expose
+    private String pickupLocationId;
+
+    @Expose
+    private String pickupDateTime;
+
+    @Expose
+    private String dropOffLocationId;
+
+    @Expose
+    private String dropOffDateTime;
 
     @Expose
     private String carImageUrl;
@@ -35,6 +48,22 @@ public class BookingInfo {
 
     public String getBookingStatus() {
         return bookingStatus;
+    }
+
+    public String getPickupLocationId() {
+        return pickupLocationId;
+    }
+
+    public String getPickupDateTime() {
+        return pickupDateTime;
+    }
+
+    public String getDropOffLocationId() {
+        return dropOffLocationId;
+    }
+
+    public String getDropOffDateTime() {
+        return dropOffDateTime;
     }
 
     public String getCarImageUrl() {
@@ -69,6 +98,26 @@ public class BookingInfo {
 
         public Builder bookingStatus(String bookingStatus) {
             BookingInfo.this.bookingStatus = bookingStatus;
+            return this;
+        }
+
+        public Builder pickupLocationId(String pickupLocationId) {
+            BookingInfo.this.pickupLocationId = pickupLocationId;
+            return this;
+        }
+
+        public Builder dropOffLocationId(String dropOffLocationId) {
+            BookingInfo.this.dropOffLocationId = dropOffLocationId;
+            return this;
+        }
+
+        public Builder pickupDateTime(String pickupDateTime) {
+            BookingInfo.this.pickupDateTime = StringDateConverter.toISO8601DateTimeEdit(pickupDateTime);
+            return this;
+        }
+
+        public Builder dropOffDateTime(String dropOffDateTime) {
+            BookingInfo.this.dropOffDateTime = StringDateConverter.toISO8601DateTimeEdit(dropOffDateTime);
             return this;
         }
 

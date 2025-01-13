@@ -16,6 +16,7 @@ public class StringDateConverter {
     private static final String BOOKING_DATE_TIME_CREATED_AT = "dd.MM.yy";
     private static final String BOOKING_ACTIVE_DATE = "MMM dd";
     private static final String BOOKING_LOCKED_FROM_DATE_TIME = "HH:mm a dd MMM";
+    private static final String BOOKING_EDIT_DATE = "yyyy-MM-dd'T'HH:mm";
 
     public static List<String> generateGermanDatesRange(String pickupDateTime, String dropOffDateTime) {
         if (isRangeCandidates(pickupDateTime, dropOffDateTime)) {
@@ -91,6 +92,11 @@ public class StringDateConverter {
         int minutes = localDateTime.getMinute();
         int minutesToAdd = (minutes % 30 == 0) ? 0 : 30 - (minutes % 30);
         return toISO8601DateTime(localDateTime.plusMinutes(minutesToAdd).withSecond(0).withNano(0));
+    }
+
+    public static String toISO8601DateTimeEdit(String localDateTime) {
+        return LocalDateTime.parse(localDateTime).format(DateTimeFormatter.ofPattern(BOOKING_EDIT_DATE))
+                .replace("T", " ");
     }
 
     public static boolean isISO8601DateTime(String value) {
