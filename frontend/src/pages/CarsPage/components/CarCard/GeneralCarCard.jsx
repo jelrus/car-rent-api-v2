@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import CarLocation from '../CarLocation/CarLocation.jsx';
 import Rating from '../Rating/Rating.jsx';
 import Button from '@components/atoms/Button/Button.jsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import './GeneralCarCard.css';
 import { useNavigate } from 'react-router';
@@ -11,7 +11,29 @@ import { useSelector } from 'react-redux';
 const CarCard = ({ car, onDetailsClick, onShowUnloginModal }) => {
   const isAuth = useSelector((state) => state.auth.token !== null);
   const [isLoggedIn, setIsLoggedIn] = useState(isAuth);
+  const [countDays, setCountDays] = useState(0);
   const navigate = useNavigate();
+
+  const { filters } = useSelector((state) => state.cars);
+
+  const newCountDays =
+    filters.dropOffDateTime && filters.pickupDateTime
+      ? Math.max(
+          1,
+          Math.ceil(
+            (new Date(filters.dropOffDateTime) -
+              new Date(filters.pickupDateTime)) /
+              (1000 * 60 * 60 * 24),
+          ),
+        )
+      : 1;
+
+  console.log('newCountDays', newCountDays);
+
+  useEffect(() => {
+    setCountDays(newCountDays);
+  }),
+    [filters.dropOffDateTime, filters.pickupDateTime];
 
   const handleBooking = () => {
     if (!isLoggedIn) {
@@ -29,28 +51,11 @@ const CarCard = ({ car, onDetailsClick, onShowUnloginModal }) => {
             pickUpId: car.pickupLocationId,
             deposit: car.deposit,
             pricePerDay: car.pricePerDay,
+            totalPrice: car.pricePerDay * countDays,
           },
         },
       });
     }
-  };
-
-  CarCard.propTypes = {
-    car: PropTypes.shape({
-      carId: PropTypes.string.isRequired,
-      model: PropTypes.string.isRequired,
-      location: PropTypes.string.isRequired,
-      carRating: PropTypes.number.isRequired,
-      rentalExperience: PropTypes.string.isRequired,
-      pricePerDay: PropTypes.number.isRequired,
-      status: PropTypes.string.isRequired,
-      imageUrl: PropTypes.string.isRequired,
-      dropOffLocationId: PropTypes.string.isRequired,
-      pickupLocationId: PropTypes.string.isRequired,
-      deposit: PropTypes.number,
-    }).isRequired,
-    onDetailsClick: PropTypes.func.isRequired,
-    onShowUnloginModal: PropTypes.func.isRequired,
   };
 
   const handleDetails = (e) => {
@@ -59,22 +64,22 @@ const CarCard = ({ car, onDetailsClick, onShowUnloginModal }) => {
   };
 
   return (
-    <div className="car-card">
-      <div className="car-card__img-container">
+    <div className="car-general-card">
+      <div className="car-general-card__img-container">
         <img
           src={car.imageUrl}
           alt={car.model}
-          className="car-card__imageCar"
+          className="car-general-card__imageCar"
         />
-        <div className="car-card__status">{car.status}</div>
+        <div className="car-general-card__status">{car.status}</div>
       </div>
-      <div className="car-card__info">
+      <div className="car-general-card__info">
         <CarLocation model={car.model} location={car.location} />
-        <Rating rating={car.rentalExperience} />
+        <Rating rating={Number(car.rentalExperience)} />
       </div>
       <Button
         text={`Book the car - $${car.pricePerDay}/day`}
-        ButtonType="primary"
+        ButtonType="secondary"
         type="button"
         onClick={handleBooking}
       />
@@ -90,7 +95,7 @@ CarCard.propTypes = {
     carId: PropTypes.string.isRequired,
     model: PropTypes.string.isRequired,
     location: PropTypes.string.isRequired,
-    carRating: PropTypes.number.isRequired,
+    rentalExperience: PropTypes.string.isRequired,
     pricePerDay: PropTypes.number.isRequired,
     status: PropTypes.string.isRequired,
     imageUrl: PropTypes.string.isRequired,
@@ -99,6 +104,7 @@ CarCard.propTypes = {
     deposit: PropTypes.number,
   }).isRequired,
   onDetailsClick: PropTypes.func.isRequired,
+  onShowUnloginModal: PropTypes.func.isRequired,
 };
 
 export default CarCard;

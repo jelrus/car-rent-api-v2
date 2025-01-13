@@ -11,35 +11,28 @@ import image from '@public/imgCars/audi-a6-quattro-2023.jpg';
 import ModalMessageCard from '@/components/atoms/MessageCard/MessageCard';
 import checkAuthRole from '@/containers/CheckAuthHoc/CheckAuthHoc';
 import getLocationName from '@/utils/getLocationName';
+import getTodayDate from '@utils/getTodayDate';
+import getTodayDatePlusOneDay from '@utils/getTodayDatePlusOneDay';
 
 const CarBookPage = () => {
   const { paramCarId } = useParams();
-  const state = useSelector((state) => state);
-  console.log(state);
-  const { filters } = useSelector((state) => state.cars);
-  const carId = paramCarId;
-  console.log(filters);
-
-  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const { car } = location.state || {};
-  console.log('car', car);
-  const user = useSelector((state) => state.auth.user);
+  const { filters } = useSelector((state) => state.cars);
   const {
     carDetails,
     bookedDays = [],
     loading: carLoading,
     error: carError,
   } = useSelector((state) => state.carBooked);
-  const { loading: bookingLoading, error: bookingError } = useSelector(
-    (state) => state.createBooking,
-  );
+  const user = useSelector((state) => state.auth.user);
 
-  const isLoading = carLoading || bookingLoading;
-  const hasError = carError || bookingError;
-  const errorMessage = carError || bookingError;
+  const carId = paramCarId;
+  const { car } = location.state || {};
+  const isLoading = carLoading;
+  const errorMessage = carError;
 
   const [userInfo] = useState({
     name: user?.username || 'Anastasia Dobrota',
@@ -47,132 +40,144 @@ const CarBookPage = () => {
     phone: user?.phone || '+38 111 111 11 11',
   });
 
-  const getTodayDate = () => {
-    const now = new Date();
-
-    // Форматування до локального часу
-    const options = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false,
-    };
-
-    const localeDate = now.toLocaleString('en-GB', options); // en-GB для формату DD/MM/YYYY
-    const [datePart, timePart] = localeDate.split(', '); // Розділяємо дату і час
-
-    // Перетворення формату DD/MM/YYYY на YYYY-MM-DD
-    const [day, month, year] = datePart.split('/');
-    const formattedDate = `${year}-${month}-${day}T${timePart}`;
-    return formattedDate;
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-
-    // Дістаємо компоненти дати
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Місяці починаються з 0
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-
-    // Збираємо у формат "YYYY-MM-DD HH:mm"
-    return `${year}-${month}-${day} ${hours}:${minutes}`;
-  };
-
+  console.log(car?.pickupDateTime, car?.dropOffDateTime);
   const [bookingInfo, setBookingInfo] = useState({
     pickUp: {
-      id: filters.pickupLocationId || '9b903ebf-2b18-4946-bc58-045d86a2632e',
-      location: filters.pickupLocationId
-        ? getLocationName(filters.pickupLocationId)
-        : getLocationName('ac1a3a1d-3fb2-4eb6-b27a-1c034929aee4'),
-      dateTime: car.pickupDateTime || filters.pickupDateTime || getTodayDate(),
+      id: filters?.pickupLocationId,
+      location: getLocationName(filters?.pickupLocationId),
+      dateTime:
+        car?.pickupDateTime || filters?.pickupDateTime || getTodayDate(),
     },
     dropOff: {
-      id: filters.dropOffLocationId || 'ac1a3a1d-3fb2-4eb6-b27a-1c034929aee4',
-      location: filters.dropOffLocationId
-        ? getLocationName(filters.dropOffLocationId)
-        : getLocationName('ac1a3a1d-3fb2-4eb6-b27a-1c034929aee4'),
+      id: filters?.dropOffLocationId,
+      location: getLocationName(filters?.dropOffLocationId),
       dateTime:
-        car.dropOffDateTime || filters.dropOffDateTime || getTodayDate(),
+        car?.dropOffDateTime ||
+        filters?.dropOffDateTime ||
+        getTodayDatePlusOneDay(),
     },
     car: {
       id: carId,
       name: car?.model || carDetails?.model || 'Car Name',
       location: car?.location || carDetails?.location || 'Car Location',
-      image: car.image || carDetails?.images?.[0] || image,
-      price: car?.totalPrice || car.pricePerDay || 0,
+      image: car?.image || carDetails?.images?.[0] || image,
+      price: car?.totalPrice || car?.pricePerDay || 0,
       deposit: car?.deposit || carDetails?.deposit || 0,
     },
   });
+
   const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState({
-    header: '',
-    message: '',
-  });
+  const [modalMessage, setModalMessage] = useState({ header: '', message: '' });
+
   useEffect(() => {
     if (carId) {
       dispatch(getCarDetails(carId));
-      dispatch(getBookedDays(carId));
     }
   }, [carId, dispatch]);
+
+  useEffect(() => {
+    console.log(filters, carDetails, car);
+    setBookingInfo((prevState) => ({
+      ...prevState,
+      pickUp: {
+        ...prevState.pickUp,
+        id: filters?.pickupLocationId,
+        location: getLocationName(filters?.pickupLocationId),
+        dateTime:
+          car?.pickupDateTime || filters?.pickupDateTime || getTodayDate(),
+      },
+      dropOff: {
+        ...prevState.dropOff,
+        id: filters?.dropOffLocationId,
+        location: getLocationName(filters?.dropOffLocationId),
+        dateTime:
+          car?.dropOffDateTime ||
+          filters?.dropOffDateTime ||
+          getTodayDatePlusOneDay(),
+      },
+      car: {
+        ...prevState.car,
+        name: car?.model || carDetails?.model || 'Car Name',
+        location: car?.location || carDetails?.location || 'Car Location',
+        image: car?.image || carDetails?.images?.[0] || image,
+        price: car?.totalPrice || car?.pricePerDay || 0,
+        deposit: car?.deposit || carDetails?.deposit || 0,
+      },
+    }));
+  }, [filters, carDetails, car, image]);
 
   useEffect(() => {
     if (bookedDays.length > 0) {
       const latestBookingDate = bookedDays[bookedDays.length - 1];
       setBookingInfo((prevState) => ({
         ...prevState,
-        pickUp: { ...prevState.pickUp, date: latestBookingDate },
-        dropOff: { ...prevState.dropOff, date: latestBookingDate },
+        pickUp: { ...prevState.pickUp, dateTime: latestBookingDate },
+        dropOff: { ...prevState.dropOff, dateTime: latestBookingDate },
       }));
     }
   }, [bookedDays]);
 
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  };
+  const checkBookingData = (bookingData) => {
+    for (const key in bookingData) {
+      if (!bookingData[key]) {
+        return false;
+      }
+    }
+    return true;
+  };
   const handleConfirmReservation = async () => {
     const bookingData = {
       carId: bookingInfo.car.id,
-      clientId: user.userId,
+      clientId: user?.userId,
       dropOffDateTime: formatDate(bookingInfo.dropOff.dateTime),
       pickupDateTime: formatDate(bookingInfo.pickUp.dateTime),
       pickupLocationId: bookingInfo.pickUp.id,
       dropOffLocationId: bookingInfo.dropOff.id,
     };
-    try {
-      const actionResult = await dispatch(createBooking(bookingData));
-      const data = actionResult.payload;
-      console.log('data', data);
-      if (data.message === 'No locations found or dates are unavailable') {
-        setModalMessage({
-          header: `Sorry ${userInfo.name}`,
-          message: (
-            <div className="modal-message-card__message">
-              It seems like someone has already reserved this car. You can find
-              similar cars{' '}
-              <Link className="modal-message-card__message-link" to="/cars">
-                here
-              </Link>
-              .
-            </div>
-          ),
-        });
-        setShowModal(true);
-        return;
-      }
-
-      navigate('/bookings', { state: { message: data.message } });
-    } catch (error) {
+    if (!checkBookingData(bookingData)) {
       setModalMessage({
         header: 'Booking Error',
-        message:
-          'An error occurred while confirming your booking. Please try again.',
+        message: 'Please fill in all the fields.',
+      });
+      setShowModal(true);
+      return;
+    }
+    try {
+      console.log('Sending booking data:', bookingData);
+      const actionResult = await dispatch(createBooking(bookingData));
+
+      if (createBooking.fulfilled.match(actionResult)) {
+        navigate('/bookings', {
+          state: { message: actionResult.payload.message },
+        });
+      } else {
+        // Помилка у відповіді
+        console.error('Booking failed:', actionResult.error);
+        setModalMessage({
+          header: 'Booking Error',
+          message:
+            actionResult.payload.message || 'An error occurred during booking.',
+        });
+        setShowModal(true);
+      }
+    } catch (error) {
+      console.error('Unexpected error during booking:', error);
+      setModalMessage({
+        header: 'Unexpected Error',
+        message: 'An unexpected error occurred. Please try again later.',
       });
       setShowModal(true);
     }
-    // navigate('/bookings', { state: { message: 'data.message' } });
   };
 
   return (
@@ -184,8 +189,8 @@ const CarBookPage = () => {
       <h1>Car Booking</h1>
       <div className="car-book-page__details">
         {isLoading && <p>Loading...</p>}
-        {hasError && <p className="error">Error: {errorMessage}</p>}
-        {!isLoading && !hasError && (
+        {errorMessage && <p className="error">Error: {errorMessage}</p>}
+        {!isLoading && !errorMessage && (
           <>
             <div className="user-info">
               <h2>Personal Info</h2>
@@ -196,7 +201,6 @@ const CarBookPage = () => {
                 dropOff={bookingInfo.dropOff}
               />
             </div>
-
             <CarCard
               car={bookingInfo.car}
               onConfirm={handleConfirmReservation}

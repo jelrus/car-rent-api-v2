@@ -132,4 +132,8 @@ public class StringDateConverter {
         return pickupDateTime != null && dropOffDateTime != null &&
                 isISO8601DateTime(pickupDateTime) && isISO8601DateTime(dropOffDateTime);
     }
+
+    public static String generateCurrentGermanDate() {
+        return LocalDate.now().format(DateTimeFormatter.ofPattern(GERMAN_DATE));
+    }
 }

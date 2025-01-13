@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import './MessageCard.css';
+import styles from './MessageCard.module.css';
 import Button from '../Button/Button';
 
 const ModalMessageCard = ({ header, message, onClose }) => {
@@ -10,12 +10,14 @@ const ModalMessageCard = ({ header, message, onClose }) => {
   };
 
   return (
-    <div className="modal-overlay" onClick={handleOverlayClick}>
-      <div className="modal-message-card">
-        <div className="modal-message-card__header">{header}</div>
-        <div className="modal-message-card__content">
-          <div className="modal-message-card__message">{message}</div>
-          <Button text="Close" type="primary" onClick={onClose} />
+    <div className={styles.modalOverlay} onClick={handleOverlayClick}>
+      <div className={styles.modalMessageCard}>
+        {header && (
+          <div className={styles.modalMessageCardHeader}>{header}</div>
+        )}
+        <div className={styles.modalMessageCardContent}>
+          <div className={styles.modalMessageCardMessage}>{message}</div>
+          <Button text="Close" ButtonType="primary" onClick={onClose} />
         </div>
       </div>
     </div>
@@ -23,7 +25,7 @@ const ModalMessageCard = ({ header, message, onClose }) => {
 };
 
 ModalMessageCard.propTypes = {
-  header: PropTypes.string.isRequired,
+  header: PropTypes.string,
   message: PropTypes.node.isRequired,
   onClose: PropTypes.func.isRequired,
 };

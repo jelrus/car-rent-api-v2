@@ -9,4 +9,6 @@ public interface FeedbackDao {
     TableResponse<Feedback> findByTableRequestIndexed(TableRequest tableRequest);
 
     TableResponse<Feedback> findByTableRequestIndexedPaginated(TableRequest feedbackTableRequest);
+
+    Feedback put(Feedback feedback);
 }

@@ -7,6 +7,7 @@ const CustomCalendar = ({
   onDateSelect,
   onTimeSelect,
   selectedDates,
+  onShowModalMessage,
 }) => {
   const [currentMonthLeft, setCurrentMonthLeft] = useState(new Date());
   const [currentMonthRight, setCurrentMonthRight] = useState(
@@ -20,6 +21,8 @@ const CustomCalendar = ({
     const startDay = start.getDay(); // День тижня для першого дня місяця
 
     const days = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
     // Додаємо порожні дні для вирівнювання початку місяця з правильним днем тижня
     for (let i = 0; i < startDay; i++) {
@@ -33,7 +36,9 @@ const CustomCalendar = ({
       day <= end;
       day.setDate(day.getDate() + 1)
     ) {
-      days.push(new Date(day.getTime())); // Додаємо кожен день
+      const isPast = day < today;
+      days.push({ date: new Date(day), isPast });
+      // days.push(new Date(day.getTime())); // Додаємо кожен день
     }
 
     return days;
@@ -79,6 +84,13 @@ const CustomCalendar = ({
   };
 
   const handleDayClick = (day) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (!day || day < today) {
+      onShowModalMessage('Past dates cannot be selected.');
+      return;
+    }
     if (isSameDay(day, range.start) && isSameDay(day, range.end)) {
       setRange({ start: null, end: null });
       onDateSelect('pickup', null);
@@ -107,7 +119,7 @@ const CustomCalendar = ({
         );
 
         if (hasConflict) {
-          alert(
+          onShowModalMessage(
             'The selected range includes already booked dates. Please choose another range.',
           );
           return;
@@ -116,7 +128,9 @@ const CustomCalendar = ({
         setRange({ ...range, end: day });
         onDateSelect('dropOff', day);
       } else {
-        alert('Drop-off date cannot be earlier than the pick-up date.');
+        onShowModalMessage(
+          'Drop-off date cannot be earlier than the pick-up date.',
+        );
       }
     }
   };
@@ -201,22 +215,26 @@ const CustomCalendar = ({
                 {day}
               </div>
             ))}
-            {daysFirstMonth.map((day, index) => (
+            {daysFirstMonth.map((dayObj, index) => (
               <div
                 key={index}
-                onClick={() => handleDayClick(day)}
-                className={`calendar-day ${
-                  day && isSameDay(day, range.start) ? 'start' : ''
-                } ${day && isSameDay(day, range.end) ? 'end' : ''} ${
-                  day &&
-                  !isSameDay(day, range.start) &&
-                  !isSameDay(day, range.end) &&
-                  isInRange(day)
+                onClick={() => !dayObj?.isPast && handleDayClick(dayObj?.date)}
+                className={`calendar-day ${dayObj?.isPast ? 'disabled' : ''} ${
+                  dayObj?.date && isSameDay(dayObj.date, range.start)
+                    ? 'start'
+                    : ''
+                } ${
+                  dayObj?.date && isSameDay(dayObj.date, range.end) ? 'end' : ''
+                } ${
+                  dayObj?.date &&
+                  !isSameDay(dayObj.date, range.start) &&
+                  !isSameDay(dayObj.date, range.end) &&
+                  isInRange(dayObj.date)
                     ? 'in-range'
                     : ''
-                } ${day && isDateBooked(day) ? 'booked' : ''}`}
+                } ${dayObj?.date && isDateBooked(dayObj.date) ? 'booked' : ''}`}
               >
-                {day ? day.getDate() : ''}
+                {dayObj?.date ? dayObj.date.getDate() : ''}
               </div>
             ))}
           </div>
@@ -235,22 +253,26 @@ const CustomCalendar = ({
                 {day}
               </div>
             ))}
-            {daysSecondMonth.map((day, index) => (
+            {daysSecondMonth.map((dayObj, index) => (
               <div
                 key={index}
-                onClick={() => handleDayClick(day)}
-                className={`calendar-day ${
-                  day && isSameDay(day, range.start) ? 'start' : ''
-                } ${day && isSameDay(day, range.end) ? 'end' : ''} ${
-                  day &&
-                  !isSameDay(day, range.start) &&
-                  !isSameDay(day, range.end) &&
-                  isInRange(day)
+                onClick={() => !dayObj?.isPast && handleDayClick(dayObj?.date)}
+                className={`calendar-day ${dayObj?.isPast ? 'disabled' : ''} ${
+                  dayObj?.date && isSameDay(dayObj.date, range.start)
+                    ? 'start'
+                    : ''
+                } ${
+                  dayObj?.date && isSameDay(dayObj.date, range.end) ? 'end' : ''
+                } ${
+                  dayObj?.date &&
+                  !isSameDay(dayObj.date, range.start) &&
+                  !isSameDay(dayObj.date, range.end) &&
+                  isInRange(dayObj.date)
                     ? 'in-range'
                     : ''
-                } ${day && isDateBooked(day) ? 'booked' : ''}`}
+                } ${dayObj?.date && isDateBooked(dayObj.date) ? 'booked' : ''}`}
               >
-                {day ? day.getDate() : ''}
+                {dayObj?.date ? dayObj.date.getDate() : ''}
               </div>
             ))}
           </div>
@@ -324,6 +346,7 @@ CustomCalendar.propTypes = {
       times: PropTypes.arrayOf(PropTypes.string),
     }),
   ),
+  onShowModalMessage: PropTypes.func.isRequired,
 };
 
 export default CustomCalendar;
