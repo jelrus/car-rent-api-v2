@@ -66,4 +66,8 @@ public class StringDateConverter {
 
         return datesRange;
     }
+
+    public static String generateCurrentGermanDate() {
+        return LocalDate.now().format(DateTimeFormatter.ofPattern(GERMAN_DATE));
+    }
 }

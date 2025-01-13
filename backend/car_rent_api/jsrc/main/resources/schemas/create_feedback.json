@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Request to create feedback on the car rental experience",
+  "properties": {
+    "bookingId": {
+      "type": "string",
+      "description": "The booking ID",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "example": "ce3d9306-ec01-48a9-9d1a-f9818063c734"
+    },
+    "carId": {
+      "type": "string",
+      "description": "The car ID",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "example": "92c87432-3383-4328-85f8-7d20ba8715ec"
+    },
+    "clientId": {
+      "type": "string",
+      "description": "The client ID",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    },
+    "feedbackText": {
+      "type": "string",
+      "description": "Text about car rental experience",
+      "minLength": 10,
+      "maxLength": 1000,
+      "pattern": "^.*$",
+      "example": "I rented a car for a week. The car was in good condition, the service was excellent. I am very satisfied with the service!"
+    },
+    "rating": {
+      "type": "string",
+      "description": "The rating",
+      "minLength": 1,
+      "maxLength": 4,
+      "pattern": "^[0-9](\\.[0-9]+)?$",
+      "example": "4.8"
+    }
+  },
+  "required": ["bookingId", "carId", "clientId", "feedbackText", "rating"]
+}

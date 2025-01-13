@@ -269,6 +269,15 @@
             "integration.request.path.clientId": "method.request.path.clientId"
           }
         }
+      },
+      "/v1/feedbacks": {
+        "enable_cors": true,
+        "POST": {
+          "authorization_type": "authorizer",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true
+        }
       }
     }
   }

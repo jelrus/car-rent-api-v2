@@ -14,6 +14,7 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.Page;
+import software.amazon.awssdk.enhanced.dynamodb.model.PutItemEnhancedRequest;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 import software.amazon.awssdk.services.dynamodb.model.Select;
@@ -77,5 +78,13 @@ public class FeedbackDaoImpl implements FeedbackDao {
                 .elementsOnPage(feedbackPageBuilder.getElementsOnPage())
                 .totalElements(feedbackPageBuilder.getTotalElements())
                 .build();
+    }
+
+    @Override
+    public Feedback put(Feedback feedback) {
+        PutItemEnhancedRequest<Feedback> feedbackRequest = PutItemEnhancedRequest.builder(Feedback.class).item(feedback)
+                .build();
+        feedbackVolume.putItem(feedbackRequest);
+        return feedback;
     }
 }

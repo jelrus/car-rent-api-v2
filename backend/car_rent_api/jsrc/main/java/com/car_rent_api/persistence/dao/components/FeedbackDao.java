@@ -11,4 +11,6 @@ public interface FeedbackDao {
     List<Feedback> findFeedbacksSortedByRentalExperience();
 
     FeedbackPageResponse findFeedbacksPaginatedAndFiltered(FeedbackPageRequest feedbackPageRequest);
+
+    Feedback put(Feedback feedback);
 }

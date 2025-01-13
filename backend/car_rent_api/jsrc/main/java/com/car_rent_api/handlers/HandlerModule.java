@@ -9,6 +9,7 @@ import com.car_rent_api.handlers.components.impl.cars.GetCarBookedDaysHandler;
 import com.car_rent_api.handlers.components.impl.cars.GetCarClientReviewsHandler;
 import com.car_rent_api.handlers.components.impl.cars.GetCarHandler;
 import com.car_rent_api.handlers.components.impl.cars.GetCarsHandler;
+import com.car_rent_api.handlers.components.impl.feedbacks.PostFeedbacksHandler;
 import com.car_rent_api.handlers.components.impl.home.*;
 import com.car_rent_api.handlers.components.impl.users.PostUsersHandler;
 import com.car_rent_api.handlers.components.impl.users.PostUsersLoginHandler;
@@ -149,5 +150,13 @@ public class HandlerModule {
     @StringKey("GET:/v1/bookings/{clientId}")
     public EndpointHandler provideBookingsClientHandler(BookingService bookingService, GsonPrinter gsonPrinter) {
         return new GetBookingsClientHandler(bookingService, gsonPrinter);
+    }
+
+    @Singleton
+    @Provides
+    @IntoMap
+    @StringKey("POST:/v1/feedbacks")
+    public EndpointHandler provideCreateFeedbackHandler(FeedbackService feedbackService,  SchemaValidator schemaValidator, GsonPrinter gsonPrinter) {
+        return new PostFeedbacksHandler(feedbackService, schemaValidator, gsonPrinter);
     }
 }

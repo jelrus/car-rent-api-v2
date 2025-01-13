@@ -5,4 +5,5 @@ public class JsonValidationSchemes {
     public static final String SIGNUP_REQUEST = "signup.json";
     public static final String LOGIN_REQUEST = "login.json";
     public static final String BOOKING_REQUEST = "booking.json";
+    public static final String CREATE_FEEDBACK_REQUEST = "create_feedback.json";
 }
