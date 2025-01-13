@@ -9,6 +9,9 @@ public class BookingInfo {
     private String bookingId;
 
     @Expose
+    private String carId;
+
+    @Expose
     private String bookingStatus;
 
     @Expose
@@ -24,6 +27,10 @@ public class BookingInfo {
 
     public String getBookingId() {
         return bookingId;
+    }
+
+    public String getCarId() {
+        return carId;
     }
 
     public String getBookingStatus() {
@@ -52,6 +59,11 @@ public class BookingInfo {
 
         public Builder bookingId(String bookingId) {
             BookingInfo.this.bookingId = bookingId.replace(TableKeys.FEEDBACK_SK_PREFIX, "");
+            return this;
+        }
+
+        public Builder carId(String carId) {
+            BookingInfo.this.carId = carId;
             return this;
         }
 
