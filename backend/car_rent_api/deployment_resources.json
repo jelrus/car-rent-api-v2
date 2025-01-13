@@ -270,6 +270,74 @@
           }
         }
       },
+      "/v1/bookings/{clientId}/{bookingId}/edit": {
+        "enable_cors": true,
+        "PUT": {
+          "authorization_type": "authorizer",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true,
+          "method_request_parameters": {
+            "method.request.path.clientId": true,
+            "method.request.path.bookingId": true
+          },
+          "integration_request_parameters": {
+            "integration.request.path.clientId": "method.request.path.clientId",
+            "integration.request.path.bookingId": "method.request.path.bookingId"
+          }
+        }
+      },
+      "/v1/bookings/{clientId}/{bookingId}/cancel": {
+        "enable_cors": true,
+        "PUT": {
+          "authorization_type": "authorizer",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true,
+          "method_request_parameters": {
+            "method.request.path.clientId": true,
+            "method.request.path.bookingId": true
+          },
+          "integration_request_parameters": {
+            "integration.request.path.clientId": "method.request.path.clientId",
+            "integration.request.path.bookingId": "method.request.path.bookingId"
+          }
+        }
+      },
+      "/v1/bookings/{clientId}/{bookingId}/start": {
+        "enable_cors": true,
+        "PUT": {
+          "authorization_type": "authorizer",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true,
+          "method_request_parameters": {
+            "method.request.path.clientId": true,
+            "method.request.path.bookingId": true
+          },
+          "integration_request_parameters": {
+            "integration.request.path.clientId": "method.request.path.clientId",
+            "integration.request.path.bookingId": "method.request.path.bookingId"
+          }
+        }
+      },
+      "/v1/bookings/{clientId}/{bookingId}/provide": {
+        "enable_cors": true,
+        "PUT": {
+          "authorization_type": "authorizer",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true,
+          "method_request_parameters": {
+            "method.request.path.clientId": true,
+            "method.request.path.bookingId": true
+          },
+          "integration_request_parameters": {
+            "integration.request.path.clientId": "method.request.path.clientId",
+            "integration.request.path.bookingId": "method.request.path.bookingId"
+          }
+        }
+      },
       "/v1/feedbacks": {
         "enable_cors": true,
         "POST": {

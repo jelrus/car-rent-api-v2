@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Request to book a car",
+  "properties": {
+    "mileage": {
+      "type": "integer",
+      "description": "Car End Mileage",
+      "minimum": 1
+    }
+  },
+  "required": ["mileage"]
+}

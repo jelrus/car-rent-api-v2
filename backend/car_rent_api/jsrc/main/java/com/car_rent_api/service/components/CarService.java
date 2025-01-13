@@ -13,7 +13,7 @@ public interface CarService {
 
     CarBookedDatesResponse getBookedDays(String id);
 
-    PopularCarsResponse findCarsByCategorySortedByRentalExperience(Map<String, String> params);
+    PopularCarsResponse findByCategorySortedByRating(Map<String, String> params);
 
-    FilterCarsPageableResponse findCarsFiltered(Map<String, String> params);
+    FilterCarsPageableResponse findByHomeSearchFilter(Map<String, String> params);
 }

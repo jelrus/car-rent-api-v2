@@ -12,6 +12,7 @@ public class Booking {
     private String orderDetails;
     private BookingStatus status;
     private String clientId;
+    private String madeBy;
     private String carId;
     private String createdAt;
     private String lockedFrom;
@@ -19,6 +20,9 @@ public class Booking {
     private String dropOffDateTime;
     private String pickupLocationId;
     private String dropOffLocationId;
+    private String supportAgentId;
+    private Integer carMileageStart;
+    private Integer carMileageEnd;
 
     public Booking() {}
 
@@ -42,6 +46,11 @@ public class Booking {
     @DynamoDbAttribute("BOOKING#STATUS")
     public BookingStatus getStatus() {
         return status;
+    }
+
+    @DynamoDbAttribute("BOOKING#MADE_BY")
+    public String getMadeBy() {
+        return madeBy;
     }
 
     @DynamoDbAttribute("BOOKING#CLIENT_ID")
@@ -83,6 +92,21 @@ public class Booking {
     @DynamoDbAttribute("BOOKING#DROPOFF_LOCATION_ID")
     public String getDropOffLocationId() {
         return dropOffLocationId;
+    }
+
+    @DynamoDbAttribute("BOOKING#SUPPORT_AGENT_ID")
+    public String getSupportAgentId() {
+        return supportAgentId;
+    }
+
+    @DynamoDbAttribute("BOOKING#CAR_MILEAGE_START")
+    public Integer getCarMileageStart() {
+        return carMileageStart;
+    }
+
+    @DynamoDbAttribute("BOOKING#CAR_MILEAGE_END")
+    public Integer getCarMileageEnd() {
+        return carMileageEnd;
     }
 
     public void setPkId(String pkId) {
@@ -133,8 +157,28 @@ public class Booking {
         this.dropOffLocationId = dropOffLocationId;
     }
 
+    public void setMadeBy(String madeBy) {
+        this.madeBy = madeBy;
+    }
+
+    public void setSupportAgentId(String supportAgentId) {
+        this.supportAgentId = supportAgentId;
+    }
+
+    public void setCarMileageStart(Integer carMileageStart) {
+        this.carMileageStart = carMileageStart;
+    }
+
+    public void setCarMileageEnd(Integer carMileageEnd) {
+        this.carMileageEnd = carMileageEnd;
+    }
+
     public static Builder builder() {
         return new Booking().new Builder();
+    }
+
+    public Builder toBuilder() {
+        return this.new Builder();
     }
 
     public class Builder {
@@ -158,6 +202,11 @@ public class Booking {
 
         public Builder status(BookingStatus status) {
             Booking.this.status = status;
+            return this;
+        }
+
+        public Builder madeBy(String madeBy) {
+            Booking.this.madeBy = madeBy;
             return this;
         }
 
@@ -198,6 +247,21 @@ public class Booking {
 
         public Builder dropOffLocationId(String dropOffLocationId) {
             Booking.this.dropOffLocationId = dropOffLocationId;
+            return this;
+        }
+
+        public Builder supportAgentId(String supportAgentId) {
+            Booking.this.supportAgentId = supportAgentId;
+            return this;
+        }
+
+        public Builder carMileageStart(Integer carMileageStart) {
+            Booking.this.carMileageStart = carMileageStart;
+            return this;
+        }
+
+        public Builder carMileageEnd(Integer carMileageEnd) {
+            Booking.this.carMileageEnd = carMileageEnd;
             return this;
         }
 

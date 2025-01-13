@@ -4,16 +4,11 @@ import com.car_rent_api.config.Resources;
 import com.car_rent_api.config.TableKeys;
 import com.car_rent_api.persistence.dao.components.CarDao;
 import com.car_rent_api.persistence.models.entity.Car;
-import com.car_rent_api.persistence.specification.CarPageRequest;
-import com.car_rent_api.persistence.specification.CarPageResponse;
-import com.car_rent_api.persistence.specification.PaginationBuilder;
-import com.car_rent_api.utils.components.LogPrinter;
+import com.car_rent_api.persistence.pagination.api.TableRequest;
+import com.car_rent_api.persistence.pagination.api.TableResponse;
 import software.amazon.awssdk.core.pagination.sync.SdkIterable;
 import software.amazon.awssdk.enhanced.dynamodb.*;
 import software.amazon.awssdk.enhanced.dynamodb.model.*;
-import software.amazon.awssdk.services.dynamodb.model.Select;
-
-import java.util.List;
 
 public class CarDaoImpl implements CarDao {
 
@@ -45,70 +40,43 @@ public class CarDaoImpl implements CarDao {
     }
 
     @Override
-    public Boolean isBookedDatesAreFree(CarPageRequest carPageRequest) {
-        Key carKey = Key.builder().partitionValue(TableKeys.CAR_PK)
-                .sortValue(TableKeys.CAR_SK_PREFIX + carPageRequest.getParams().get("id"))
-                .build();
-
-        QueryConditional carCondition = QueryConditional.keyEqualTo(carKey);
-        QueryEnhancedRequest carRequest = QueryEnhancedRequest.builder()
-                .queryConditional(carCondition)
-                .filterExpression(carPageRequest.getFilter())
-                .build();
-
-        return !carsVolume.query(carRequest).stream()
-                .map(Page::items)
-                .flatMap(List::stream)
-                .toList()
-                .isEmpty();
+    public Integer maxPrice() {
+        Key carsKey = Key.builder().partitionValue(TableKeys.CAR_PK).sortValue(TableKeys.CAR_SK_PREFIX).build();
+        QueryConditional carCondition = QueryConditional.sortBeginsWith(carsKey);
+        QueryEnhancedRequest request = QueryEnhancedRequest.builder().queryConditional(carCondition).build();
+        return carsVolume.query(request).items().stream().map(Car::getPricePerDay).max(Integer::compareTo).orElse(null);
     }
 
     @Override
-    public CarPageResponse findCarsByCategorySortedByRentalExperience(CarPageRequest carPageRequest) {
-        LogPrinter.info("[CarDao | Find Cars By Category and Sorted By Rental Experience] Entering CarDao " +
-                "findCarsByCategorySortedByRentalExperience() {}");
-        Key carsKey = Key.builder().partitionValue(TableKeys.CAR_PK).build();
-        QueryConditional carCondition = QueryConditional.keyEqualTo(carsKey);
-        QueryEnhancedRequest carRequest = QueryEnhancedRequest.builder()
-                .queryConditional(carCondition)
-                .select(Select.ALL_ATTRIBUTES)
-                .scanIndexForward(false)
-                .filterExpression(carPageRequest.getFilter())
-                .build();
-
-        LogPrinter.info("[CarDao | Find Cars By Category and Sorted By Rental Experience] Querying...");
-        List<Car> cars = carsVolume.index(TableKeys.CAR_RENTAL_EXPERIENCE_IDX).query(carRequest).stream()
-                .map(Page::items)
-                .flatMap(List::stream)
-                .toList();
-
-        return CarPageResponse.builder().items(cars).build();
+    public Integer minPrice() {
+        Key carsKey = Key.builder().partitionValue(TableKeys.CAR_PK).sortValue(TableKeys.CAR_SK_PREFIX).build();
+        QueryConditional carCondition = QueryConditional.sortBeginsWith(carsKey);
+        QueryEnhancedRequest request = QueryEnhancedRequest.builder().queryConditional(carCondition).build();
+        return carsVolume.query(request).items().stream().map(Car::getPricePerDay).min(Integer::compareTo).orElse(null);
     }
 
     @Override
-    public CarPageResponse findCarsFiltered(CarPageRequest carPageRequest) {
-        LogPrinter.info("[CarDao | Find Cars Filtered] Entering CarDao findCarsFiltered() {}");
+    public TableResponse<Car> findByTableRequestIndexed(TableRequest tableRequest) {
+        return TableResponse.<Car>builder().init(tableRequest).convertFromPages(findByTableRequest(tableRequest))
+                .build();
+    }
+
+    @Override
+    public TableResponse<Car> findByTableRequestIndexedPaginated(TableRequest tableRequest) {
+        return TableResponse.<Car>builder().init(tableRequest).convertFromPages(findByTableRequest(tableRequest))
+                .paginate().build();
+    }
+
+    private SdkIterable<Page<Car>> findByTableRequest(TableRequest tableRequest) {
         Key carsKey = Key.builder().partitionValue(TableKeys.CAR_PK).build();
         QueryConditional carCondition = QueryConditional.keyEqualTo(carsKey);
+
         QueryEnhancedRequest carRequest = QueryEnhancedRequest.builder()
                 .queryConditional(carCondition)
-                .filterExpression(carPageRequest.getFilter())
+                .scanIndexForward(tableRequest.getDirection())
+                .filterExpression(tableRequest.getFilter())
                 .build();
 
-        LogPrinter.info("[CarDao | Find Cars Filtered] Querying...");
-        SdkIterable<Page<Car>> carPages = carsVolume.index(TableKeys.CAR_STATUS_IDX).query(carRequest);
-
-        LogPrinter.info("[CarDao | Find Cars Filtered] Entering pagination for cars filtering");
-        PaginationBuilder<Car> carPageBuilder =
-                new PaginationBuilder<>(carPageRequest.getPage(), carPageRequest.getSize());
-        carPageBuilder.paginate(carPages);
-
-        return CarPageResponse.builder()
-                .items(carPageBuilder.getItems())
-                .currentPage(carPageBuilder.getPage())
-                .totalPages(carPageBuilder.getTotalPages())
-                .elementsOnPage(carPageBuilder.getElementsOnPage())
-                .totalElements(carPageBuilder.getTotalElements())
-                .build();
+        return carsVolume.index(tableRequest.getSort()).query(carRequest);
     }
 }

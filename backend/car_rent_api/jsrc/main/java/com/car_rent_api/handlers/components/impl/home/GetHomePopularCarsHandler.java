@@ -27,14 +27,16 @@ public class GetHomePopularCarsHandler implements EndpointHandler {
     public APIGatewayProxyResponseEvent handle(APIGatewayProxyRequestEvent event, Context context) {
         TransactionContext.setTransactionId(UUID.randomUUID().toString());
         LogPrinter.warn("[GetHomePopularCarsHandler] Entering 'GET @ /home/popular-cars' method");
+
         Map<String, String> queryParams = event.getQueryStringParameters();
+        queryParams = queryParams == null ? Map.of() : queryParams;
         LogPrinter.warn("[GetHomePopularCarsHandler] Query params acquired {}",
                 gsonPrinter.print().toJson(queryParams));
 
         try {
             LogPrinter.info("[GetHomePopularCarsHandler] Request accepted");
 
-            PopularCarsResponse response = carService.findCarsByCategorySortedByRentalExperience(queryParams);
+            PopularCarsResponse response = carService.findByCategorySortedByRating(queryParams);
             String jsonResponse = gsonPrinter.print().toJson(response);
             LogPrinter.info("[GetHomePopularCarsHandler] Exiting 'GET @ /home/popular-cars' ({})", jsonResponse);
 

@@ -11,7 +11,7 @@ public interface FeedbackService {
 
     FeedbacksResponse findFeedbacksSortedByRentalExperience();
 
-    ClientReviewSortedPageableResponse findFeedbacksFilteredByCarIdAndSorted(Map<String, String> params, String carId);
+    ClientReviewSortedPageableResponse findAllByCarIdDateSortedDesc(Map<String, String> params, String carId);
 
     CreateFeedbacksResponse create(CreateFeedbackRequest request);
 }

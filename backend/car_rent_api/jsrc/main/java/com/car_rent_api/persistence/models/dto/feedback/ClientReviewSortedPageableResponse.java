@@ -7,7 +7,7 @@ import java.util.List;
 public class ClientReviewSortedPageableResponse {
 
     @Expose
-    private Integer currentPage;
+    private List<ClientReview> content;
 
     @Expose
     private Integer elementsOnPage;
@@ -16,15 +16,15 @@ public class ClientReviewSortedPageableResponse {
     private Integer totalElements;
 
     @Expose
-    private Integer totalPages;
+    private Integer currentPage;
 
     @Expose
-    private List<ClientReview> content;
+    private Integer totalPages;
 
     public ClientReviewSortedPageableResponse() {}
 
-    public Integer getCurrentPage() {
-        return currentPage;
+    public List<ClientReview> getContent() {
+        return content;
     }
 
     public Integer getElementsOnPage() {
@@ -35,12 +35,12 @@ public class ClientReviewSortedPageableResponse {
         return totalElements;
     }
 
-    public Integer getTotalPages() {
-        return totalPages;
+    public Integer getCurrentPage() {
+        return currentPage;
     }
 
-    public List<ClientReview> getContent() {
-        return content;
+    public Integer getTotalPages() {
+        return totalPages;
     }
 
     public static Builder builder() {
@@ -51,8 +51,8 @@ public class ClientReviewSortedPageableResponse {
 
         private Builder() {}
 
-        public Builder currentPage(Integer currentPage) {
-            ClientReviewSortedPageableResponse.this.currentPage = currentPage;
+        public Builder content(List<ClientReview> content) {
+            ClientReviewSortedPageableResponse.this.content = content;
             return this;
         }
 
@@ -66,13 +66,13 @@ public class ClientReviewSortedPageableResponse {
             return this;
         }
 
-        public Builder totalPages(Integer totalPages) {
-            ClientReviewSortedPageableResponse.this.totalPages = totalPages;
+        public Builder currentPage(Integer currentPage) {
+            ClientReviewSortedPageableResponse.this.currentPage = currentPage;
             return this;
         }
 
-        public Builder content(List<ClientReview> content) {
-            ClientReviewSortedPageableResponse.this.content = content;
+        public Builder totalPages(Integer totalPages) {
+            ClientReviewSortedPageableResponse.this.totalPages = totalPages;
             return this;
         }
 

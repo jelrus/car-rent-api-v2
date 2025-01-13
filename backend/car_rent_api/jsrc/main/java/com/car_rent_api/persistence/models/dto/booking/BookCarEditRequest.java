@@ -3,13 +3,10 @@ package com.car_rent_api.persistence.models.dto.booking;
 import com.car_rent_api.utils.components.StringDateConverter;
 import com.google.gson.annotations.Expose;
 
-public class BookCarRequest {
+public class BookCarEditRequest {
 
     @Expose
     private String carId;
-
-    @Expose
-    private String clientId;
 
     @Expose
     private String pickupDateTime;
@@ -23,14 +20,10 @@ public class BookCarRequest {
     @Expose
     private String dropOffLocationId;
 
-    public BookCarRequest() {}
+    public BookCarEditRequest() {}
 
     public String getCarId() {
         return carId;
-    }
-
-    public String getClientId() {
-        return clientId;
     }
 
     public String getPickupDateTime() {
@@ -50,9 +43,8 @@ public class BookCarRequest {
     }
 
     public static Builder builder() {
-       return new BookCarRequest().new Builder();
+        return new BookCarEditRequest().new Builder();
     }
-
     public Builder toBuilder() {
         return this.new Builder();
     }
@@ -62,37 +54,32 @@ public class BookCarRequest {
         private Builder() {}
 
         public Builder carId(String carId) {
-            BookCarRequest.this.carId = carId;
-            return this;
-        }
-
-        public Builder clientId(String clientId) {
-            BookCarRequest.this.clientId = clientId;
+            BookCarEditRequest.this.carId = carId;
             return this;
         }
 
         public Builder pickupDateTime(String pickupDateTime) {
-            BookCarRequest.this.pickupDateTime = StringDateConverter.adjustToISO8601DateTime(pickupDateTime);
+            BookCarEditRequest.this.pickupDateTime = StringDateConverter.adjustToISO8601DateTime(pickupDateTime);
             return this;
         }
 
         public Builder dropOffDateTime(String dropOffDateTime) {
-            BookCarRequest.this.dropOffDateTime =  StringDateConverter.adjustToISO8601DateTime(dropOffDateTime);
+            BookCarEditRequest.this.dropOffDateTime =  StringDateConverter.adjustToISO8601DateTime(dropOffDateTime);
             return this;
         }
 
         public Builder pickupLocationId(String pickupLocationId) {
-            BookCarRequest.this.pickupLocationId = pickupLocationId;
+            BookCarEditRequest.this.pickupLocationId = pickupLocationId;
             return this;
         }
 
         public Builder dropOffLocationId(String dropOffLocationId) {
-            BookCarRequest.this.dropOffLocationId = dropOffLocationId;
+            BookCarEditRequest.this.dropOffLocationId = dropOffLocationId;
             return this;
         }
 
-        public BookCarRequest build() {
-            return BookCarRequest.this;
+        public BookCarEditRequest build() {
+            return BookCarEditRequest.this;
         }
     }
 }

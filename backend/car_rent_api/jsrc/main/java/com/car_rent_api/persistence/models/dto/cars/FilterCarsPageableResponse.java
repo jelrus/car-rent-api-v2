@@ -3,6 +3,7 @@ package com.car_rent_api.persistence.models.dto.cars;
 import com.google.gson.annotations.Expose;
 
 import java.util.List;
+import java.util.Map;
 
 public class FilterCarsPageableResponse {
 
@@ -20,6 +21,9 @@ public class FilterCarsPageableResponse {
 
     @Expose
     private Integer totalPages;
+
+    @Expose
+    private Map<String, Object> components;
 
     public FilterCarsPageableResponse() {}
 
@@ -41,6 +45,10 @@ public class FilterCarsPageableResponse {
 
     public Integer getTotalPages() {
         return totalPages;
+    }
+
+    public Map<String, Object> getComponents() {
+        return components;
     }
 
     public static Builder builder() {
@@ -73,6 +81,11 @@ public class FilterCarsPageableResponse {
 
         public Builder totalPages(Integer totalPages) {
             FilterCarsPageableResponse.this.totalPages = totalPages;
+            return this;
+        }
+
+        public Builder components(Map<String, Object> components) {
+            FilterCarsPageableResponse.this.components = components;
             return this;
         }
 

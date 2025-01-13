@@ -1,13 +1,9 @@
 package com.car_rent_api.persistence.models.dto.booking;
 
+import com.car_rent_api.persistence.models.entity.Booking;
 import com.car_rent_api.utils.components.LogPrinter;
 import com.car_rent_api.utils.components.StringDateConverter;
 import com.google.gson.annotations.Expose;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 public class BookCarResponse {
 
@@ -45,29 +41,67 @@ public class BookCarResponse {
             You can change booking details until 10:30 PM 10 Nov.\n
             Your order: #2437 (08.06.24)
          */
-        public Builder constructMessage(String carModel, String pickupDateTime, String dropOffDateTime,
-                                        String lockedFrom, String orderDetails) {
-            LogPrinter.info("Constructing message...");
-            DateTimeFormatter dateRangeFormatter = DateTimeFormatter.ofPattern("MMM dd").localizedBy(Locale.ENGLISH);
-            LocalDateTime pickUp = StringDateConverter.fromStringToISO8601DateTime(pickupDateTime.replace(" ", "T"));
-            LocalDateTime dropOff = StringDateConverter.fromStringToISO8601DateTime(dropOffDateTime.replace(" ", "T"));
-            LogPrinter.info("Pick Up Date Time {}, Drop Off Date Time {}", pickUp, dropOff);
-
-            pickupDateTime = pickUp.format(dateRangeFormatter);
-            dropOffDateTime = dropOff.format(dateRangeFormatter);
-            LogPrinter.info("Formatted Pick Up Date Time {}, Drop Off Date Time {}", pickupDateTime, dropOffDateTime);
-
-            DateTimeFormatter lockedFromFormat = DateTimeFormatter.ofPattern("HH:mm a dd MMM")
-                    .localizedBy(Locale.ENGLISH);
-            LocalDateTime locked = StringDateConverter.fromStringToISO8601DateTime(lockedFrom.replace(" ", "T"));
-            lockedFrom = locked.format(lockedFromFormat);
-            LogPrinter.info("Formatted Locked from date time {}", lockedFrom);
+        public Builder constructCreateMessage(String carModel, Booking booking) {
+            LogPrinter.info("Constructing create message...");
+            String pickUp = StringDateConverter.fromISO8601DateTimeToBookingActiveDate(booking.getPickupDateTime());
+            String dropOff = StringDateConverter.fromISO8601DateTimeToBookingActiveDate(booking.getDropOffDateTime());
+            String locked = StringDateConverter.fromISO8601DateTimeToLockedFromDateTime(booking.getLockedFrom());
 
             BookCarResponse.this.message =
                     " New booking was successfully created.\n" +
-                    carModel + " is booked for " + pickupDateTime +  " - " + dropOffDateTime  + "\n" +
-                    "You can change booking details until " + lockedFrom + ".\n" +
-                    "Your order: " + orderDetails;
+                            carModel + " is booked for " + pickUp + " - " + dropOff + "\n" +
+                            "You can change booking details until " + locked + ".\n" +
+                            "Your order: " + booking.getOrderDetails();
+            return this;
+        }
+
+        public Builder constructEditMessage(String carModel, Booking booking) {
+            LogPrinter.info("Constructing edit message...");
+            String pickUp = StringDateConverter.fromISO8601DateTimeToBookingActiveDate(booking.getPickupDateTime());
+            String dropOff = StringDateConverter.fromISO8601DateTimeToBookingActiveDate(booking.getDropOffDateTime());
+            String locked = StringDateConverter.fromISO8601DateTimeToLockedFromDateTime(booking.getLockedFrom());
+
+            BookCarResponse.this.message =
+                    "Booking was successfully updated. \n" +
+                            carModel + " is now booked for " + pickUp + " - " + dropOff + "\n" +
+                            "You can change booking details until " + locked + ".\n" +
+                            "Your order: " + booking.getOrderDetails();
+            return this;
+        }
+
+        public Builder constructCancelMessage(String carModel, Booking booking) {
+            LogPrinter.info("Constructing edit message...");
+            String pickUp = StringDateConverter.fromISO8601DateTimeToBookingActiveDate(booking.getPickupDateTime());
+            String dropOff = StringDateConverter.fromISO8601DateTimeToBookingActiveDate(booking.getDropOffDateTime());
+
+            BookCarResponse.this.message =
+                    "Your order: " + booking.getOrderDetails() + ".\n" +
+                            "For " + carModel + ".\n" +
+                            "On " + pickUp + " - " + dropOff + " has been successfully cancelled.";
+            return this;
+        }
+
+        public Builder constructServiceStartedMessage(String carModel, Booking booking) {
+            LogPrinter.info("Constructing service started message...");
+            String pickUp = StringDateConverter.fromISO8601DateTimeToBookingActiveDate(booking.getPickupDateTime());
+            String dropOff = StringDateConverter.fromISO8601DateTimeToBookingActiveDate(booking.getDropOffDateTime());
+
+            BookCarResponse.this.message =
+                    "Order: " + booking.getOrderDetails() + ".\n" +
+                            "For " + carModel + ".\n" +
+                            "On " + pickUp + " - " + dropOff + "has just started.";
+            return this;
+        }
+
+        public Builder constructServiceProvidedMessage(String carModel, Booking booking) {
+            LogPrinter.info("Constructing service provided message...");
+            String pickUp = StringDateConverter.fromISO8601DateTimeToBookingActiveDate(booking.getPickupDateTime());
+            String dropOff = StringDateConverter.fromISO8601DateTimeToBookingActiveDate(booking.getDropOffDateTime());
+
+            BookCarResponse.this.message =
+                    "Order: " + booking.getOrderDetails() + ".\n" +
+                            "For " + carModel + ".\n" +
+                            "On " + pickUp + " - " + dropOff + " has just ended.";
             return this;
         }
 

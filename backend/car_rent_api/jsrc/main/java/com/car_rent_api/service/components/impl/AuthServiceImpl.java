@@ -26,8 +26,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserSignUpResponse signUp(UserSignUpRequest request) {
-        LogPrinter.warn("[AuthService | Sign Up] Entering 'signUp @ AuthService' method");
-
         String email = request.getEmail();
         String password = request.getPassword();
         String subId;
@@ -35,22 +33,13 @@ public class AuthServiceImpl implements AuthService {
         try {
             checkUserPoolExistence(email);
             String accessToken = authDao.signUp(email, password);
-            checkUserPoolNonExistence(email);
             subId = authDao.getSubId(email);
-            LogPrinter.info("[AuthService | Sign Up] User in Cognito User Pool was created with id {}", subId);
 
             checkDbExistence(subId);
             userDao.create(buildUser(subId, request));
-            checkDbNonExistence(subId);
             User foundUser = userDao.findById(subId);
-            LogPrinter.info("[AuthService | Sign Up] User in DynamoDB was created with id {} and username {}",
-                    subId, foundUser.getUsername());
 
-            UserSignUpResponse response = buildUserSignUpResponse(accessToken, foundUser);
-            LogPrinter.info("[AuthService | Sign Up] Exiting 'signUp @ AuthService' with response (id {}; " +
-                    "username {})", response.getUserId(), response.getUsername());
-
-            return response;
+            return buildUserSignUpResponse(accessToken, foundUser);
         } catch (ExistenceException | CognitoIdentityProviderException | SdkClientException operationException) {
             LogPrinter.error("[AuthService | Sign Up] Exiting 'signUp @ AuthService' with error {}",
                     operationException.getMessage());
@@ -60,8 +49,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserLoginResponse login(UserLoginRequest request) {
-        LogPrinter.warn("[AuthService | Log In] Entering 'login @ AuthService' method");
-
         String email = request.getEmail();
         String password = request.getPassword();
         String subId;
@@ -70,18 +57,11 @@ public class AuthServiceImpl implements AuthService {
             checkUserPoolNonExistence(email);
             String accessToken = authDao.signIn(email, password);
             subId = authDao.getSubId(email);
-            LogPrinter.info("[AuthService | Log In] User was found in Cognito User Pool with id {}", subId);
 
             checkDbNonExistence(subId);
             User foundUser = userDao.findById(subId);
-            LogPrinter.info("[AuthService | Log In] User was found in DynamoDB with id {} and username {}",
-                    subId, foundUser.getUsername());
 
-            UserLoginResponse response = buildUserLoginResponse(accessToken, foundUser);
-            LogPrinter.info("[AuthService | Log In] Exiting 'login @ AuthService' with response (id {}; " +
-                    "username {})", response.getUserId(), response.getUsername());
-
-            return response;
+            return buildUserLoginResponse(accessToken, foundUser);
         } catch (ExistenceException | CognitoIdentityProviderException | SdkClientException operationException) {
             LogPrinter.error("[AuthService | Log In] Exiting 'login @ AuthService' with error {}",
                     operationException.getMessage());

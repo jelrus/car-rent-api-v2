@@ -3,6 +3,8 @@ package com.car_rent_api.persistence.models.dto.cars;
 import com.car_rent_api.config.TableKeys;
 import com.google.gson.annotations.Expose;
 
+import java.util.List;
+
 public class CarBriefInfo {
 
     @Expose
@@ -13,6 +15,12 @@ public class CarBriefInfo {
 
     @Expose
     private String location;
+
+    @Expose
+    private String pickupLocationId;
+
+    @Expose
+    private List<String> dropOffLocationsIds;
 
     @Expose
     private String model;
@@ -38,6 +46,14 @@ public class CarBriefInfo {
 
     public String getLocation() {
         return location;
+    }
+
+    public String getPickupLocationId() {
+        return pickupLocationId;
+    }
+
+    public List<String> getDropOffLocationsIds() {
+        return dropOffLocationsIds;
     }
 
     public String getModel() {
@@ -76,6 +92,16 @@ public class CarBriefInfo {
 
         public Builder location(String location) {
             CarBriefInfo.this.location = location;
+            return this;
+        }
+
+        public Builder pickupLocationId(String pickupLocationId) {
+            CarBriefInfo.this.pickupLocationId = pickupLocationId;
+            return this;
+        }
+
+        public Builder dropOffLocationsIds(List<String> dropOffLocationsIds) {
+            CarBriefInfo.this.dropOffLocationsIds = dropOffLocationsIds;
             return this;
         }
 

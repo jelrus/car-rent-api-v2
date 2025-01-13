@@ -4,13 +4,11 @@ import com.car_rent_api.config.Resources;
 import com.car_rent_api.config.TableKeys;
 import com.car_rent_api.persistence.dao.components.BookingDao;
 import com.car_rent_api.persistence.models.entity.Booking;
+import com.car_rent_api.persistence.pagination.api.TableRequest;
+import com.car_rent_api.persistence.pagination.api.TableResponse;
 import software.amazon.awssdk.core.pagination.sync.SdkIterable;
 import software.amazon.awssdk.enhanced.dynamodb.*;
 import software.amazon.awssdk.enhanced.dynamodb.model.*;
-import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
-
-import java.util.List;
-import java.util.Map;
 
 public class BookingDaoImpl implements BookingDao {
 
@@ -34,7 +32,9 @@ public class BookingDaoImpl implements BookingDao {
                 .partitionValue(TableKeys.BOOKING_PK)
                 .sortValue(TableKeys.BOOKING_SK_PREFIX + id)
                 .build();
+
         GetItemEnhancedRequest bookingRequest = GetItemEnhancedRequest.builder().key(bookingKey).build();
+
         return bookingVolume.getItem(bookingRequest);
     }
 
@@ -44,7 +44,9 @@ public class BookingDaoImpl implements BookingDao {
                 .partitionValue(TableKeys.BOOKING_PK)
                 .sortValue(TableKeys.BOOKING_SK_PREFIX + id)
                 .build();
+
         GetItemEnhancedRequest bookingRequest = GetItemEnhancedRequest.builder().key(bookingKey).build();
+
         return bookingVolume.getItem(bookingRequest) != null;
     }
 
@@ -53,30 +55,25 @@ public class BookingDaoImpl implements BookingDao {
         Key bookingKey = Key.builder().partitionValue(TableKeys.BOOKING_PK)
                 .sortValue(TableKeys.BOOKING_SK_PREFIX)
                 .build();
+
         QueryConditional queryConditional = QueryConditional.sortBeginsWith(bookingKey);
+
         return bookingVolume.query(queryConditional).items().stream().toList().size();
     }
 
     @Override
-    public List<Booking> findAllByClientIdSortedByCreatedAt(String clientId) {
+    public TableResponse<Booking> findByTableRequestIndexed(TableRequest tableRequest) {
         Key bookingsKey = Key.builder().partitionValue(TableKeys.BOOKING_PK).build();
         QueryConditional bookingsCondition = QueryConditional.keyEqualTo(bookingsKey);
 
-        Expression clientIdExpression = Expression.builder()
-                .expression("#clientId = :clientId")
-                .expressionNames(Map.of("#clientId", "BOOKING#CLIENT_ID"))
-                .expressionValues(Map.of(":clientId", AttributeValue.builder().s(clientId).build()))
-                .build();
-
         QueryEnhancedRequest bookingsRequest = QueryEnhancedRequest.builder()
                 .queryConditional(bookingsCondition)
-                .scanIndexForward(false)
-                .filterExpression(clientIdExpression)
+                .scanIndexForward(tableRequest.getDirection())
+                .filterExpression(tableRequest.getFilter())
                 .build();
 
-        SdkIterable<Page<Booking>> bookingPages = bookingVolume.index(TableKeys.BOOKING_CREATED_AT_IDX)
-                .query(bookingsRequest);
+        SdkIterable<Page<Booking>> bookingPages = bookingVolume.index(tableRequest.getSort()).query(bookingsRequest);
 
-        return bookingPages.stream().map(Page::items).flatMap(List::stream).toList();
+        return TableResponse.<Booking>builder().convertFromPages(bookingPages).build();
     }
 }

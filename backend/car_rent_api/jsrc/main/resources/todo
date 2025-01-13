@@ -1,4 +1,13 @@
-!!! feedback leaves on booking !!!
+//old tickets changes to be made
+change-password-credentials
+sqs lambda => report table
 
-/api/v1/bookings/
-/api/v1/bookings/{clientId}
+FEEDBACK (US8) Create feedback on finished booking
+/feedback/post POST
+
+Tasks
+0. POST /api/v1/bookings                        => checked
+1. PUT /api/v1/bookings/{bookingId}/cancel		=> checked
+2. PUT /api/v1/bookings/{bookingId}/edit		=> check
+3. PUT /api/v1/bookings/{bookingId}/start		=> check
+4. PUT /api/v1/bookings/{bookingId}/provide		=> check

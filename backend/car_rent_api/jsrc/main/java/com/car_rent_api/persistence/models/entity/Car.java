@@ -12,6 +12,7 @@ public class Car {
     private String pkId;
     private String skId;
     private String model;
+    private String numbers;
     private CarStatus status;
     private Integer pricePerDay;
     private CarCategory category;
@@ -27,7 +28,7 @@ public class Car {
     private String passengerCapacity;
     private String rentalExperience;
     private List<String> bookedDays;
-    private List<String> feedbacksIds;
+    private Integer mileageTotal;
 
     public Car() {}
 
@@ -46,6 +47,11 @@ public class Car {
     @DynamoDbAttribute("CAR#MODEL")
     public String getModel() {
         return model;
+    }
+
+    @DynamoDbAttribute("CAR#NUMBERS")
+    public String getNumbers() {
+        return numbers;
     }
 
     @DynamoDbSecondarySortKey(indexNames = "CAR_STATUS_IDX")
@@ -125,6 +131,11 @@ public class Car {
         return bookedDays;
     }
 
+    @DynamoDbAttribute("CAR#MILEAGE_TOTAL")
+    public Integer getMileageTotal() {
+        return mileageTotal;
+    }
+
     public void setPkId(String pkId) {
         this.pkId = pkId;
     }
@@ -135,6 +146,10 @@ public class Car {
 
     public void setModel(String model) {
         this.model = model;
+    }
+
+    public void setNumbers(String numbers) {
+        this.numbers = numbers;
     }
 
     public void setStatus(CarStatus status) {
@@ -197,6 +212,10 @@ public class Car {
         this.bookedDays = bookedDays;
     }
 
+    public void setMileageTotal(Integer mileageTotal) {
+        this.mileageTotal = mileageTotal;
+    }
+
     public Builder toBuilder() {
         return this.new Builder();
     }
@@ -207,7 +226,8 @@ public class Car {
 
     public class Builder {
 
-        private Builder() {}
+        private Builder() {
+        }
 
         public Builder pkId() {
             Car.this.pkId = TableKeys.CAR_PK;
@@ -221,6 +241,11 @@ public class Car {
 
         public Builder model(String model) {
             Car.this.model = model;
+            return this;
+        }
+
+        public Builder numbers(String numbers) {
+            Car.this.numbers = numbers;
             return this;
         }
 
@@ -296,6 +321,11 @@ public class Car {
 
         public Builder bookedDays(List<String> bookedDays) {
             Car.this.bookedDays = bookedDays;
+            return this;
+        }
+
+        public Builder mileageTotal(Integer mileageTotal) {
+            Car.this.mileageTotal = mileageTotal;
             return this;
         }
 

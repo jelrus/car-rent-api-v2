@@ -4,7 +4,7 @@ import com.backend.dao.CarDao;
 import com.backend.exception.CarNotAvailableException;
 import com.backend.exception.CarNotFoundException;
 import com.backend.models.dto.request.BookCarRequest;
-import com.backend.models.table.CarEntity;
+import com.backend.models.table.Car;
 import com.backend.service.BookingService;
 import com.backend.service.CarService;
 import com.backend.utils.services.LoggerService;
@@ -39,9 +39,9 @@ public class CarServiceImpl implements CarService {
     * @throws CarNotFoundException if no car is found with the specified ID.
     */
    @Override
-   public CarEntity findByCarId(String carId) {
+   public Car findByCarId(String carId) {
       LoggerService.info("[CarService | findByCarId] Finding car by carId=  {}", gson.toJson(carId));
-      CarEntity response = carDao.findByCarId(carId);
+      Car response = carDao.findByCarId(carId);
       if (response == null) {
          LoggerService.warn("[CarService | findByCarId] Car was not found in table");
          throw new CarNotFoundException("Car not found");

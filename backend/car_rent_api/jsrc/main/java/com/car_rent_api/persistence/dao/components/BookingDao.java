@@ -1,8 +1,8 @@
 package com.car_rent_api.persistence.dao.components;
 
 import com.car_rent_api.persistence.models.entity.Booking;
-
-import java.util.List;
+import com.car_rent_api.persistence.pagination.api.TableRequest;
+import com.car_rent_api.persistence.pagination.api.TableResponse;
 
 public interface BookingDao {
 
@@ -14,5 +14,5 @@ public interface BookingDao {
 
     Integer getTotalCount();
 
-    List<Booking> findAllByClientIdSortedByCreatedAt(String clientId);
+    TableResponse<Booking> findByTableRequestIndexed(TableRequest tableRequest);
 }
