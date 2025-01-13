@@ -99,7 +99,6 @@ public class BookingServiceImpl implements BookingService {
         carDao.put(car);
 
         try {
-            isReservedBookingStatus(booking.getStatus());
             checkLockedDate(booking.getLockedFrom());
             checkInputDates(editRequest.getPickupDateTime(), editRequest.getDropOffDateTime());
             checkForCompatibleLocations(car, editRequest.getPickupLocationId(), editRequest.getDropOffLocationId());
@@ -196,9 +195,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     public void onBookingFinished(String bookingId) {
-        //if bookingStatus != BookingStatus.SERVICE_PROVIDED => throw new OperationFailedException("You can't do it right now")
-        //change booking status => bookingStatus = BookingStatus.BOOKING_FINISHED
-        //bookingService.put(booking)
+        checkBooking(bookingId);
+        Booking booking = bookingDao.findById(bookingId);
+
+        isProvidedBookingStatus(booking.getStatus());
+        booking.toBuilder().status(BookingStatus.BOOKING_FINISHED).build();
+        bookingDao.put(booking);
     }
 
     public BookingsResponse findByClientId(String clientId) {
@@ -231,7 +233,13 @@ public class BookingServiceImpl implements BookingService {
 
     private void isStartedBookingStatus(BookingStatus bookingStatus) {
         if (bookingStatus != BookingStatus.SERVICE_STARTED) {
-            throw new OperationFailedException("Booking can't be edited on this stage");
+            throw new OperationFailedException("Service can't be set as started on this stage");
+        }
+    }
+
+    private void isProvidedBookingStatus(BookingStatus bookingStatus) {
+        if (bookingStatus != BookingStatus.SERVICE_PROVIDED) {
+            throw new OperationFailedException("Service can't be set as provided on this stage");
         }
     }
 
@@ -304,8 +312,7 @@ public class BookingServiceImpl implements BookingService {
                     "Location: " + locationId + " \n" +
                     "UserRole: " + user.getRole() + " \n" +
                     "UserId: " + userId + " \n" +
-                    "SupportAgentId: " + supportAgentId + " \n" +
-                    "Is not target support agent: " + isNotTargetSupportAgent);
+                    "SupportAgentId: " + supportAgentId + " \n");
         }
     }
 
@@ -341,6 +348,7 @@ public class BookingServiceImpl implements BookingService {
     private Function<Booking, BookingInfo> toBookingInfo() {
         return b -> BookingInfo.builder()
                 .bookingId(b.getSkId().replace(TableKeys.BOOKING_SK_PREFIX, ""))
+                .carId(b.getCarId())
                 .bookingStatus(b.getStatus().getName())
                 .carModel(carDao.findById(b.getCarId()).getModel())
                 .carImageUrl(carDao.findById(b.getCarId()).getImageUrl())

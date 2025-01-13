@@ -16,9 +16,8 @@ import com.car_rent_api.persistence.pagination.api.SpecificationRequest;
 import com.car_rent_api.persistence.pagination.type.JoinType;
 import com.car_rent_api.persistence.pagination.type.ValueType;
 import com.car_rent_api.persistence.models.entity.types.BookingStatus;
-import com.car_rent_api.persistence.specification.FeedbackPageRequest;
-import com.car_rent_api.persistence.specification.FeedbackPageResponse;
 import com.car_rent_api.service.components.FeedbackService;
+import com.car_rent_api.utils.components.LogPrinter;
 
 import java.util.List;
 import java.util.Map;

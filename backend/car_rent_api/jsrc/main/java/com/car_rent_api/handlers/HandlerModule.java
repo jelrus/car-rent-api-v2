@@ -202,7 +202,10 @@ public class HandlerModule {
     @Provides
     @IntoMap
     @StringKey("POST:/v1/feedbacks")
-    public EndpointHandler provideCreateFeedbackHandler(FeedbackService feedbackService,  SchemaValidator schemaValidator, GsonPrinter gsonPrinter) {
-        return new PostFeedbacksHandler(feedbackService, schemaValidator, gsonPrinter);
+    public EndpointHandler provideCreateFeedbackHandler(
+            FeedbackService feedbackService, BookingService bookingService, SchemaValidator schemaValidator,
+            GsonPrinter gsonPrinter, EndpointHandlerAuthorizer authorizer
+    ) {
+        return new PostFeedbacksHandler(feedbackService, bookingService, schemaValidator, gsonPrinter, authorizer);
     }
 }

@@ -2,12 +2,12 @@ package com.car_rent_api.persistence.models.entity.types;
 
 public enum BookingStatus {
 
-    RESERVED("Reserved"),
-    RESERVED_BY_SUPPORT_AGENT("Reserved by Support Agent"),
-    SERVICE_STARTED("Service Started"),
-    SERVICE_PROVIDED("Service Provided"),
-    BOOKING_FINISHED("Booking Finished"),
-    CANCELLED("Cancelled");
+    RESERVED("RESERVED"),
+    RESERVED_BY_SUPPORT_AGENT("RESERVED_BY_SUPPORT_AGENT"),
+    SERVICE_STARTED("SERVICE_STARTED"),
+    SERVICE_PROVIDED("SERVICE_PROVIDED"),
+    BOOKING_FINISHED("BOOKING_FINISHED"),
+    CANCELLED("CANCELLED");
 
     private final String name;
 
