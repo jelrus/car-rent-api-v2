@@ -1,0 +1,18 @@
+access_role: org/DeveloperAccessRoleTeam1
+account_id: '537124932560'
+aws_access_key_id:
+aws_secret_access_key:
+aws_session_token:
+deploy_target_bucket: r5tm1d2-backend-bucket
+expiration: 2025-01-13 17:11:25+00:00
+extended_prefix_mode: true
+iam_permissions_boundary: arn:aws:iam::537124932560:policy/eo_role_boundary
+project_path: /home/ssm-user/Downloads/car-rent-api-v2/backend/car_rent_api
+region: eu-west-1
+resources_prefix: r5tm1-
+resources_suffix: -dev9
+tags:
+  dev_id: dev9
+  run_id: RUN_5
+  type: developer
+use_temp_creds: false
