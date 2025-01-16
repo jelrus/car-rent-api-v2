@@ -1,31 +1,42 @@
 package com.car_rent_api.service.components.impl;
 
+import com.car_rent_api.config.Resources;
 import com.car_rent_api.config.TableKeys;
 import com.car_rent_api.exception.DateTimeException;
 import com.car_rent_api.exception.ExistenceException;
 import com.car_rent_api.exception.OperationFailedException;
 import com.car_rent_api.persistence.dao.components.*;
 import com.car_rent_api.persistence.models.dto.booking.*;
+import com.car_rent_api.persistence.models.dto.filter.CarShortInfo;
+import com.car_rent_api.persistence.models.dto.filter.LocationShortInfo;
+import com.car_rent_api.persistence.models.dto.filter.UserShortInfo;
 import com.car_rent_api.persistence.models.entity.Booking;
 import com.car_rent_api.persistence.models.entity.Car;
 import com.car_rent_api.persistence.models.entity.User;
 import com.car_rent_api.persistence.models.entity.types.BookingStatus;
 import com.car_rent_api.persistence.models.entity.types.CarStatus;
 import com.car_rent_api.persistence.models.entity.types.UserRole;
+import com.car_rent_api.persistence.models.report.ExportReportResponse;
+import com.car_rent_api.persistence.models.report.FilterReportRow;
+import com.car_rent_api.persistence.models.report.ReportData;
 import com.car_rent_api.persistence.pagination.api.PaginationRequest;
 import com.car_rent_api.persistence.pagination.api.TableRequest;
 import com.car_rent_api.persistence.pagination.api.SpecificationRequest;
+import com.car_rent_api.persistence.pagination.api.TableResponse;
 import com.car_rent_api.persistence.pagination.type.JoinType;
 import com.car_rent_api.persistence.pagination.type.ValueType;
 import com.car_rent_api.service.components.BookingService;
 import com.car_rent_api.utils.components.LogPrinter;
+import com.car_rent_api.utils.components.ReportUploader;
 import com.car_rent_api.utils.components.StringDateConverter;
+import com.car_rent_api.utils.reports.XlsxPrinter;
+import org.apache.commons.logging.Log;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 
 public class BookingServiceImpl implements BookingService {
@@ -35,14 +46,18 @@ public class BookingServiceImpl implements BookingService {
     private final UserDao userDao;
     private final CarDao carDao;
     private final LocationDao locationDao;
+    private final FeedbackDao feedbackDao;
+    private final ReportUploader reportUploader;
 
     public BookingServiceImpl(BookingDao bookingDao, AuthDao authDao, UserDao userDao, CarDao carDao,
-                              LocationDao locationDao) {
+                              LocationDao locationDao, FeedbackDao feedbackDao, ReportUploader reportUploader) {
         this.bookingDao = bookingDao;
         this.authDao = authDao;
         this.userDao = userDao;
         this.carDao = carDao;
         this.locationDao = locationDao;
+        this.feedbackDao = feedbackDao;
+        this.reportUploader = reportUploader;
     }
 
     @Override
@@ -198,6 +213,12 @@ public class BookingServiceImpl implements BookingService {
         checkBooking(bookingId);
         Booking booking = bookingDao.findById(bookingId);
 
+        Car car = carDao.findById(booking.getCarId());
+        Double average = feedbackDao.calculateAverageRating(booking.getCarId());
+        String avgValue = Double.isNaN(average) ? "0" : String.valueOf(average);
+        car.toBuilder().rentalExperience(avgValue).build();
+        carDao.put(car);
+
         isProvidedBookingStatus(booking.getStatus());
         booking.toBuilder().status(BookingStatus.BOOKING_FINISHED).build();
         bookingDao.put(booking);
@@ -216,7 +237,107 @@ public class BookingServiceImpl implements BookingService {
 
         List<Booking> bookingInfos = bookingDao.findByTableRequestIndexed(tableRequest).getItems();
 
-        return BookingsResponse.builder().content(bookingInfos.stream().map(toBookingInfo()).toList()).build();
+        return BookingsResponse.builder()
+                .content(new LinkedHashSet<>(bookingInfos.stream().map(toBookingInfo()).toList()))
+                .build();
+    }
+
+    @Override
+    public GetAgentsResponse findByAgentsFilter(Map<String, String> params) {
+        return GetAgentsResponse.builder()
+                .content(getBookingsByAgentsFilter(params).getItems().stream()
+                        .map(toSupportAgentBookingInfo()).toList())
+                .bookingsFilter(generateSupportAgentsFilter())
+                .build();
+    }
+
+    @Override
+    public ExportReportResponse generateReport(String extension, Map<String, String> params) {
+        TableResponse<Booking> bookings = getBookingsByAgentsFilter(params);
+        checkGenerateReportCondition(bookings, extension);
+
+        String fileName = null;
+        byte[] file = null;
+
+        List<String> headers = List.of("Booking Period", "Car", "Car Numbers", "Car mileage start, km",
+                "Car mileage end, km", "Made by", "Support Agent", "Rating");
+        List<Object> reportRows = toFilterRows(bookings.getItems());
+        ReportData reportData = ReportData.builder().headers(headers).data(reportRows).build();
+
+        if (Objects.equals(extension, "xlsx")) {
+            fileName = "static/reports/aggregated_report_" + System.currentTimeMillis() + ".xlsx";
+            file = XlsxPrinter.builder().sheetName("Report").headers(reportData.getHeaders()).data(reportData.getData())
+                    .toByteArray();
+
+            LogPrinter.info("File {}", file.length);
+        }
+
+        /*if (Objects.equals(extension, "pdf")) {
+            fileName = "static/reports/aggregated_report_" + System.currentTimeMillis() + ".pdf";
+        }*/
+
+        /*if (Objects.equals(extension, "csv")) {
+            fileName = "static/reports/aggregated_report_" + System.currentTimeMillis() + ".csv";
+        }*/
+
+        String url = reportUploader.builder().region(Resources.REGION).bucketName(Resources.S3_BUCKET)
+                .key(fileName).file(file).build();
+
+        return ExportReportResponse.builder().url(url).build();
+    }
+
+    private void checkGenerateReportCondition(TableResponse<Booking> bookings, String extension) {
+        if (bookings.getItems() == null || bookings.getItems().isEmpty()) {
+            throw new OperationFailedException("Nothing to generate for this period");
+        }
+
+        if (!Objects.equals(extension, "xlsx") /*&& !Objects.equals(extension, "pdf")
+                && !Objects.equals(extension, "csv")*/) {
+            throw new OperationFailedException("Incorrect extension (xlsx, pdf, csv formats available only)");
+        }
+    }
+
+    private TableResponse<Booking> getBookingsByAgentsFilter(Map<String, String> params) {
+        String dateFrom = adjustFilterDateFrom(params.get("dateFrom"));
+        String dateTo = adjustFilterDateTo(params.get("dateTo"));
+
+        TableRequest tableRequest = TableRequest.builder()
+                .pagination(PaginationRequest.builder()
+                        .defaultSort(TableKeys.BOOKING_NUMBER_IDX)
+                        .defaultDirection(false)
+                        .build())
+                .specification(SpecificationRequest.builder()
+                        .equalTo(ValueType.STRING, "BOOKING#STATUS", BookingStatus.BOOKING_FINISHED.getName())
+                        .greaterThanOrEqualTo(ValueType.STRING, "BOOKING#PICKUP_DATE_TIME", dateFrom)
+                        .lessThanOrEqualTo(ValueType.STRING, "BOOKING#DROPOFF_DATE_TIME", dateTo)
+                        .equalTo(ValueType.STRING, "BOOKING#DROPOFF_LOCATION_ID", params.get("locationId"))
+                        .equalTo(ValueType.STRING, "BOOKING#CAR_ID", params.get("carId"))
+                        .equalTo(ValueType.STRING, "BOOKING#SUPPORT_AGENT_ID", params.get("supportAgentId"))
+                        .build(JoinType.AND))
+                .build();
+        return bookingDao.findByTableRequestIndexed(tableRequest);
+    }
+
+    private String adjustFilterDateFrom(String dateFrom) {
+        return dateFrom == null || !StringDateConverter.isISO8601Date(dateFrom) ? null : dateFrom + " 00:00:00";
+    }
+
+    private String adjustFilterDateTo(String dateTo) {
+        return dateTo == null || !StringDateConverter.isISO8601Date(dateTo) ? null : dateTo + " 23:59:59";
+    }
+
+    private Map<String, Object> generateSupportAgentsFilter() {
+        Map<String, Object> filter = new LinkedHashMap<>();
+        filter.put("locations", locationDao.findAll().stream()
+                .map(l -> LocationShortInfo.builder().locationId(l.getSkId()).locationId(l.getName()).build())
+                .toList());
+        filter.put("cars", carDao.findAll().stream()
+                .map(c -> CarShortInfo.builder().carId(c.getSkId()).carModel(c.getModel()).build())
+                .toList());
+        filter.put("supportAgents", userDao.findSupportAgents().stream()
+                .map(u -> UserShortInfo.builder().userId(u.getSkId()).username(u.getUsername()).build())
+                .toList());
+        return filter;
     }
 
     private void checkBooking(String bookingId) {
@@ -262,7 +383,7 @@ public class BookingServiceImpl implements BookingService {
                 StringDateConverter.isSourceTimeAfterTargetTime(pickUpDateTime, dropOffDateTime) ||
                 StringDateConverter.isTargetTimeBeforeCurrentTime(pickUpDateTime) ||
                 StringDateConverter.isTargetTimeBeforeCurrentTime(dropOffDateTime)
-            ) {
+        ) {
             throw new DateTimeException("Dates are in incorrect format, should be in [yyyy-MM-dd HH:mm] format," +
                     "have incorrect order (pick up date time after drop off date time), or you are trying to " +
                     "book date time that already passed (pick up date time or drop off date time is after current " +
@@ -291,9 +412,9 @@ public class BookingServiceImpl implements BookingService {
     private void checkForCompatibleLocations(Car car, String pickUpLocationId, String dropOffLocationId) {
         boolean locationsAreIncompatible =
                 !locationDao.isExistById(pickUpLocationId) ||
-                !locationDao.isExistById(dropOffLocationId) ||
-                !Objects.equals(car.getPickupLocationId(), pickUpLocationId) ||
-                !car.getDropOffLocationsIds().contains(dropOffLocationId);
+                        !locationDao.isExistById(dropOffLocationId) ||
+                        !Objects.equals(car.getPickupLocationId(), pickUpLocationId) ||
+                        !car.getDropOffLocationsIds().contains(dropOffLocationId);
 
         if (locationsAreIncompatible) {
             throw new OperationFailedException("Booking failed. Locations are incompatible with this car.");
@@ -391,6 +512,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private Booking toCreateBooking(User authUser, BookCarRequest bookCarRequest) {
+        int orderNumber = bookingDao.getTotalCount() + 1;
         String createdAt = StringDateConverter.fromLocalDateTimeToBookingCreatedAt();
         String lockedFrom = StringDateConverter.getLockedDateTime(bookCarRequest.getPickupDateTime());
         LogPrinter.info(authUser.getUsername());
@@ -398,7 +520,8 @@ public class BookingServiceImpl implements BookingService {
         return Booking.builder()
                 .pkId()
                 .skId(UUID.randomUUID().toString())
-                .orderDetails("#" + (bookingDao.getTotalCount() + 1) + " (" + createdAt + ")")
+                .number(orderNumber)
+                .orderDetails("#" + (orderNumber) + " (" + createdAt + ")")
                 .status(getStatusFromUserRole(authUser))
                 .madeBy(authUser.getUsername() + " (" + authUser.getRole().getName() + ") ")
                 .clientId(bookCarRequest.getClientId())
@@ -425,5 +548,36 @@ public class BookingServiceImpl implements BookingService {
                 .pickupLocationId(bookCarRequest.getPickupLocationId())
                 .dropOffLocationId(bookCarRequest.getDropOffLocationId())
                 .build();
+    }
+
+    private Function<Booking, SupportAgentBookingInfo> toSupportAgentBookingInfo() {
+        return b -> SupportAgentBookingInfo.builder()
+                .periodStart(b.getPickupDateTime())
+                .periodEnd(b.getDropOffDateTime())
+                .carModel(carDao.findById(b.getCarId()).getModel())
+                .carNumbers(carDao.findById(b.getCarId()).getNumbers())
+                .carMileageStart(String.valueOf(b.getCarMileageStart()))
+                .carMileageEnd(String.valueOf(b.getCarMileageEnd()))
+                .madeBy(b.getMadeBy())
+                .supportAgent(userDao.findById(b.getSupportAgentId()).getUsername())
+                .rentalExperience(feedbackDao.findByBookingId(b.getSkId().replace(TableKeys.BOOKING_SK_PREFIX, ""))
+                        .getRentalExperience())
+                .build();
+    }
+
+    private List<Object> toFilterRows(List<Booking> bookings) {
+        List<FilterReportRow> filterRows = bookings.stream()
+                .map(b -> FilterReportRow.builder()
+                        .bookingPeriod(b.getPickupDateTime(), b.getDropOffDateTime())
+                        .car(carDao.findById(b.getCarId()).getModel())
+                        .carNumbers(carDao.findById(b.getCarId()).getNumbers())
+                        .carMileageStart(b.getCarMileageStart())
+                        .carMileageEnd(b.getCarMileageEnd())
+                        .madeBy(b.getMadeBy())
+                        .supportAgent(userDao.findById(b.getSupportAgentId()).getUsername())
+                        .rating(feedbackDao.findByBookingId(b.getSkId().replace(TableKeys.BOOKING_SK_PREFIX, ""))
+                                .getRentalExperience())
+                        .build()).toList();
+        return new ArrayList<>(filterRows);
     }
 }

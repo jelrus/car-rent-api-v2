@@ -15,11 +15,14 @@
         <aws.lambda.events.version>3.14.0</aws.lambda.events.version>
         <aws.dynamodb.version>2.29.27</aws.dynamodb.version>
         <aws.cognito.version>2.29.29</aws.cognito.version>
+        <aws.s3.version>2.29.23</aws.s3.version>
         <dagger.version>2.53.1</dagger.version>
         <gson.version>2.11.0</gson.version>
         <everit.version>1.14.4</everit.version>
         <auth0.java-jwt.version>4.4.0</auth0.java-jwt.version>
+        <apache.base64.codec.version>1.17.2</apache.base64.codec.version>
         <log4j.version>2.24.2</log4j.version>
+        <apache.poi-ooxml.version>5.4.0</apache.poi-ooxml.version>
         <maven.compiler.version>3.13.0</maven.compiler.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -55,6 +58,11 @@
             <artifactId>cognitoidentityprovider</artifactId>
             <version>${aws.cognito.version}</version>
         </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>${aws.s3.version}</version>
+        </dependency>
         <!-- Dagger2 -->
         <dependency>
             <groupId>com.google.dagger</groupId>
@@ -78,6 +86,7 @@
             <artifactId>everit-json-schema</artifactId>
             <version>${everit.version}</version>
         </dependency>
+        <!-- JJWT -->
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
@@ -98,6 +107,18 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>${log4j.version}</version>
+        </dependency>
+        <!-- Apache -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${apache.base64.codec.version}</version>
+        </dependency>
+        <!-- File Processors -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${apache.poi-ooxml.version}</version>
         </dependency>
     </dependencies>
 

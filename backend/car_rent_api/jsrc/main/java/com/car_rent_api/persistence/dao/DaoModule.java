@@ -11,6 +11,7 @@ import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityPr
 import software.amazon.awssdk.services.cognitoidentityprovider.model.PasswordPolicyType;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UpdateUserPoolRequest;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import software.amazon.awssdk.services.s3.S3Client;
 
 import javax.inject.Singleton;
 
@@ -46,6 +47,12 @@ public class DaoModule {
 
         cognitoIpc.updateUserPool(updateUserPoolRequest);
         return cognitoIpc;
+    }
+
+    @Singleton
+    @Provides
+    S3Client provideS3Client() {
+        return S3Client.builder().build();
     }
 
     @Singleton

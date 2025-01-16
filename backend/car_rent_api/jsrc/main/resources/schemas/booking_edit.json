@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Request to edit the booking",
+  "properties": {
+    "dropOffDateTime": {
+      "type": "string",
+      "description": "Drop off date and time",
+      "pattern": "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]) ([01]\\d|2[0-3]):([0-5]\\d)$",
+      "example": "2024-06-10 10:00"
+    },
+    "dropOffLocationId": {
+      "type": "string",
+      "description": "Drop off location ID",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "example": "9b903ebf-2b18-4946-bc58-045d86a2632e"
+    },
+    "pickupDateTime": {
+      "type": "string",
+      "description": "Pick up date and time",
+      "example": "2024-06-08 10:00",
+      "pattern": "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]) ([01]\\d|2[0-3]):([0-5]\\d)$"
+    },
+    "pickupLocationId": {
+      "type": "string",
+      "description": "Pick up location ID",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "example": "9b903ebf-2b18-4946-bc58-045d86a2632e"
+    }
+  },
+  "required": ["dropOffDateTime", "dropOffLocationId", "pickupDateTime", "pickupLocationId"]
+}

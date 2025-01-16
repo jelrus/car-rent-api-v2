@@ -49,7 +49,7 @@ public class PostFeedbacksHandler implements EndpointHandler {
             checkPostPermissions(accessToken, request.getClientId());
             LogPrinter.info("[PostFeedbacksHandler] Permissions granted");
 
-            schemaValidator.validateModelByJsonSchema(JsonValidationSchemes.CREATE_FEEDBACK_REQUEST, jsonRequest);
+            schemaValidator.validateModelByJsonSchema(JsonValidationSchemes.FEEDBACK_CREATE, jsonRequest);
             LogPrinter.info("[PostFeedbacksHandler] Request was validated");
 
             CreateFeedbacksResponse response = feedbackService.create(request);

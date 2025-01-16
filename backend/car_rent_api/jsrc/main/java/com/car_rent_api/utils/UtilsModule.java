@@ -2,11 +2,10 @@ package com.car_rent_api.utils;
 
 import com.car_rent_api.persistence.dao.components.AuthDao;
 import com.car_rent_api.persistence.dao.components.UserDao;
-import com.car_rent_api.utils.components.EndpointHandlerAuthorizer;
-import com.car_rent_api.utils.components.GsonPrinter;
-import com.car_rent_api.utils.components.SchemaValidator;
+import com.car_rent_api.utils.components.*;
 import dagger.Module;
 import dagger.Provides;
+import software.amazon.awssdk.services.s3.S3Client;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -43,5 +42,17 @@ public class UtilsModule {
     @Provides
     EndpointHandlerAuthorizer provideEndpointHandlerAuthorizer(UserDao userDao, AuthDao authDao) {
         return new EndpointHandlerAuthorizer(userDao, authDao);
+    }
+
+    @Singleton
+    @Provides
+    ImageUploader provideImageUploader(S3Client s3Client) {
+        return new ImageUploader(s3Client);
+    }
+
+    @Singleton
+    @Provides
+    ReportUploader provideReportUploader(S3Client s3Client) {
+        return new ReportUploader(s3Client);
     }
 }

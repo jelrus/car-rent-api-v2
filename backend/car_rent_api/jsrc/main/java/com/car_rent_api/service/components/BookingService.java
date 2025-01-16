@@ -1,6 +1,9 @@
 package com.car_rent_api.service.components;
 
 import com.car_rent_api.persistence.models.dto.booking.*;
+import com.car_rent_api.persistence.models.report.ExportReportResponse;
+
+import java.util.Map;
 
 public interface BookingService {
 
@@ -18,4 +21,8 @@ public interface BookingService {
     BookingsResponse findByClientId(String clientId);
 
     void onBookingFinished(String bookingId);
+
+    GetAgentsResponse findByAgentsFilter(Map<String, String> params);
+
+    ExportReportResponse generateReport(String extension, Map<String, String> params);
 }

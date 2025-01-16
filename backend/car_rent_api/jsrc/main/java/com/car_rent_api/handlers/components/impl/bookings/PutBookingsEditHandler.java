@@ -51,7 +51,7 @@ public class PutBookingsEditHandler implements EndpointHandler {
             String jsonRequest =  gsonPrinter.print().toJson(request);
             LogPrinter.info("[EditBookingsHandler] Request was acquired {}", jsonRequest);
 
-            schemaValidator.validateModelByJsonSchema(JsonValidationSchemes.BOOKING_EDIT_REQUEST, jsonRequest);
+            schemaValidator.validateModelByJsonSchema(JsonValidationSchemes.BOOKING_EDIT, jsonRequest);
             LogPrinter.info("[EditBookingsHandler] Request was validated");
 
             BookCarResponse response = bookingService.edit(bookingId, request);

@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Payload for user login request",
+  "properties": {
+    "avatar": {
+      "type": "string",
+      "format": "binary"
+    },
+    "firstName": {
+      "type": "string",
+      "description": "User's first name",
+      "pattern": "^(?!\\s)(?!.*\\s{2,})(?!.*-{2,})[A-Za-z]+([ -][A-Za-z]+)*$",
+      "example": "John"
+    },
+    "lastName": {
+      "type": "string",
+      "description": "User's last name",
+      "pattern": "^(?!\\s)(?!.*\\s{2,})(?!.*-{2,})[A-Za-z]+([ -][A-Za-z]+)*$",
+      "example": "Smith"
+    },
+    "phoneNumber": {
+      "type": "string",
+      "description": "User's phone number",
+      "pattern": "^\\+\\d{1,4}\\d{6,15}$",
+      "example": "+380964545691"
+    },
+    "postalCode": {
+      "type": "string",
+      "description": "User's postal code",
+      "example": "04210"
+    },
+    "country": {
+      "type": "string",
+      "description": "User's country",
+      "example": "Ukraine"
+    },
+    "city": {
+      "type": "string",
+      "description": "User's city",
+      "example": "Kyiv"
+    },
+    "street": {
+      "type": "string",
+      "description": "User's street",
+      "example": "Velika Vasylkivska"
+    }
+  },
+  "additionalProperties": false
+}

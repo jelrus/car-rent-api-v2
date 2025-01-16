@@ -54,7 +54,7 @@ public class Car {
         return numbers;
     }
 
-    @DynamoDbSecondarySortKey(indexNames = "CAR_STATUS_IDX")
+    @DynamoDbSecondarySortKey(indexNames = TableKeys.CAR_STATUS_IDX)
     @DynamoDbAttribute("CAR#STATUS")
     public CarStatus getStatus() {
         return status;
@@ -120,7 +120,7 @@ public class Car {
         return passengerCapacity;
     }
 
-    @DynamoDbSecondarySortKey(indexNames = "CAR_RENTAL_EXPERIENCE_IDX")
+    @DynamoDbSecondarySortKey(indexNames = TableKeys.CAR_RENTAL_EXPERIENCE_IDX)
     @DynamoDbAttribute("CAR#RENTAL_EXPERIENCE")
     public String getRentalExperience() {
         return rentalExperience;

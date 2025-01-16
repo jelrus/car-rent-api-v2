@@ -53,7 +53,7 @@ public class PutBookingsProvidedHandler implements EndpointHandler {
             String jsonRequest =  gsonPrinter.print().toJson(request);
             LogPrinter.info("[PutBookingsProvidedHandler] Request was acquired {}", jsonRequest);
 
-            schemaValidator.validateModelByJsonSchema(JsonValidationSchemes.BOOKING_SERVICE_PROVIDED_REQUEST,
+            schemaValidator.validateModelByJsonSchema(JsonValidationSchemes.BOOKING_SERVICE_PROVIDED,
                     jsonRequest);
             LogPrinter.info("[PutBookingsProvidedHandler] Request was validated");
 

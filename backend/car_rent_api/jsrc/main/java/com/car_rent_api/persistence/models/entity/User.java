@@ -16,6 +16,12 @@ public class User {
     private String lastName;
     private String username;
     private String imageUrl;
+    private String postalCode;
+    private String country;
+    private String city;
+    private String street;
+    private String phoneNumber;
+    private String email;
     private UserRole role;
 
     public User() {}
@@ -52,6 +58,36 @@ public class User {
         return imageUrl;
     }
 
+    @DynamoDbAttribute("USER#POSTAL_CODE")
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    @DynamoDbAttribute("USER#COUNTRY")
+    public String getCountry() {
+        return country;
+    }
+
+    @DynamoDbAttribute("USER#CITY")
+    public String getCity() {
+        return city;
+    }
+
+    @DynamoDbAttribute("USER#STREET")
+    public String getStreet() {
+        return street;
+    }
+
+    @DynamoDbAttribute("USER#PHONE_NUMBER")
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    @DynamoDbAttribute("USER#EMAIL")
+    public String getEmail() {
+        return email;
+    }
+
     @DynamoDbAttribute("USER#ROLE")
     public UserRole getRole() {
         return role;
@@ -81,8 +117,36 @@ public class User {
         this.imageUrl = imageUrl;
     }
 
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public Builder toBuilder() {
+        return this.new Builder();
     }
 
     public static User.Builder builder() {
@@ -120,6 +184,36 @@ public class User {
 
         public Builder imageUrl(String imageUrl) {
             User.this.imageUrl = imageUrl;
+            return this;
+        }
+
+        public Builder postalCode(String postalCode) {
+            User.this.postalCode = postalCode;
+            return this;
+        }
+
+        public Builder country(String country) {
+            User.this.country = country;
+            return this;
+        }
+
+        public Builder city(String city) {
+            User.this.city = city;
+            return this;
+        }
+
+        public Builder street(String street) {
+            User.this.street = street;
+            return this;
+        }
+
+        public Builder phoneNumber(String phoneNumber) {
+            User.this.phoneNumber = phoneNumber;
+            return this;
+        }
+
+        public Builder email(String email) {
+            User.this.email = email;
             return this;
         }
 

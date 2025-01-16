@@ -28,12 +28,27 @@ public class AuthDaoImpl implements AuthDao {
         cognitoIpc.adminCreateUser(userRequest);
         verifyUser(email, password);
 
-        return authenticate(email, password);
+        return authenticateAsAdminWithIdToken(email, password);
     }
 
     @Override
     public String signIn(String email, String password) {
-        return authenticate(email, password);
+        return authenticateAsAdminWithIdToken(email, password);
+    }
+
+    @Override
+    public String changePassword(String accessToken, String email, String oldPassword, String newPassword) {
+        String newAccessToken = authenticateAsUserWithAccessToken(email, oldPassword);
+
+        ChangePasswordRequest request = ChangePasswordRequest.builder()
+                .accessToken(newAccessToken)
+                .previousPassword(oldPassword)
+                .proposedPassword(newPassword)
+                .build();
+
+        cognitoIpc.changePassword(request);
+
+        return authenticateAsUserWithAccessToken(email, newPassword);
     }
 
     @Override
@@ -71,6 +86,11 @@ public class AuthDaoImpl implements AuthDao {
         return JWT.decode(jwt).getSubject();
     }
 
+    @Override
+    public String getEmailFromJwt(String jwt) {
+        return JWT.decode(jwt).getClaim("email").asString();
+    }
+
     private void verifyUser(String email, String password) {
         AdminSetUserPasswordRequest userPasswordRequest = AdminSetUserPasswordRequest.builder()
                 .userPoolId(Resources.COGNITO_ID)
@@ -82,14 +102,24 @@ public class AuthDaoImpl implements AuthDao {
         cognitoIpc.adminSetUserPassword(userPasswordRequest);
     }
 
-    private String authenticate(String email, String password) {
+    private String authenticateAsAdminWithIdToken(String email, String password) {
         AdminInitiateAuthResponse authResponse = cognitoIpc.adminInitiateAuth(AdminInitiateAuthRequest.builder()
-                .authFlow(AuthFlowType.ADMIN_NO_SRP_AUTH)
+                .authFlow(AuthFlowType.ADMIN_USER_PASSWORD_AUTH)
                 .authParameters(Map.of("USERNAME", email, "PASSWORD", password))
                 .userPoolId(Resources.COGNITO_ID)
                 .clientId(Resources.CLIENT_ID)
                 .build());
 
         return authResponse.authenticationResult().idToken();
+    }
+
+    private String authenticateAsUserWithAccessToken(String email, String password) {
+        InitiateAuthResponse authResponse = cognitoIpc.initiateAuth(InitiateAuthRequest.builder()
+                .authFlow(AuthFlowType.USER_PASSWORD_AUTH)
+                .authParameters(Map.of("USERNAME", email, "PASSWORD", password))
+                .clientId(Resources.CLIENT_ID)
+                .build());
+
+        return authResponse.authenticationResult().accessToken();
     }
 }

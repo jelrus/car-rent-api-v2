@@ -45,7 +45,7 @@ public class PostBookingsHandler implements EndpointHandler {
             checkPostPermissions(accessToken, request.getClientId());
             LogPrinter.info("[PostBookingsHandler] Permissions granted");
 
-            schemaValidator.validateModelByJsonSchema(JsonValidationSchemes.BOOKING_CREATE_REQUEST, jsonRequest);
+            schemaValidator.validateModelByJsonSchema(JsonValidationSchemes.BOOKING_CREATE, jsonRequest);
             LogPrinter.info("[PostBookingsHandler] Request was validated");
 
             BookCarResponse response = bookingService.create(accessToken, request);

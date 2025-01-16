@@ -13,12 +13,14 @@
             "cognito-idp:AdminGetUser",
             "cognito-idp:AdminRespondToAuthChallenge",
             "cognito-idp:AdminSetUserPassword",
+            "cognito-idp:ChangePassword",
             "cognito-idp:CreateUserPool",
             "cognito-idp:DescribeUserPool",
             "cognito-idp:UpdateUserPool",
             "cognito-idp:GetUser",
-            "cognito-idp:ListUsers",
+            "cognito-idp:InitiateAuth",
             "cognito-idp:GetIdentityProviderByIdentifier",
+            "cognito-idp:ListUsers",
             "cognito-idp:ListUserPools",
             "cognito-idp:ListUserPoolClients",
             "dynamodb:GetItem",
@@ -30,6 +32,8 @@
             "dynamodb:Query",
             "dynamodb:Scan",
             "dynamodb:DeleteItem",
+            "s3:GetObject",
+            "s3:PutObject",
             "iam:GetPolicyVersion",
             "ssm:PutParameter",
             "ssm:GetParameter",
@@ -111,6 +115,13 @@
         "index_key_type": "S",
         "index_sort_key_name": "BOOKING#CREATED_AT",
         "index_sort_key_type": "S"
+      },
+      {
+        "name": "BOOKING_NUMBER_IDX",
+        "index_key_name": "PK_ID",
+        "index_key_type": "S",
+        "index_sort_key_name": "BOOKING#NUMBER",
+        "index_sort_key_type": "N"
       }
     ]
   },
@@ -145,6 +156,48 @@
           "integration_type": "lambda",
           "lambda_name": "api_handler",
           "enable_proxy": true
+        }
+      },
+      "/v1/users/{id}/personal-info": {
+        "enable_cors": true,
+        "GET": {
+          "authorization_type": "authorizer",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true,
+          "method_request_parameters": {
+            "method.request.path.id": true
+          },
+          "integration_request_parameters": {
+            "integration.request.path.id": "method.request.path.id"
+          }
+        },
+        "PUT": {
+          "authorization_type": "authorizer",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true,
+          "method_request_parameters": {
+            "method.request.path.id": true
+          },
+          "integration_request_parameters": {
+            "integration.request.path.id": "method.request.path.id"
+          }
+        }
+      },
+      "/v1/users/{id}/change-password": {
+        "enable_cors": true,
+        "PUT": {
+          "authorization_type": "authorizer",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true,
+          "method_request_parameters": {
+            "method.request.path.id": true
+          },
+          "integration_request_parameters": {
+            "integration.request.path.id": "method.request.path.id"
+          }
         }
       },
       "/v1/home/about-us": {
@@ -338,6 +391,15 @@
           }
         }
       },
+      "/v1/users/agents": {
+        "enable_cors": true,
+        "GET": {
+          "authorization_type": "authorizer",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true
+        }
+      },
       "/v1/feedbacks": {
         "enable_cors": true,
         "POST": {
@@ -345,6 +407,21 @@
           "integration_type": "lambda",
           "lambda_name": "api_handler",
           "enable_proxy": true
+        }
+      },
+      "/v1/reports/{extension}": {
+        "enable_cors": true,
+        "POST": {
+          "authorization_type": "authorizer",
+          "integration_type": "lambda",
+          "lambda_name": "api_handler",
+          "enable_proxy": true,
+          "method_request_parameters": {
+            "method.request.path.extension": true
+          },
+          "integration_request_parameters": {
+            "integration.request.path.extension": "method.request.path.extension"
+          }
         }
       }
     }

@@ -6,9 +6,13 @@ import com.car_rent_api.persistence.pagination.api.TableResponse;
 
 public interface FeedbackDao {
 
+    Feedback put(Feedback feedback);
+
+    Feedback findByBookingId(String bookingId);
+
+    Double calculateAverageRating(String carId);
+
     TableResponse<Feedback> findByTableRequestIndexed(TableRequest tableRequest);
 
     TableResponse<Feedback> findByTableRequestIndexedPaginated(TableRequest feedbackTableRequest);
-
-    Feedback put(Feedback feedback);
 }

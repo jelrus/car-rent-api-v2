@@ -5,3 +5,14 @@ sqs lambda => report table
 Tasks
 1. Validate user on POST:/feedbacks                  =>   check
 2. Incline booking logic to POST:/feedbacks handler  =>
+
+Add to USER dataset
+USER#POSTAL_CODE
+USER#COUNTRY
+USER#CITY
+USER#STREET
+USER#PHONE_NUMBER
+USER#EMAIl
+
+Add to BOOKING dataset
+BOOKING#NUMBER

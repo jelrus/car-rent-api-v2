@@ -3,6 +3,8 @@ package com.car_rent_api.service;
 import com.car_rent_api.persistence.dao.components.*;
 import com.car_rent_api.service.components.*;
 import com.car_rent_api.service.components.impl.*;
+import com.car_rent_api.utils.components.ImageUploader;
+import com.car_rent_api.utils.components.ReportUploader;
 import dagger.Module;
 import dagger.Provides;
 
@@ -51,7 +53,14 @@ public class ServiceModule {
     @Singleton
     @Provides
     BookingService provideBookingService(BookingDao bookingDao, AuthDao authDao, UserDao userDao, CarDao carDao,
-                                         LocationDao locationDao) {
-        return new BookingServiceImpl(bookingDao, authDao, userDao, carDao, locationDao);
+                                         LocationDao locationDao, FeedbackDao feedbackDao,
+                                         ReportUploader reportUploader) {
+        return new BookingServiceImpl(bookingDao, authDao, userDao, carDao, locationDao, feedbackDao, reportUploader);
+    }
+
+    @Singleton
+    @Provides
+    UserService provideUserService(UserDao userDao, ImageUploader imageUploader) {
+        return new UserServiceImpl(userDao, imageUploader);
     }
 }

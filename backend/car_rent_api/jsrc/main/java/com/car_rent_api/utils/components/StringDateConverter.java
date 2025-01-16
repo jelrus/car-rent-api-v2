@@ -12,6 +12,7 @@ import java.util.Locale;
 public class StringDateConverter {
 
     private static final String GERMAN_DATE = "dd.MM.yyyy"; //29.10.2024
+    private static final String ISO8601_DATE = "yyyy-MM-dd"; //2024-10-29
     private static final String ISO8601_DATE_TIME = "yyyy-MM-dd'T'HH:mm:ss"; //2024-10-29T10:30:00
     private static final String BOOKING_DATE_TIME_CREATED_AT = "dd.MM.yy";
     private static final String BOOKING_ACTIVE_DATE = "MMM dd";
@@ -102,6 +103,15 @@ public class StringDateConverter {
     public static boolean isISO8601DateTime(String value) {
         try {
             LocalDateTime.parse(value).format(DateTimeFormatter.ofPattern(ISO8601_DATE_TIME));
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
+    public static boolean isISO8601Date(String value) {
+        try {
+            LocalDate.parse(value).format(DateTimeFormatter.ofPattern(ISO8601_DATE));
             return true;
         } catch (DateTimeParseException e) {
             return false;

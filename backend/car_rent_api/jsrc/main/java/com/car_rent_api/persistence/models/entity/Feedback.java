@@ -44,13 +44,13 @@ public class Feedback {
         return bookingId;
     }
 
-    @DynamoDbSecondarySortKey(indexNames = "FEEDBACK_DATE_IDX")
+    @DynamoDbSecondarySortKey(indexNames = TableKeys.FEEDBACK_DATE_IDX)
     @DynamoDbAttribute("FEEDBACK#DATE")
     public String getDate() {
         return date;
     }
 
-    @DynamoDbSecondarySortKey(indexNames = "FEEDBACK_RENTAL_EXPERIENCE_IDX")
+    @DynamoDbSecondarySortKey(indexNames = TableKeys.FEEDBACK_RENTAL_EXPERIENCE_IDX)
     @DynamoDbAttribute("FEEDBACK#RENTAL_EXPERIENCE")
     public String getRentalExperience() {
         return rentalExperience;

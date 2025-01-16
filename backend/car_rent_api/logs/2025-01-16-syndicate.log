@@ -1,0 +1,51 @@
+2025-01-16 13:52:32,434 [INFO] USER:Vladyslav s3_resource.py:40:validate_bucket_name LOG: Starting validating bucket name 'run5-team1-deployment-bucket'
+2025-01-16 13:52:32,435 [INFO] USER:Vladyslav s3_resource.py:73:validate_bucket_name LOG: Finished validating bucket name 'run5-team1-deployment-bucket'
+2025-01-16 13:52:32,435 [INFO] USER:Vladyslav helper.py:514:convert LOG: Stripping dev_id: dev2, run_id: RUN_5, type: developer from "," a bit..
+2025-01-16 13:52:32,435 [INFO] USER:Vladyslav helper.py:518:convert LOG: Converting: dev_id: dev2, run_id: RUN_5, type: developer to dict..
+2025-01-16 13:52:32,436 [INFO] USER:Vladyslav helper.py:530:convert LOG: Converted to such a dict: {'dev_id': 'dev2', 'run_id': 'RUN_5', 'type': 'developer'}
+2025-01-16 13:52:33,566 [ERROR] USER:Vladyslav helper.py:110:wrapper LOG: Error occurred: An error occurred (InvalidClientTokenId) when calling the GetCallerIdentity operation: The security token included in the request is invalid
+2025-01-16 13:52:33,602 [ERROR] USER:Vladyslav helper.py:111:wrapper LOG: Traceback:
+ Traceback (most recent call last):
+  File "C:\Users\Vladyslav\AppData\Local\Programs\Python\Python313\Lib\site-packages\syndicate\connection\helper.py", line 96, in wrapper
+    return handler_func(*args, **kwargs)
+  File "C:\Users\Vladyslav\AppData\Local\Programs\Python\Python313\Lib\site-packages\syndicate\connection\sts_connection.py", line 83, in get_caller_identity
+    return self.client.get_caller_identity()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Vladyslav\AppData\Local\Programs\Python\Python313\Lib\site-packages\botocore\client.py", line 530, in _api_call
+    return self._make_api_call(operation_name, kwargs)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vladyslav\AppData\Local\Programs\Python\Python313\Lib\site-packages\botocore\client.py", line 960, in _make_api_call
+    raise error_class(parsed_response, operation_name)
+botocore.exceptions.ClientError: An error occurred (InvalidClientTokenId) when calling the GetCallerIdentity operation: The security token included in the request is invalid
+
+2025-01-16 13:52:33,602 [ERROR] USER:Vladyslav generator.py:70:generate_configuration_files LOG: Invalid credentials provided, please specify the correct one
+2025-01-16 13:52:33,602 [ERROR] USER:Vladyslav generator.py:72:generate_configuration_files LOG: Error while account_id obtaining
+Traceback (most recent call last):
+  File "C:\Users\Vladyslav\AppData\Local\Programs\Python\Python313\Lib\site-packages\syndicate\core\conf\generator.py", line 67, in generate_configuration_files
+    caller_identity = sts.get_caller_identity()
+  File "C:\Users\Vladyslav\AppData\Local\Programs\Python\Python313\Lib\site-packages\syndicate\connection\helper.py", line 112, in wrapper
+    raise e
+  File "C:\Users\Vladyslav\AppData\Local\Programs\Python\Python313\Lib\site-packages\syndicate\connection\helper.py", line 96, in wrapper
+    return handler_func(*args, **kwargs)
+  File "C:\Users\Vladyslav\AppData\Local\Programs\Python\Python313\Lib\site-packages\syndicate\connection\sts_connection.py", line 83, in get_caller_identity
+    return self.client.get_caller_identity()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Vladyslav\AppData\Local\Programs\Python\Python313\Lib\site-packages\botocore\client.py", line 530, in _api_call
+    return self._make_api_call(operation_name, kwargs)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vladyslav\AppData\Local\Programs\Python\Python313\Lib\site-packages\botocore\client.py", line 960, in _make_api_call
+    raise error_class(parsed_response, operation_name)
+botocore.exceptions.ClientError: An error occurred (InvalidClientTokenId) when calling the GetCallerIdentity operation: The security token included in the request is invalid
+2025-01-16 13:53:11,875 [INFO] USER:Vladyslav s3_resource.py:40:validate_bucket_name LOG: Starting validating bucket name 'run5-team1-deployment-bucket'
+2025-01-16 13:53:11,875 [INFO] USER:Vladyslav s3_resource.py:73:validate_bucket_name LOG: Finished validating bucket name 'run5-team1-deployment-bucket'
+2025-01-16 13:53:11,875 [INFO] USER:Vladyslav helper.py:514:convert LOG: Stripping dev_id: dev2, run_id: RUN_5, type: developer from "," a bit..
+2025-01-16 13:53:11,875 [INFO] USER:Vladyslav helper.py:518:convert LOG: Converting: dev_id: dev2, run_id: RUN_5, type: developer to dict..
+2025-01-16 13:53:11,875 [INFO] USER:Vladyslav helper.py:530:convert LOG: Converted to such a dict: {'dev_id': 'dev2', 'run_id': 'RUN_5', 'type': 'developer'}
+2025-01-16 13:53:12,800 [WARNING] USER:Vladyslav generator.py:76:generate_configuration_files LOG: The config_path property is not specified. The working directory is used
+2025-01-16 13:53:12,800 [ERROR] USER:Vladyslav __init__.py:44:_mkdir LOG: [WinError 183] Cannot create a file when that file already exists: 'C:\\Users\\Vladyslav\\Desktop\\CarRentApiApplication\\codecrafters\\backend\\car_rent_api\\.syndicate-config-dev'
+2025-01-16 13:53:12,801 [WARNING] USER:Vladyslav generator.py:93:generate_configuration_files LOG: The "project_path" property is not specified. The working directory will be used as a project path. To change the path, edit the syndicate.yml by path C:\Users\Vladyslav\Desktop\CarRentApiApplication\codecrafters\backend\car_rent_api\.syndicate-config-dev
+2025-01-16 13:53:12,804 [INFO] USER:Vladyslav generator.py:155:generate_configuration_files LOG: Syndicate initialization has been completed. 
+Set SDCT_CONF:
+Unix: export SDCT_CONF="C:\Users\Vladyslav\Desktop\CarRentApiApplication\codecrafters\backend\car_rent_api\.syndicate-config-dev"
+Windows: setx SDCT_CONF C:\Users\Vladyslav\Desktop\CarRentApiApplication\codecrafters\backend\car_rent_api\.syndicate-config-dev
+2025-01-16 13:53:12,807 [INFO] USER:Vladyslav helper.py:328:timed LOG: Stage config, elapsed time: 0:00:00.931354

@@ -9,6 +9,7 @@ public class Booking {
 
     private String pkId;
     private String skId;
+    private Integer number;
     private String orderDetails;
     private BookingStatus status;
     private String clientId;
@@ -38,6 +39,12 @@ public class Booking {
         return skId;
     }
 
+    @DynamoDbSecondarySortKey(indexNames = TableKeys.BOOKING_NUMBER_IDX)
+    @DynamoDbAttribute("BOOKING#NUMBER")
+    public Integer getNumber() {
+        return number;
+    }
+
     @DynamoDbAttribute("BOOKING#ORDER_DETAILS")
     public String getOrderDetails() {
         return orderDetails;
@@ -63,7 +70,7 @@ public class Booking {
         return carId;
     }
 
-    @DynamoDbSecondarySortKey(indexNames = "BOOKING_CREATED_AT_IDX")
+    @DynamoDbSecondarySortKey(indexNames = TableKeys.BOOKING_CREATED_AT_IDX)
     @DynamoDbAttribute("BOOKING#CREATED_AT")
     public String getCreatedAt() {
         return createdAt;
@@ -115,6 +122,10 @@ public class Booking {
 
     public void setSkId(String skId) {
         this.skId = skId;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
     }
 
     public void setOrderDetails(String orderDetails) {
@@ -192,6 +203,11 @@ public class Booking {
 
         public Builder skId(String id) {
             Booking.this.skId = TableKeys.BOOKING_SK_PREFIX + id;
+            return this;
+        }
+
+        public Builder number(Integer number) {
+            Booking.this.number = number;
             return this;
         }
 

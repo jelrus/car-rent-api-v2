@@ -26,4 +26,5 @@ public class TableKeys {
     public static final String FEEDBACK_DATE_IDX = "FEEDBACK_DATE_IDX";
     public static final String FEEDBACK_RENTAL_EXPERIENCE_IDX = "FEEDBACK_RENTAL_EXPERIENCE_IDX";
     public static final String BOOKING_CREATED_AT_IDX = "BOOKING_CREATED_AT_IDX";
+    public static final String BOOKING_NUMBER_IDX = "BOOKING_NUMBER_IDX";
 }

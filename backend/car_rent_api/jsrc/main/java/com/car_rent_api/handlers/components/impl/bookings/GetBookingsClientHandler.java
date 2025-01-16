@@ -19,13 +19,13 @@ public class GetBookingsClientHandler implements EndpointHandler {
 
     private final BookingService bookingService;
     private final GsonPrinter gsonPrinter;
-    private final EndpointHandlerAuthorizer endpointHandlerAuthorizer;
+    private final EndpointHandlerAuthorizer authorizer;
 
     public GetBookingsClientHandler(BookingService bookingService, GsonPrinter gsonPrinter,
-                                    EndpointHandlerAuthorizer endpointHandlerAuthorizer) {
+                                    EndpointHandlerAuthorizer authorizer) {
         this.bookingService = bookingService;
         this.gsonPrinter = gsonPrinter;
-        this.endpointHandlerAuthorizer = endpointHandlerAuthorizer;
+        this.authorizer = authorizer;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class GetBookingsClientHandler implements EndpointHandler {
     }
 
     private void checkGetPermissions(String accessToken, String clientId) {
-        endpointHandlerAuthorizer.secure()
+        authorizer.secure()
                 .accessToken(accessToken).targetId(clientId).checkNullity().checkUsersExistence()
                 .prohibitForRoles(UserRole.ADMIN)
                 .prohibitForTargetRoles(UserRole.SUPPORT_AGENT, UserRole.ADMIN, UserRole.SUPPORT_AGENT)

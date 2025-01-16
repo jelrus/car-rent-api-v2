@@ -10,8 +10,8 @@ import com.car_rent_api.handlers.components.impl.cars.GetCarHandler;
 import com.car_rent_api.handlers.components.impl.cars.GetCarsHandler;
 import com.car_rent_api.handlers.components.impl.feedbacks.PostFeedbacksHandler;
 import com.car_rent_api.handlers.components.impl.home.*;
-import com.car_rent_api.handlers.components.impl.users.PostUsersHandler;
-import com.car_rent_api.handlers.components.impl.users.PostUsersLoginHandler;
+import com.car_rent_api.handlers.components.impl.reports.GetReportHandler;
+import com.car_rent_api.handlers.components.impl.users.*;
 import com.car_rent_api.service.components.*;
 import com.car_rent_api.utils.components.EndpointHandlerAuthorizer;
 import com.car_rent_api.utils.components.GsonPrinter;
@@ -207,5 +207,57 @@ public class HandlerModule {
             GsonPrinter gsonPrinter, EndpointHandlerAuthorizer authorizer
     ) {
         return new PostFeedbacksHandler(feedbackService, bookingService, schemaValidator, gsonPrinter, authorizer);
+    }
+
+    @Singleton
+    @Provides
+    @IntoMap
+    @StringKey("GET:/v1/users/{id}/personal-info")
+    public EndpointHandler providePersonalInfoHandler(
+            UserService userService, GsonPrinter gsonPrinter, EndpointHandlerAuthorizer authorizer
+    ) {
+        return new GetUserPersonalInfoHandler(userService, gsonPrinter, authorizer);
+    }
+
+    @Singleton
+    @Provides
+    @IntoMap
+    @StringKey("PUT:/v1/users/{id}/personal-info")
+    public EndpointHandler provideUpdatePersonalInfoHandler(
+            UserService userService, GsonPrinter gsonPrinter, SchemaValidator schemaValidator,
+            EndpointHandlerAuthorizer authorizer
+    ) {
+        return new PutUserPersonalInfoHandler(userService, gsonPrinter, schemaValidator, authorizer);
+    }
+
+    @Singleton
+    @Provides
+    @IntoMap
+    @StringKey("PUT:/v1/users/{id}/change-password")
+    public EndpointHandler provideChangeUserPasswordHandler(
+            AuthService authService, GsonPrinter gsonPrinter, SchemaValidator schemaValidator,
+            EndpointHandlerAuthorizer authorizer
+    ) {
+        return new PutUserChangePasswordHandler(authService, schemaValidator, gsonPrinter, authorizer);
+    }
+
+    @Singleton
+    @Provides
+    @IntoMap
+    @StringKey("GET:/v1/users/agents")
+    public EndpointHandler provideGetBookingsSupportAgentsHandler(
+            BookingService bookingService, GsonPrinter gsonPrinter, EndpointHandlerAuthorizer authorizer
+    ) {
+        return new GetBookingsSupportAgents(bookingService, gsonPrinter, authorizer);
+    }
+
+    @Singleton
+    @Provides
+    @IntoMap
+    @StringKey("POST:/v1/reports/{extension}")
+    public EndpointHandler provideGetReportHandler(
+            BookingService bookingService, GsonPrinter gsonPrinter, EndpointHandlerAuthorizer authorizer
+    ) {
+        return new GetReportHandler(bookingService, gsonPrinter, authorizer);
     }
 }

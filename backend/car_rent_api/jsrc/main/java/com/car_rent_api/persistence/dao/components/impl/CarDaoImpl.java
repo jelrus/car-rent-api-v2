@@ -10,6 +10,8 @@ import software.amazon.awssdk.core.pagination.sync.SdkIterable;
 import software.amazon.awssdk.enhanced.dynamodb.*;
 import software.amazon.awssdk.enhanced.dynamodb.model.*;
 
+import java.util.List;
+
 public class CarDaoImpl implements CarDao {
 
     private final DynamoDbTable<Car> carsVolume;
@@ -53,6 +55,18 @@ public class CarDaoImpl implements CarDao {
         QueryConditional carCondition = QueryConditional.sortBeginsWith(carsKey);
         QueryEnhancedRequest request = QueryEnhancedRequest.builder().queryConditional(carCondition).build();
         return carsVolume.query(request).items().stream().map(Car::getPricePerDay).min(Integer::compareTo).orElse(null);
+    }
+
+    @Override
+    public List<Car> findAll() {
+        Key carKey = Key.builder()
+                .partitionValue(TableKeys.CAR_PK)
+                .sortValue(TableKeys.CAR_SK_PREFIX)
+                .build();
+
+        QueryConditional carCondition = QueryConditional.sortBeginsWith(carKey);
+
+        return carsVolume.query(carCondition).stream().map(Page::items).flatMap(List::stream).toList();
     }
 
     @Override

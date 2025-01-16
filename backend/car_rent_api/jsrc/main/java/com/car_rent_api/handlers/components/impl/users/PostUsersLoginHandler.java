@@ -38,7 +38,7 @@ public class PostUsersLoginHandler implements EndpointHandler {
             String jsonRequest =  gsonPrinter.print().toJson(request);
             LogPrinter.info("[PostUsersLoginHandler] Request was acquired {}", jsonRequest);
 
-            schemaValidator.validateModelByJsonSchema(JsonValidationSchemes.LOGIN_REQUEST, jsonRequest);
+            schemaValidator.validateModelByJsonSchema(JsonValidationSchemes.LOGIN, jsonRequest);
             LogPrinter.info("[PostUsersLoginHandler] Request was validated");
 
             UserLoginResponse response = authService.login(request);

@@ -44,10 +44,11 @@ public class SchemaValidator {
             JSONObject jsonObject = new JSONObject(jsonModel);
             schema.validate(jsonObject);
             LogPrinter.info("[SchemaValidator] Model's fields are all valid. Exiting...");
-        } catch (ValidationException validationException) {
-            LogPrinter.error("[SchemaValidator] Some of the model's fields not matching the schema. Exiting...",
-                    validationException.getMessage());
-            throw new JsonSchemaException("Some of the model's fields not matching the schema");
+        } catch (ValidationException validationEx) {
+            LogPrinter.error("[SchemaValidator] Some of the model's fields not matching the schema. Exiting... ",
+                    validationEx.getMessage());
+            throw new JsonSchemaException("Some of the model's fields not matching the schema " +
+                    validationEx.getMessage());
         }
     }
 

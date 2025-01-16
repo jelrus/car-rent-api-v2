@@ -4,10 +4,7 @@ import com.car_rent_api.exception.ExistenceException;
 import com.car_rent_api.exception.OperationFailedException;
 import com.car_rent_api.persistence.dao.components.AuthDao;
 import com.car_rent_api.persistence.dao.components.UserDao;
-import com.car_rent_api.persistence.models.dto.users.UserLoginRequest;
-import com.car_rent_api.persistence.models.dto.users.UserLoginResponse;
-import com.car_rent_api.persistence.models.dto.users.UserSignUpRequest;
-import com.car_rent_api.persistence.models.dto.users.UserSignUpResponse;
+import com.car_rent_api.persistence.models.dto.users.*;
 import com.car_rent_api.persistence.models.entity.User;
 import com.car_rent_api.service.components.AuthService;
 import com.car_rent_api.utils.components.LogPrinter;
@@ -36,14 +33,14 @@ public class AuthServiceImpl implements AuthService {
             subId = authDao.getSubId(email);
 
             checkDbExistence(subId);
-            userDao.create(buildUser(subId, request));
+            userDao.put(buildUser(subId, request));
             User foundUser = userDao.findById(subId);
 
             return buildUserSignUpResponse(accessToken, foundUser);
         } catch (ExistenceException | CognitoIdentityProviderException | SdkClientException operationException) {
             LogPrinter.error("[AuthService | Sign Up] Exiting 'signUp @ AuthService' with error {}",
                     operationException.getMessage());
-            throw new OperationFailedException("Could not sign up.");
+            throw new OperationFailedException("Sign up failed. Recheck your email and password");
         }
     }
 
@@ -65,7 +62,31 @@ public class AuthServiceImpl implements AuthService {
         } catch (ExistenceException | CognitoIdentityProviderException | SdkClientException operationException) {
             LogPrinter.error("[AuthService | Log In] Exiting 'login @ AuthService' with error {}",
                     operationException.getMessage());
-            throw new OperationFailedException("Could not log in.");
+            throw new OperationFailedException("Login failed. Recheck your email and password.");
+        }
+    }
+
+    @Override
+    public ChangeUserPasswordResponse changePassword(String accessToken, ChangeUserPasswordRequest request) {
+        try {
+            String email = authDao.getEmailFromJwt(accessToken);
+            checkUserPoolNonExistence(email);
+
+            String newAccessToken =
+                    authDao.changePassword(accessToken, email, request.getOldPassword(), request.getNewPassword());
+            String subId = authDao.getSubId(email);
+
+            checkDbNonExistence(subId);
+            User foundUser = userDao.findById(subId);
+
+            return buildUserChangePasswordResponse(newAccessToken, foundUser);
+        } catch (ExistenceException operationException) {
+            LogPrinter.error("[AuthService | Change password] Exiting 'change password @ AuthService' with error {}",
+                    operationException.getMessage());
+            throw new OperationFailedException("Password cannot failed." + operationException.getMessage());
+        } catch (CognitoIdentityProviderException | SdkClientException operationException) {
+            throw new OperationFailedException("Password change failed. Please, enter you current password and " +
+                    "recheck new password.");
         }
     }
 
@@ -104,6 +125,7 @@ public class AuthServiceImpl implements AuthService {
                 .lastName(userSignUpRequest.getLastName())
                 .username()
                 .imageUrl("")
+                .email(userSignUpRequest.getEmail())
                 .role(userDao.assignRole(userSignUpRequest.getEmail()))
                 .build();
     }
@@ -125,6 +147,17 @@ public class AuthServiceImpl implements AuthService {
                 .role(user.getRole())
                 .userImageUrl(user.getImageUrl())
                 .username(user.getUsername())
+                .build();
+    }
+
+    private ChangeUserPasswordResponse buildUserChangePasswordResponse(String accessToken, User user) {
+        return ChangeUserPasswordResponse.builder()
+                .accessToken(accessToken)
+                .role(user.getRole().getName())
+                .userId(user.getSkId())
+                .userImageUrl(user.getImageUrl())
+                .username(user.getUsername())
+                .userId(user.getSkId())
                 .build();
     }
 }

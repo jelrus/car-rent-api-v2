@@ -2,16 +2,16 @@ package com.car_rent_api.persistence.models.dto.booking;
 
 import com.google.gson.annotations.Expose;
 
-import java.util.List;
+import java.util.Set;
 
 public class BookingsResponse {
 
     @Expose
-    private List<BookingInfo> content;
+    private Set<BookingInfo> content;
 
     public BookingsResponse() {}
 
-    public List<BookingInfo> getContent() {
+    public Set<BookingInfo> getContent() {
         return content;
     }
 
@@ -23,7 +23,7 @@ public class BookingsResponse {
 
         private Builder() {}
 
-        public Builder content(List<BookingInfo> content) {
+        public Builder content(Set<BookingInfo> content) {
             BookingsResponse.this.content = content;
             return this;
         }

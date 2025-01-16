@@ -24,6 +24,10 @@ public class SpecificationRequest {
         return filter;
     }
 
+    public Builder toBuilder() {
+        return this.new Builder();
+    }
+
     public static Builder builder() {
         return new SpecificationRequest().new Builder();
     }

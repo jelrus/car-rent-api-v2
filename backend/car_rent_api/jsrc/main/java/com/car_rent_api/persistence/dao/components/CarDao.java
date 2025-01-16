@@ -4,6 +4,8 @@ import com.car_rent_api.persistence.models.entity.Car;
 import com.car_rent_api.persistence.pagination.api.TableRequest;
 import com.car_rent_api.persistence.pagination.api.TableResponse;
 
+import java.util.List;
+
 public interface CarDao {
 
     Car put(Car car);
@@ -15,6 +17,8 @@ public interface CarDao {
     Integer maxPrice();
 
     Integer minPrice();
+
+    List<Car> findAll();
 
     TableResponse<Car> findByTableRequestIndexed(TableRequest tableRequest);
 
